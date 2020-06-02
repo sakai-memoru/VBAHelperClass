@@ -14,6 +14,8 @@ Option Explicit
 '''  *</pre>
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  */
 '
 ''' /********************************************************
@@ -22,7 +24,7 @@ Option Explicit
 '''  * @note
 '''  *
 '''  *
-'''  * @require C_Array
+'''  * @require C_Array, C_String
 '''  *
 '''  * @require must refer to Microsoft.Scripting.Runtime
 '''  */
@@ -122,8 +124,8 @@ Public Sub MergeDictionary(ByRef dictsrc As Dictionary, ByRef dictdst As Diction
 '''  * @param {Dictionary} dictdst  As Dictionary
 '''  *
 '''  */
-    Dim keyVal As Variant
-    For Each keyVal In dictdst
+Dim keyVal As Variant
+For Each keyVal In dictdst
         If dictsrc.Exists(keyVal) Then
             If IsObject(dictdst.item(keyVal)) Then
                 Set dictsrc.item(keyVal) = dictdst.item(keyVal)
@@ -133,7 +135,8 @@ Public Sub MergeDictionary(ByRef dictsrc As Dictionary, ByRef dictdst As Diction
         Else
             dictsrc.Add keyVal, dictdst.item(keyVal)
         End If
-    Next keyVal
+Next keyVal
+''
 End Sub
 
 Public Sub PutDictionaryByKey(ByRef dict As Dictionary _
@@ -594,6 +597,6 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     '
 End Sub

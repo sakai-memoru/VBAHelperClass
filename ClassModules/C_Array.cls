@@ -11,10 +11,12 @@ Option Explicit
 
 ''' /**-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 '''  * @file C_Array.cls
-'''  *<pre>配列用ユーティリティ・クラス
+'''  *<pre>Array Utility Class
 '''  *</pre>
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  */
 '
@@ -24,7 +26,7 @@ Option Explicit
 '''  * 注意：引数で渡す配列は、配列として定義されていることを前提とする。
 '''  * 　より、IsArray判定はしない。
 '''  *
-'''  * @require C_String, C_Template, O_Template
+'''  * @require C_String, C_Commons
 '''  */
 '
 Dim CONS_ARRAY_TYPE As Variant
@@ -44,7 +46,8 @@ Private Sub Class_Initialize()
 '''  *<br/>Initialize 関数
 '''  *<br/>Class生成時に、実行される。
 '''  */
-    CONS_ARRAY_TYPE = Array("Array", "ArrayArray", "JagArray", "ArrayEmpty")
+CONS_ARRAY_TYPE = Array("Array", "ArrayArray", "JagArray", "ArrayEmpty")
+''
 End Sub
 
 
@@ -225,15 +228,15 @@ Public Function IsInit(ByRef ary As Variant) As Boolean
 ''''  *  @return {Boolean} IsInit
 ''''  */
 ''
-    Dim lng As Long
-    lng = Me.IsArrayEx(ary)
-    If lng = -2 Or lng = -3 Then
+Dim lng As Long
+lng = Me.IsArrayEx(ary)
+If lng = -2 Or lng = -3 Then
         IsInit = False
-    ElseIf lng = -1 Or lng = 1 Then
+ElseIf lng = -1 Or lng = 1 Then
         IsInit = True
-    Else
+Else
         Err.Raise 12001, "C_Array.IsInit", "配列ではありません"
-    End If
+End If
 End Function
 
 Public Function IsEmptyArray(ary As Variant) As Boolean
@@ -258,7 +261,7 @@ On Error Resume Next
     End If
 ''
 On Error GoTo 0
-''' ********************************************************
+''
 End Function
 
 Public Function Count(ary As Variant) As Long
@@ -277,7 +280,7 @@ If IsArray(ary) Then
     Else
         aryTemp = ary
     End If
-    If IsInit(aryTemp) Then
+    If Me.IsInit(aryTemp) Then
         Count = UBound(aryTemp) - LBound(aryTemp) + 1
     Else
         Count = -1
@@ -296,9 +299,10 @@ Public Function Initialize(ByRef ary As Variant)
 '''  *  @param {Variant} ary
 '''  */
 '
-    If IsArray(ary) Then
+If IsArray(ary) Then
         ary = Array()
-    End If
+End If
+''
 End Function
 
 Public Function GetElementLast(ary As Variant) As Variant
@@ -308,7 +312,9 @@ Public Function GetElementLast(ary As Variant) As Variant
 '''  *  @param {Variant} ary 【ByRef】 配列
 '''  *  @return {Variant} 要素の値
 '''  */
-    GetElementLast = ary(UBound(ary))
+''
+GetElementLast = ary(UBound(ary))
+''
 End Function
 
 Public Sub Add(ByRef ary As Variant, value As Variant)
@@ -321,7 +327,7 @@ Public Sub Add(ByRef ary As Variant, value As Variant)
 ''''  * 注意：配列でないものをary引数で渡すとエラーとなる
 ''''  */
 Dim lng As Long
-lng = Me.IsArrayEx(ary)
+Let lng = Me.IsArrayEx(ary)
 Select Case lng
         Case 0
             Err.Raise 5, "C_Array.add", "引数aryが配列でありません。"
@@ -334,7 +340,7 @@ Select Case lng
             ReDim Preserve ary(LBound(ary) To UBound(ary) - LBound(ary) + 2)
         End If
         Case -2, -3 'lng=-2,-3 未初期化配列
-            ary = Array()
+        Let ary = Array()
             ReDim Preserve ary(UBound(ary) - LBound(ary) + 1)
 End Select
 If IsObject(value) Then
@@ -342,6 +348,7 @@ If IsObject(value) Then
 Else
         Let ary(UBound(ary)) = value
 End If
+''
 End Sub
 
 Public Sub AddArray(ByRef aryTo As Variant, ary As Variant)
@@ -391,12 +398,13 @@ Select Case lng
         jagary = Array()
         ReDim Preserve jagary(1 To 1)
 End Select
+''
 If (lng > -1) Then
     'Console.log (LBound(jagAry))
     aryTemp = jagary(LBound(jagary)) '最初の配列 (aryは同じ大きさの配列である前提）
     ReDim aryTemp(LBound(aryTemp) To UBound(aryTemp))
     Me.FillEmptySpaceForArray aryTemp
-        c = LBound(aryTemp)
+    Let c = LBound(aryTemp)
         For i = LBound(ary) To UBound(ary)
             aryTemp(c) = ary(i)
             c = c + 1
@@ -407,7 +415,9 @@ If (lng > -1) Then
 Else
         aryTemp = ary '空の配列
 End If
+''
 jagary(UBound(jagary)) = aryTemp
+''
 End Sub
 
 Public Sub AddParamArray(ByRef ary As Variant, ParamArray pAry() As Variant)
@@ -424,6 +434,7 @@ Dim i As Long
 For i = LBound(pAry) To UBound(pAry)
     Me.Add ary, pAry(i)
 Next i
+''
 End Sub
 
 Public Function Append(ByRef ary As Variant _
@@ -445,6 +456,7 @@ If IsObject(value) Then
 Else
         Let Append = ary(UBound(ary))
 End If
+''
 End Function
 
 Public Function AppendDictionary(ByRef ary As Variant) As Dictionary
@@ -458,6 +470,7 @@ Public Function AppendDictionary(ByRef ary As Variant) As Dictionary
 ''''  */
 ''
 Set AppendDictionary = Me.Append(ary, New Dictionary)
+''
 End Function
 
 Public Sub DeleteElementAt(ByRef ary As Variant, idx As Long)
@@ -533,7 +546,6 @@ End If
 ''
 End Function
 
-
 Public Function Chop(ByRef ary As Variant)
 '''' /********************************************************
 ''''  *@function chomp
@@ -562,6 +574,58 @@ End If
 ''
 End Function
 
+Public Function Pop(ByRef ary As Variant) As Variant
+'''' /********************************************************
+''''  *@function Pop
+''''  */
+''
+If IsArray(ary) Then
+    Let Pop = ary(UBound(ary))
+    Me.DeleteElementAt ary, UBound(ary)
+End If
+''
+End Function
+
+Public Sub Push(ByRef ary As Variant, ParamArray pAry() As Variant)
+'''' /********************************************************
+''''  *@function Pop
+''''  */
+''
+If IsArray(ary) Then
+    Dim i As Long
+    For i = LBound(pAry) To UBound(pAry)
+        Me.Add ary, pAry(i)
+    Next i
+End If
+''
+End Sub
+
+Public Function Shift(ByRef ary As Variant) As Variant
+'''' /********************************************************
+''''  *@function Pop
+''''  */
+''
+If IsArray(ary) Then
+    Let Shift = ary(LBound(ary))
+    Me.DeleteElementAt ary, LBound(ary)
+End If
+''
+End Function
+
+Public Sub Unshift(ByRef ary As Variant, ParamArray pAry() As Variant)
+'''' /********************************************************
+''''  *@function Pop
+''''  */
+''
+If IsArray(ary) Then
+    Dim i As Long
+    For i = UBound(pAry) To LBound(pAry) Step -1
+        Me.InsertElementAt ary, LBound(ary), pAry(i)
+    Next i
+End If
+''
+End Sub
+
 Public Sub Concat(ByRef ary As Variant, anAry As Variant)
 '''' /********************************************************
 ''''  *@function concat
@@ -574,6 +638,20 @@ Dim i As Long
 For i = LBound(anAry) To UBound(anAry)
         Call Me.Add(ary, anAry(i))
 Next i
+''
+End Sub
+
+Public Sub MergeArrayArray(ByRef aryary As Variant, aryaryDist As Variant)
+'''' /********************************************************
+''''  *@function MergeArrayArray
+''''  *@constraint : Both have same columns.
+''''  */
+Dim jagary() As Variant
+Let jagary = Me.ArrayArrayToJagArray(aryary)
+Dim jagarydist() As Variant
+Let jagarydist = Me.ArrayArrayToJagArray(aryaryDist)
+Call Me.Concat(jagary, jagarydist)
+Let aryary = Me.JagArrayToArrayArray(jagary)
 ''
 End Sub
 
@@ -636,7 +714,6 @@ Else
         ix = idx
     End If
 End If
-    
 ''
 Dim l As Long
 Dim m As Long
@@ -690,6 +767,208 @@ For i = LBound(ary) To UBound(ary)
     clt.Add (ary(i))
 Next i
 Set ToCollection = clt
+''
+End Function
+
+Public Function SortArrayArray(ByRef aryary As Variant, ByVal colNo As Long, Optional asc As Variant = 1, Optional colSort As Variant = False) As Variant
+'''' /********************************************************
+''''  *@function SortArrayArray
+''''  */
+''
+Let SortArrayArray = WorksheetFunction.Sort(aryary, colNo, asc, colSort)
+''
+End Function
+
+Public Function SortbyArrayArray(ByRef aryary As Variant, ByVal col1 As Long, asc1 As Variant, ByVal col2 As Long, asc2 As Variant) As Variant
+'''' /********************************************************
+''''  *@function SortbyArrayArray
+''''  */
+Dim aryaryCol1 As Variant
+Dim aryaryCol2 As Variant
+Let aryaryCol1 = Me.GetColumnForArrayArray(aryary, col1)
+Let aryaryCol2 = Me.GetColumnForArrayArray(aryary, col2)
+''
+SortbyArrayArray = WorksheetFunction.SortBy(aryary, aryaryCol1, asc1, aryaryCol2, asc2)
+''
+End Function
+
+Public Function Vlookup(ByVal ky As Variant, ByRef aryary As Variant, ByVal colNo As Long, Optional searchType As Variant = False)
+'''' *************************************************
+Dim C_String As C_String
+Set C_String = New C_String
+''
+On Error Resume Next
+Err.Clear
+Dim rtn As Variant
+Let rtn = WorksheetFunction.Vlookup(ky, aryary, colNo, False)
+If Err.Number = 0 Then
+    ''
+Else
+    Console.log "Could not find value: "
+End If
+''
+Let Vlookup = C_String.DefaultString(rtn)
+''
+End Function
+
+Public Function Unique(ByRef aryary As Variant, Optional ByVal rowDir As Boolean = True) As Variant
+'''' *************************************************
+''
+Let Unique = WorksheetFunction.Unique(aryary, rowDir)
+''
+End Function
+
+Public Function UniqueArrayArray(aryary As Variant) As Variant
+''' /********************************************************
+'''  * @function Unique
+'''  */
+'' FIXME
+Dim ary() As Variant
+ReDim ary(LBound(aryary, 1) To UBound(aryary, 1))
+Dim jagary() As Variant
+Let jagary = Me.ArrayArrayToJagArray(aryary)
+Dim r As Long
+For r = LBound(ary) To UBound(ary)
+    ary(r) = Join(jagary(r), vbTab)
+Next r
+Dim aryTemp() As Variant
+Let aryTemp = Me.Unique(ary)
+Dim i As Long
+For i = LBound(aryTemp) To UBound(aryTemp)
+    Let aryTemp(i) = Split(aryTemp(i), vbTab)
+Next i
+''
+Let UniqueArrayArray = Me.JagArrayToArrayArray(aryTemp)
+''
+End Function
+
+Public Function Index(ByRef aryary As Variant, ByVal rowNo As Long, ByVal colNo As Long)
+'''' *************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+''
+On Error Resume Next
+Err.Clear
+Dim rtn As Variant
+Let rtn = WorksheetFunction.Index(aryary, rowNo, colNo)
+If Err.Number = 0 Then
+    ''
+Else
+    Console.log "Could not find value: "
+End If
+''
+Let Index = C_String.DefaultString(rtn)
+''
+End Function
+
+Public Function Match(ByVal ky As Variant, ByRef aryary As Variant)
+'''' *************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+''
+On Error Resume Next
+Err.Clear
+Dim rtn As Variant
+Let rtn = WorksheetFunction.Match(ky, aryary, 0)
+If Err.Number = 0 Then
+    ''
+Else
+    Console.log "Could not find value: "
+End If
+''
+Let Match = C_String.DefaultString(rtn)
+''
+End Function
+
+Public Function GetValueWithMatchIndex(ByVal ky As Variant, ByRef aryary As Variant, ByVal colTarget As Long, ByVal colNo As Long)
+'''' *************************************************
+''
+Dim rowNo As Variant
+Dim aryColTarget As Variant
+Let aryColTarget = Me.GetColumnForArrayArray(aryary, colTarget)
+Let rowNo = Me.Match(ky, aryColTarget)
+If rowNo = "N/A" Then
+    Let GetValueWithMatchIndex = rowNo
+    Exit Function
+End If
+Let GetValueWithMatchIndex = Me.Index(aryary, rowNo, colNo)
+''
+End Function
+
+Public Function Large(ByRef aryary As Variant, ByVal k As Double) As Double
+'''' *************************************************
+''
+Dim aryaryTemp As Variant
+''
+If Me.TypeArrayPattern(aryary) = "Array" Then
+    Let aryaryTemp = Me.ArrayToArrayArray(aryary)
+    Let Large = WorksheetFunction.Large(aryaryTemp, k)
+ElseIf Me.TypeArrayPattern(aryary) = "ArrayArray" Then
+    Let Large = WorksheetFunction.Large(aryary, k)
+Else
+    Err.Raise 13
+End If
+''
+End Function
+
+Public Function Small(ByRef aryary As Variant, ByVal k As Double) As Double
+'''' *************************************************
+''
+Dim aryaryTemp As Variant
+''
+If Me.TypeArrayPattern(aryary) = "Array" Then
+    Let aryaryTemp = Me.ArrayToArrayArray(aryary)
+    Let Small = WorksheetFunction.Small(aryaryTemp, k)
+ElseIf Me.TypeArrayPattern(aryary) = "ArrayArray" Then
+    Let Small = WorksheetFunction.Small(aryary, k)
+Else
+    Err.Raise 13
+End If
+''
+End Function
+
+Public Function Includes(ByRef aryary As Variant, ByVal vnt As Variant) As Boolean
+'''' *************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+Dim sheetName As String
+Let sheetName = C_String.GetTemporaryStr
+''
+Application.DisplayAlerts = False
+''
+Dim sht As Worksheet
+Set sht = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count))
+Let sht.name = sheetName
+Dim rng As Range
+Set rng = sht.Range("A1")
+''
+''
+Dim aryaryTemp As Variant
+Dim cnt As Long
+''
+''
+If Me.TypeArrayPattern(aryary) = "Array" Then
+    Set rng = rng.Resize(1, UBound(aryary) - LBound(aryary) + 1)
+    Let rng.value = aryary
+    Let cnt = WorksheetFunction.CountIf(rng, vnt) ''param is a rng
+ElseIf Me.TypeArrayPattern(aryary) = "ArrayArray" Then
+    Set rng = rng.Resize(UBound(aryary, 1) - LBound(aryary, 1) + 1, UBound(aryary, 2) - LBound(aryary, 2) + 1)
+    Let rng.value = aryary
+    Let cnt = WorksheetFunction.CountIf(rng, vnt)
+Else
+    Err.Raise 13
+End If
+If cnt = 0 Then
+    Let Includes = False
+Else
+    Let Includes = True
+End If
+''
+ThisWorkbook.Worksheets(sheetName).Delete
+Application.DisplayAlerts = True
 ''
 End Function
 
@@ -784,7 +1063,7 @@ For i = LBound(ary) To UBound(ary)
             End If
         End If
 Next i
-    
+''
 If Me.Count(aryNumber) > 0 Then
     For j = UBound(aryNumber) To LBound(aryNumber) Step -1
     Call DeleteElementAt(ary, aryNumber(j))
@@ -943,7 +1222,6 @@ Next
 IndexOf = -1
 ''
 End Function
-
 
 Public Function Exists(astrItems As Variant, strSearch As String) As Boolean
 ''' /********************************************************
@@ -1155,9 +1433,10 @@ aryTemp = Filter(ary, str)
     
 If UBound(aryTemp) = -1 Then
         Contains = False
-        Else
+Else
         Contains = True
 End If
+''
 End Function
 
 Public Function ContainsMatchPrefix(astrItems As Variant, strSearch As String, Optional compareMode As Variant = vbBinaryCompare) As Boolean
@@ -1168,15 +1447,14 @@ Public Function ContainsMatchPrefix(astrItems As Variant, strSearch As String, O
 '''  *  @param {Variant} str 文字列
 '''  */
 Dim ary As Variant
-    
 ary = FilterMatchPrefix(astrItems, strSearch, compareMode)
-    
+''
 If UBound(ary) = -1 Then
         ContainsMatchPrefix = False
 Else
         ContainsMatchPrefix = True
 End If
-
+''
 End Function
 
 Public Function ContainsMatchSuffix(astrItems As Variant, strSearch As String, Optional compareMode As Variant = vbBinaryCompare) As Boolean
@@ -1187,15 +1465,14 @@ Public Function ContainsMatchSuffix(astrItems As Variant, strSearch As String, O
 '''  *  @param {Variant} str 文字列
 '''  */
 Dim ary As Variant
-    
 ary = FilterMatchSuffix(astrItems, strSearch, compareMode)
-    
+''
 If UBound(ary) = -1 Then
         ContainsMatchSuffix = False
 Else
         ContainsMatchSuffix = True
 End If
-
+''
 End Function
 
 Public Function CountMatches(ByRef ary As Variant _
@@ -1222,6 +1499,7 @@ For i = LBound(ary) To UBound(ary)
                 End If
 Next
 CountMatches = cnt
+''
 End Function
 
 Public Function IsDuplicated(ByRef ary As Variant) As Boolean
@@ -1247,6 +1525,7 @@ For i = LBound(ary) To UBound(ary)
                 End If
 Next i
 IsDuplicated = False
+''
 End Function
 
 Public Function Equals(ary, ary2) As Boolean
@@ -1260,28 +1539,28 @@ Public Function Equals(ary, ary2) As Boolean
 '
 Dim blnRtn As Boolean
 If Not (IsArray(ary) And IsArray(ary2)) Then
-        Err.Raise 13
+    Equals = False
+    Exit Function
 End If
 Dim iMax As Long
 iMax = UBound(ary) - LBound(ary) + 1
 Dim i2Max As Long
 i2Max = UBound(ary2) - LBound(ary2) + 1
 If iMax <> i2Max Then
-        Err.Raise 13
+    Equals = False
+    Exit Function
 End If
-    
-Dim i As Long, ret As Variant
-Dim j As Long
-j = LBound(ary2)
+''
+Dim i As Long
 For i = LBound(ary) To UBound(ary)
-        If ary(i) <> ary2(j) Then
+    If ary(i) <> ary2(i) Then
             blnRtn = False
             Exit Function
         End If
-        j = j + 1
 Next
 blnRtn = True
 Equals = blnRtn
+''
 End Function
 
 Public Function EqualsArrayArray(aryaryA, aryaryB) As Boolean
@@ -1295,22 +1574,24 @@ Public Function EqualsArrayArray(aryaryA, aryaryB) As Boolean
 '
 Dim blnRtn As Boolean
 If Not (IsArray(aryaryA) And IsArray(aryaryB)) Then
-        Err.Raise 13
+    EqualsArrayArray = False
+    Exit Function
 End If
 Dim cntA1 As Long
 Dim cntA2 As Long
 Dim cntB1 As Long
 Dim cntB2 As Long
-    
+''
 Dim aryTempA As Variant
 Dim aryTempB As Variant
-    
-    
+Dim jagaryA As Variant
+Dim jagaryB As Variant
+''
 If Not (Me.Rank(aryaryA) = Me.Rank(aryaryB)) Then
         EqualsArrayArray = False
         Exit Function
 End If
-    
+''
 If Me.Rank(aryaryA) = 1 Then
         cntA1 = UBound(aryaryA) - LBound(aryaryA) + 1
         cntB1 = UBound(aryaryB) - LBound(aryaryB) + 1
@@ -1320,25 +1601,37 @@ If Me.Rank(aryaryA) = 1 Then
             EqualsArrayArray = Me.Equals(aryTempA, aryTempB)
         Else
             EqualsArrayArray = False
+        Exit Function
         End If
-ElseIf Me.Rank(aryaryA) Then
+ElseIf Me.Rank(aryaryA) = 2 Then
         cntA1 = UBound(aryaryA, 1) - LBound(aryaryA, 1) + 1
         cntB1 = UBound(aryaryB, 1) - LBound(aryaryB, 1) + 1
         cntA2 = UBound(aryaryA, 2) - LBound(aryaryA, 2) + 1
         cntB2 = UBound(aryaryB, 2) - LBound(aryaryB, 2) + 1
-        aryTempA = aryaryA
-        aryTempB = aryaryB
+    jagaryA = Me.ArrayArrayToJagArray(aryaryA)
+    jagaryB = Me.ArrayArrayToJagArray(aryaryB)
+    Dim r As Long
         If (cntA1 = cntB1) And (cntA2 = cntB2) Then
-            EqualsArrayArray = Me.Equals(aryTempA, aryTempB)
+        For r = LBound(jagaryA) To UBound(jagaryA)
+            aryTempA = jagaryA(r)
+            aryTempB = jagaryB(r)
+            If Not (Me.Equals(aryTempA, aryTempB)) Then
+                EqualsArrayArray = False
+                Exit Function
+            End If
+        Next r
+        EqualsArrayArray = True
+        Exit Function
         Else
             EqualsArrayArray = False
+        Exit Function
         End If
 Else
-        Err.Raise 13
+    EqualsArrayArray = False
+    Exit Function
 End If
-EqualsArrayArray = Me.Equals(aryTempA, aryTempB)
+''
 End Function
-
 
 Public Function FilterRowForArrayArray(ByRef aryary As Variant _
                                     , ByVal columnNum As Long _
@@ -1370,8 +1663,9 @@ If IsMissing(instance) Then
 Else
         jagary = Me.FilterRowForJagArray(jagary, columnNum, rowStart, instance, methodname)
 End If
-    
+''
 FilterRowForArrayArray = Me.JagArrayToArrayArray(jagary)
+''
 End Function
 
 Public Function FilterRowForJagArray(ByRef jagary As Variant _
@@ -1410,6 +1704,7 @@ Else
 End If
 Call Me.DeleteEmptyElement(jagary)
 FilterRowForJagArray = jagary
+''
 End Function
     
 Public Function checkNumberic(value As String) As Boolean
@@ -1555,12 +1850,11 @@ Public Function ArrayToArrayArray(ByVal ary As Variant) As Variant
 ''''  */
 ''
 Dim aryary As Variant
+ReDim aryary(1 To 1, LBound(ary) To UBound(ary))
+''
 Dim c As Long
-''
-ReDim aryary(LBound(ary) To LBound(ary), LBound(ary) To UBound(ary) - LBound(ary) + 1)
-''
 For c = LBound(ary) To UBound(ary)
-    aryary(LBound(ary), c) = ary(c)
+    aryary(1, c) = ary(c)
 Next c
 ArrayToArrayArray = aryary
 ''
@@ -1576,12 +1870,11 @@ Public Function ArrayToArrayArrayVertical(ByVal ary As Variant) As Variant
 ''''  */
 ''
 Dim aryary As Variant
+ReDim aryary(LBound(ary) To UBound(ary), 1 To 1)
+''
 Dim r As Long
-''
-ReDim aryary(LBound(ary) To UBound(ary) - LBound(ary) + 1, LBound(ary) To LBound(ary))
-''
 For r = LBound(ary) To UBound(ary)
-    aryary(r, LBound(ary)) = ary(r)
+    aryary(r, 1) = ary(r)
 Next r
 ArrayToArrayArrayVertical = aryary
 ''
@@ -1614,6 +1907,13 @@ End If
 If Me.IsArrayEx(jagary) < 0 Then
         GoTo FINALLY  '長さゼロ
 End If
+If Me.CountRowForJagArray(jagary) = 1 Then
+    ReDim aryary(1 To 1, LBound(jagary(1)) To UBound(jagary(1)))
+    For c = LBound(jagary(1)) To UBound(jagary(1))
+        Let aryary(1, c) = jagary(1)(c)
+    Next c
+    GoTo FINALLY  'only one line
+End If
 ''
 ' 最初のAry
 If Not IsArray(jagary(LBound(jagary))) Then Err.Raise 13
@@ -1628,7 +1928,7 @@ If ubInnFst - lbInnFst < 0 Then
 End If
 ''
 ReDim aryary(LBound(jagary) To UBound(jagary), lbInnFst To ubInnFst)
-    
+''
 If IsObject(jagary(LBound(jagary))(lbInnFst)) Then
     For r = LBound(jagary) To UBound(jagary)
         If LBound(jagary(r)) <> lbInnFst Or UBound(jagary(r)) <> ubInnFst Then Err.Raise 5
@@ -1730,7 +2030,7 @@ If lb2 = 0 Then
 Else
     ub = (ub1 - lb1 + 1) * (ub2 - lb2 + 1)
 End If
-    
+''
 ReDim ary(lb2 To ub)
 ''
 Dim i As Long
@@ -1749,9 +2049,10 @@ For r = lb1 To ub1
             End If
         Next
 Next
+''
 FINALLY:
-    '返却
     ArrayArrayToArray = ary
+''
 End Function
 
 Public Function ForEach(ByRef ary As Variant _
@@ -1805,6 +2106,7 @@ For r = LBound(aryary, 1) To UBound(aryary, 1)
             aryary(r, c) = CallByName(instance, methodname, VbMethod, CStr(aryary(r, c)), pAry)
         Next c
 Next r
+''
 End Function
 
 Public Function ForEachArrayArrayRow(ByRef aryary As Variant _
@@ -1829,14 +2131,16 @@ Public Function ForEachArrayArrayRow(ByRef aryary As Variant _
 '''  */
 '
 Dim r As Long
-Dim JSON As String
+Dim json_str As String
 Dim jagary As Variant
 jagary = Me.ArrayArrayToJagArray(aryary)
 For r = LBound(jagary) To UBound(jagary)
-         JSON = CallByName(instance, methodname, VbMethod, C_Commons.ToJson(jagary(r)), pAry)
-         jagary(r) = C_Commons.ParseToArray(JSON)
+    json_str = CallByName(instance, methodname, VbMethod, C_Commons.ToJson(jagary(r)), pAry)
+    jagary(r) = C_Commons.ParseToArray(json_str)
 Next r
+''
 aryary = Me.JagArrayToArrayArray(jagary)
+''
 End Function
 
 Public Function ForEachJagArray(ByRef jagary As Variant _
@@ -1860,12 +2164,13 @@ Public Function ForEachJagArray(ByRef jagary As Variant _
 '
 Dim r As Long
 Dim c As Long
-    
+''
 For r = LBound(jagary) To UBound(jagary)
         For c = LBound(jagary(r)) To UBound(jagary(r))
             jagary(r)(c) = CallByName(instance, methodname, VbMethod, CStr(jagary(r)(c)), pAry)
         Next c
 Next r
+''
 End Function
 
 Public Function ForEachJagArrayRow(ByRef jagary As Variant _
@@ -1888,10 +2193,10 @@ Public Function ForEachJagArrayRow(ByRef jagary As Variant _
 '''  */
 '
 Dim r As Long
-Dim JSON As String
+Dim json_str As String
 For r = LBound(jagary) To UBound(jagary)
-         JSON = CallByName(instance, methodname, VbMethod, C_Commons.ToJson(jagary(r)), pAry)
-         jagary(r) = C_Commons.ParseToArray(JSON)
+    json_str = CallByName(instance, methodname, VbMethod, C_Commons.ToJson(jagary(r)), pAry)
+    jagary(r) = C_Commons.ParseToArray(json_str)
 Next r
 End Function
 
@@ -1913,6 +2218,7 @@ jagary = Me.ArrayArrayToJagArray(aryary)
 Call Me.AddJagArray(jagary, ary)
 'Console.Dump jagAry
 aryaryRtn = Me.JagArrayToArrayArray(jagary)
+''
 AddRowForArrayArray = aryaryRtn
 ''
 End Function
@@ -1931,6 +2237,7 @@ Public Function DeleteRowForArrayArray(ByRef aryary As Variant _
 Dim jagary As Variant
 jagary = Me.ArrayArrayToJagArray(aryary)
 Call Me.DeleteElementAt(jagary, rowNum)
+''
 aryary = Me.JagArrayToArrayArray(jagary)
 ''
 End Function
@@ -1974,6 +2281,7 @@ End If
 Dim jagary As Variant
 jagary = Me.ArrayArrayToJagArray(aryary)
 Call Me.InsertElementAt(jagary, rowNum, aryTemp)
+''
 aryary = Me.JagArrayToArrayArray(jagary)
 ''
 End Function
@@ -1992,10 +2300,35 @@ Public Function GetRowForArrayArray(ByRef aryary As Variant _
 ''
 Dim jagary As Variant
 jagary = Me.ArrayArrayToJagArray(aryary)
+''
 GetRowForArrayArray = jagary(rowNum)
 ''
 End Function
 
+Public Function GetColumnArrayForArrayArray(ByRef aryary As Variant _
+                        , ByVal columnNum As Long) As Variant
+'''' /********************************************************
+''''  *@function getColumnForArrayArray
+''''  *<pre>
+''''  *二次元配列に対して、列配列をcolumnNumで取得する。
+''''  *</pre>
+''''  *@param {Variant<String or Long>(r,c)} aryary ByRef
+''''  *@param {Long} columnNum aryaryのcを指定
+''''  *@return {Variant(r)} getColumnForArrayArray
+''''  */
+''
+Dim aryRtn() As Variant
+ReDim aryRtn(LBound(aryary, 1) To UBound(aryary, 1))
+''
+Dim r As Long
+For r = LBound(aryary, 1) To UBound(aryary, 1)
+    aryRtn(r) = aryary(r, columnNum)
+Next r
+''
+GetColumnArrayForArrayArray = aryRtn
+''
+End Function
+    
 Public Function GetColumnForArrayArray(ByRef aryary As Variant _
                         , ByVal columnNum As Long) As Variant
 '''' /********************************************************
@@ -2005,21 +2338,22 @@ Public Function GetColumnForArrayArray(ByRef aryary As Variant _
 ''''  *</pre>
 ''''  *@param {Variant<String or Long>(r,c)} aryary ByRef
 ''''  *@param {Long} columnNum aryaryのcを指定
-''''  *@return {Variant()} getColumnForArrayArray
+''''  *@return {Variant(r,1)} getColumnForArrayArray
 ''''  */
 ''
 Dim aryRtn() As Variant
-ReDim aryRtn(LBound(aryary, 1) To UBound(aryary, 1))
-    
+ReDim aryRtn(LBound(aryary, 1) To UBound(aryary, 1), 1 To 1)
+''
 Dim r As Long
 For r = LBound(aryary, 1) To UBound(aryary, 1)
-        aryRtn(r) = aryary(r, columnNum)
+    aryRtn(r, 1) = aryary(r, columnNum)
 Next r
+''
 GetColumnForArrayArray = aryRtn
 ''
 End Function
 
-Public Function GetColumnForJagArray(ByRef jagary As Variant _
+Public Function GetColumnArrayForJagArray(ByRef jagary As Variant _
                         , ByVal columnNum As Long) As Variant
 '''' /********************************************************
 ''''  *@function getColumnForJagArray
@@ -2038,7 +2372,8 @@ Dim r As Long
 For r = LBound(jagary) To UBound(jagary)
     aryRtn(r) = jagary(r)(columnNum)
 Next r
-GetColumnForJagArray = aryRtn
+''
+GetColumnArrayForJagArray = aryRtn
 ''
 End Function
 
@@ -2062,7 +2397,63 @@ For r = LBound(jagary) To UBound(jagary)
         cntMax = UBound(jagary(r)) - LBound(jagary(r)) + 1
     End If
 Next r
+''
 CountColumnForJagArray = cntMax
+''
+End Function
+
+Public Function CountRowForJagArray(jagary As Variant) As Long
+'''' /********************************************************
+''''  *@function countColumnForJagArray
+''''  *<pre>JagArrayの最大Column数を返却
+''''  *</pre>
+''''  *  @param {Variant} jagary
+''''  *  @return {Long} countColumnForJagArray
+''''  */
+''
+If Not IsArray(jagary) Then
+    Err.Raise 13
+End If
+''
+CountRowForJagArray = UBound(jagary) - LBound(jagary) + 1
+''
+End Function
+
+Public Function CountColumnForArrayArray(aryary As Variant) As Long
+'''' /********************************************************
+''''  *@function CountColumnForArrayArray
+''''  *<pre>JagArrayの最大Column数を返却
+''''  *</pre>
+''''  *  @param {Variant} jagary
+''''  *  @return {Long} countColumnForJagArray
+''''  */
+''
+If Not IsArray(aryary) Then
+    Err.Raise 13
+End If
+Dim cnt As Long
+Let cnt = UBound(aryary, 2) - LBound(aryary, 2) + 1
+''
+CountColumnForArrayArray = cnt
+''
+End Function
+
+Public Function CountRowForArrayArray(aryary As Variant) As Long
+'''' /********************************************************
+''''  *@function CountRowForArrayArray
+''''  *<pre>JagArrayの最大Column数を返却
+''''  *</pre>
+''''  *  @param {Variant} jagary
+''''  *  @return {Long} countColumnForJagArray
+''''  */
+''
+If Not IsArray(aryary) Then
+    Err.Raise 13
+End If
+Dim cnt As Long
+Let cnt = UBound(aryary, 1) - LBound(aryary, 1) + 1
+''
+CountRowForArrayArray = cnt
 ''
 End Function
 
@@ -2143,13 +2534,14 @@ Public Function ToCsvRow(ByRef ary As Variant, Optional delimiter As Variant = v
 '''  *@return {String} ToCsvRow
 '''  */
 '
-    Dim aryTemp() As Variant
-    ReDim aryTemp(LBound(ary) To UBound(ary))
-    Dim i As Long
-    For i = LBound(ary) To UBound(ary)
+Dim aryTemp() As Variant
+ReDim aryTemp(LBound(ary) To UBound(ary))
+Dim i As Long
+For i = LBound(ary) To UBound(ary)
         aryTemp(i) = C_Commons.ToJson(ary(i))
-    Next i
-    ToCsvRow = Join(aryTemp, delimiter)
+Next i
+ToCsvRow = Join(aryTemp, delimiter)
+''
 End Function
 
 Public Function ToCsv(ByRef aryAllType As Variant, Optional delimiter As Variant = vbTab) As String
@@ -2163,17 +2555,17 @@ Public Function ToCsv(ByRef aryAllType As Variant, Optional delimiter As Variant
 '''  *@return {String} ToCsv
 '''  */
 '
-    If Not IsArray(aryAllType) Then
+If Not IsArray(aryAllType) Then
         Err.Raise 13
-    End If
-    Dim aryTemp() As Variant
-    Dim aryBuff() As Variant
-    Dim strTemp As String
-    strTemp = Me.TypeArrayPattern(aryAllType)
-    
-    Dim r As Long
-    
-    Select Case strTemp
+End If
+Dim aryTemp() As Variant
+Dim aryBuff() As Variant
+Dim strTemp As String
+strTemp = Me.TypeArrayPattern(aryAllType)
+''
+Dim r As Long
+''
+Select Case strTemp
         Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_EMPTY)
             ToCsv = ""
             Exit Function
@@ -2185,38 +2577,99 @@ Public Function ToCsv(ByRef aryAllType As Variant, Optional delimiter As Variant
             aryTemp = Me.ArrayArrayToJagArray(aryAllType)
         Case Else
             Err.Raise 13
-    End Select
-    
-    ReDim aryBuff(LBound(aryTemp) To UBound(aryTemp))
-    
-    For r = LBound(aryTemp) To UBound(aryTemp)
+End Select
+''
+ReDim aryBuff(LBound(aryTemp) To UBound(aryTemp))
+''
+For r = LBound(aryTemp) To UBound(aryTemp)
         aryBuff(r) = Me.ToCsvRow(aryTemp(r), delimiter)
-    Next r
-    ToCsv = Join(aryBuff, vbCrLf)
+Next r
+''
+ToCsv = Join(aryBuff, vbCrLf)
+''
+End Function
     
+Public Function ToHtmlTable(ByRef aryAllType As Variant, Optional aryHeader As Variant, Optional templ As Variant) As String
+''' /********************************************************
+'''  *@function ToHtmlTable
+'''  */
+'
+Dim C_String As C_String
+Set C_String = New C_String
+''
+If Not IsArray(aryAllType) Then
+    Err.Raise 13
+End If
+Dim aryTemp() As Variant
+Dim aryBuff() As Variant
+Dim strAryType As String
+Let strAryType = Me.TypeArrayPattern(aryAllType)
+''
+Dim r As Long
+''
+Select Case strAryType
+    Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_EMPTY)
+        ToHtmlTable = ""
+        Exit Function
+    Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_NORMAL)
+        aryTemp = Array(aryAllType)
+    Case CONS_ARRAY_TYPE(ARRAY_TYPE.JAGARRAY)
+        aryTemp = aryAllType
+    Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_ARRAY)
+        aryTemp = Me.ArrayArrayToJagArray(aryAllType)
+    Case Else
+        Err.Raise 13
+End Select
+''
+If IsMissing(aryHeader) Then
+    Let aryHeader = aryTemp(LBound(aryTemp))
+    Call Me.DeleteElementAt(aryTemp, LBound(aryTemp))
+End If
+If IsMissing(templ) Then
+    Let templ = "<table class='table table-striped'>${thead}${tbody}</table><link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>"
+End If
+''
+Dim thead As String
+Dim tbody As String
+Dim dict As Dictionary
+Set dict = New Dictionary
+Dim c As Long
+Dim aryHeaderBuff() As Variant
+ReDim aryHeaderBuff(LBound(aryHeader) To UBound(aryHeader))
+For c = LBound(aryHeader) To UBound(aryHeader)
+    Let aryHeaderBuff(c) = "<th scope='col'>" & C_String.DefaultString(aryHeader(c)) & "</th>"
+Next c
+ReDim aryBuff(LBound(aryTemp) To UBound(aryTemp))
+For r = LBound(aryTemp) To UBound(aryTemp)
+    Let aryBuff(r) = Me.ToHtmlRow(aryTemp(r))
+Next r
+Let thead = "<thead class='thead-dark'><tr>" & Join(aryHeaderBuff, "") & "</tr></thead>"
+Let tbody = "<tbody class='thead-dark'>" & Join(aryBuff, vbCrLf) & "</tbody>"
+Call dict.Add("thead", thead)
+Call dict.Add("tbody", tbody)
+ToHtmlTable = C_String.RenderTemplate(templ, dict)
+''
 End Function
 
-Public Function ToHtmlRow(ByRef ary As Variant, Optional nullstring As Variant = vbTab) As String
+Public Function ToHtmlRow(ByRef ary As Variant) As String
 ''' /********************************************************
 '''  *@function ToHtmlRow
-'''  *<pre>
-'''  *配列<String>をCSV形式で返却する
-'''  *</pre>
 '''  *@param {Variant<String>()} ary ByRef
 '''  *@param {Variant<String>} delimiter
 '''  *@return {String} ToHtmlRow
 '''  */
 '
-    Dim C_String As C_String
-    Set C_String = New C_String
-    
-    Dim aryTemp() As Variant
-    ReDim aryTemp(LBound(ary) To UBound(ary))
-    Dim i As Long
-    For i = LBound(ary) To UBound(ary)
+Dim C_String As C_String
+Set C_String = New C_String
+''
+Dim aryTemp() As Variant
+ReDim aryTemp(LBound(ary) To UBound(ary))
+Dim i As Long
+For i = LBound(ary) To UBound(ary)
         aryTemp(i) = "<td>" & C_String.DefaultString(ary(i)) & "</td>"
-    Next i
-    ToHtmlRow = "<tr>" & Join(aryTemp, "") & "</tr>"
+Next i
+''
+ToHtmlRow = "<tr>" & Join(aryTemp, "") & "</tr>"
 End Function
 
 '/////////////////////////////////////////////////////////////
@@ -2250,6 +2703,6 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     
 End Sub

@@ -9,16 +9,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 ''' /**-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-'''  * @file C_Xml.cls
-'''  *<pre> XML Format Utility Class
+'''  * @file C_Template.cls
+'''  *<pre> Template Utility Class
 '''  *</pre>
 '''  * @version 1.00
-'''  * @since 2020/03/31
+'''  * @since 2020/05/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  */
 '
 ''' /********************************************************
-'''  * @class C_Xml
+'''  * @class C_Template
 '''  * @classdesc XML Format Utility Class
 '''  *
 '''  */

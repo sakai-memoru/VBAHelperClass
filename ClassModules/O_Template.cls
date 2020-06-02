@@ -14,6 +14,8 @@ Option Explicit
 '''  *<br/> MiniTemplator.cls Wrapper
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  * @require MiniTemplator
 '''  */
@@ -29,14 +31,16 @@ Public clsTemplator_ As MiniTemplator
 
 Private Sub Class_Initialize()
 ''' ********************************************************
-    Set clsTemplator_ = New MiniTemplator
-    Set dict_ = CreateObject("Scripting.Dictionary")
+Set clsTemplator_ = New MiniTemplator
+Set dict_ = New Dictionary
+''
 End Sub
 
 Private Sub Class_Terminate()
 ''' ********************************************************
-    Set dict_ = Nothing
-    Set clsTemplator_ = Nothing
+Set dict_ = Nothing
+Set clsTemplator_ = Nothing
+''
 End Sub
 
 
@@ -45,7 +49,8 @@ Public Property Set dict(obj As Dictionary)
 '''  * @property dictionary setter(Primitve用）
 '''  * @param {Object} obj
 '''  */
-    Set Me.dict_ = obj
+Set Me.dict_ = obj
+''
 End Property
 
 Public Property Let template(str)
@@ -53,13 +58,14 @@ Public Property Let template(str)
 '''  * @property template setter(Primitve用）
 '''  * @param {String} str
 '''  */
-    Me.template_ = str
+Me.template_ = str
+''
 End Property
 
 '''//--------------------------------------------------------
 '''// Instance Method
 '''//
-Public Function SetTemplateByName(ByVal namestr As String, Optional sheetname As Variant, Optional bookName As Variant) As Variant
+Public Function SetTemplateByName(ByVal namestr As String, Optional sheetName As Variant, Optional bookName As Variant) As Variant
 ''' /********************************************************
 '''  *@function setTemplate
 '''  *<br/>　Set template with a Range Address or Name
@@ -70,7 +76,7 @@ Public Function SetTemplateByName(ByVal namestr As String, Optional sheetname As
 If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
-If IsMissing(sheetname) Then
+If IsMissing(sheetName) Then
     Me.template_ = ThisWorkbook.Names(namestr).RefersToRange.value
 Else
     Me.template_ = Workbooks(bookName).Names(namestr).RefersToRange.value
@@ -88,15 +94,40 @@ Public Function SetTemplateByRange(ByVal rng As Range) As Variant
 '''  * @param {Variant} sheetname
 '''  * @return {Variant} source of template
 '''  */
-Const CONS_MODULE_NAME As String = "C_Template.setTemplateByRange"
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "O_Template.setTemplateByRange"
 If rng.Count = 1 Then
     Me.template_ = rng.value
 Else
-    Err.Description = "A range size is not single."
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Err.description = "A range size is not single."
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
 End If
 ''
 SetTemplateByRange = Me.template_
+''
+End Function
+
+Public Function SetTemplateByFile(ByVal templFile As String, Optional ByVal templFolder As Variant) As Variant
+''' /********************************************************
+'''  *@function SetTemplateByFile
+'''  */
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "O_Template.SetTemplateByFile"
+''
+Dim C_File As C_File
+Set C_File = New C_File
+Dim C_FileIO As C_FileIO
+Set C_FileIO = New C_FileIO
+''
+If IsMissing(templFolder) Then
+    Let templFolder = ThisWorkbook.Path
+End If
+Dim templPath As String
+Let templPath = C_File.BuildPath(templFolder, templFile)
+Call clsTemplator_.ReadTemplateFromFile(templPath)
+Let Me.template_ = clsTemplator_.TemplateString
+''
+SetTemplateByFile = Me.template_
 ''
 End Function
 
@@ -107,9 +138,11 @@ Public Function Merge(Optional ByVal escaped As Boolean = False) As Variant
 ''''  * @param {Boolean} escaped Optional
 ''''  * @return {Variant} merge
 ''''  */
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "O_Template.merge"
+''
 Dim i As Integer
 Dim strRet As Variant
-Const CONS_MODULE_NAME As String = "C_Template.merge"
 ''
 On Error GoTo EXCEPTION
     clsTemplator_.TemplateString = template_
@@ -132,8 +165,8 @@ On Error GoTo EXCEPTION
 EXCEPTION: 'Label
     Console.log ("Err.Source = " & Err.source)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     ''
 End Function
 
@@ -170,16 +203,85 @@ On Error GoTo EXCEPTION
     ''
     strRet = clsTemplator_.GenerateOutputToString()
     ''
-    Merge = strRet
+    MergeWithBlock = strRet
     Exit Function
     ''
 EXCEPTION: 'Label
     Console.log ("Err.Source = " & Err.source)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     ''
 End Function
+
+Public Function MergeWithBlock2() As Variant
+''' /********************************************************
+'''  *@function mergeWithBlock
+'''  *<br/>Blockを含むTemplateをマージする。
+'''  *<br/>Dictionaryに、Block名でArray<Dictionary>を設定。
+'''  * @return {Variant}
+'''  */
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "O_Template.mergeWithBlock"
+''
+Dim i As Integer
+Dim j As Integer
+Dim strRet As Variant
+''
+On Error GoTo EXCEPTION
+    Let clsTemplator_.TemplateString = template_
+    ''
+    Dim ary() As Variant
+    Dim dictTemp As Dictionary
+    Dim ky As Variant
+    For i = 0 To dict_.Count - 1
+        If clsTemplator_.BlockExists(dict_.Keys(i)) Then
+            If IsArray(dict_(dict_.Keys(i))) Then
+                Let ary = dict_(dict_.Keys(i))
+                For j = LBound(ary) To UBound(ary)
+                    Set dictTemp = ary(j)
+                    For Each ky In dictTemp
+                        ''Console.info ky
+                        If clsTemplator_.VariableExists(ky) Then
+                            clsTemplator_.SetVariable ky, dictTemp.item(ky)
+                        End If
+                    Next ky
+                    clsTemplator_.AddBlock dict_.Keys(i)
+                Next j
+            End If
+        End If
+        If clsTemplator_.VariableExists(dict_.Keys(i)) Then
+            clsTemplator_.SetVariable dict_.Keys(i), dict_.Items(i)
+        End If
+    Next i
+    ''
+    Let strRet = clsTemplator_.GenerateOutputToString()
+    ''
+    Let MergeWithBlock2 = strRet
+    Exit Function
+    ''
+EXCEPTION: 'Label
+    Console.log ("Err.Source = " & Err.source)
+    Console.log ("Err.Number = " & Err.Number)
+    Console.log ("Err.Description = " & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
+    ''
+End Function
+
+Public Function ExistsVariable(param As Variant) As Boolean
+''' /********************************************************
+''
+Let ExistsVariable = clsTemplator_.VariableExists(param)
+''
+End Function
+
+Public Sub Rest()
+''' /********************************************************
+''
+Call clsTemplator_.ResetData
+''
+End Sub
+
 
 '/////////////////////////////////////////////////////////////
 '//  Debug Area  /////////////////////////////////////////////
@@ -209,9 +311,7 @@ Public Sub unittest()
     Dim line As String
     line = "Public Function setTemplate(ByVal rangename As String, Optional sheetname As Variant) As Variant"
 
-    
     Console.info strBody
-    
     
 End Sub
 

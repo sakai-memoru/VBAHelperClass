@@ -12,6 +12,8 @@ Option Explicit
 '''  * @file Tool_ModuleExporter.cls
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  */
 '
 ''' /********************************************************

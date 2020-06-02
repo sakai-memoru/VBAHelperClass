@@ -13,6 +13,8 @@ Option Explicit
 '''  *<br/>Worksheet用ユーティリティ・クラス
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  */
 '
@@ -21,28 +23,28 @@ Option Explicit
 '''  * @classdesc Worksheet用ユーティリティ・クラス
 '''  */
 '
-Public Sub ChangeVisible(ByVal sheetname As String)
+Public Sub ChangeVisible(ByVal sheetName As String)
 ''' /********************************************************
 '''  *@function changeVisible
 '''  *</br> シートの表示、非表示を変更する
 '''  * @param {String} sheetname
 '''  */
-    If ThisWorkbook.Worksheets(sheetname).Visible Then
-        Call ToInvisible(sheetname)
+    If ThisWorkbook.Worksheets(sheetName).Visible Then
+        Call ToInvisible(sheetName)
     Else
-        Call ToVisible(sheetname)
+        Call ToVisible(sheetName)
     End If
 End Sub
 
-Private Sub ToVisible(ByVal sheetname As String)
-    ThisWorkbook.Worksheets(sheetname).Visible = True
+Private Sub ToVisible(ByVal sheetName As String)
+    ThisWorkbook.Worksheets(sheetName).Visible = True
 End Sub
 
-Private Sub ToInvisible(ByVal sheetname As String)
-    ThisWorkbook.Worksheets(sheetname).Visible = False
+Private Sub ToInvisible(ByVal sheetName As String)
+    ThisWorkbook.Worksheets(sheetName).Visible = False
 End Sub
 
-Public Function IsSheetEmpty(ByVal bookName As String, ByVal sheetname As String) As Boolean
+Public Function IsSheetEmpty(ByVal bookName As String, ByVal sheetName As String) As Boolean
 ''' /********************************************************
 '''  *@function isSheetEmpty
 '''  *</br> シートが空かどうかを返却する
@@ -51,14 +53,14 @@ Public Function IsSheetEmpty(ByVal bookName As String, ByVal sheetname As String
 '''  * @return {Boolean} isSheetEmpty
 '''  */
         '
-    If Application.WorksheetFunction.CountA(Workbooks(bookName).Worksheets(sheetname).UsedRange) = 0 Then
+    If Application.WorksheetFunction.CountA(Workbooks(bookName).Worksheets(sheetName).UsedRange) = 0 Then
         IsSheetEmpty = True
     Else
         IsSheetEmpty = False
     End If
 End Function
 
-Public Function ExistsSheet(ByVal bookName As String, ByVal sheetname As String) As Boolean
+Public Function ExistsSheet(ByVal bookName As String, ByVal sheetName As String) As Boolean
 ''' /********************************************************
 '''  *@function isSheetEmpty
 '''  *</br> シートが存在しているか否かを返却する
@@ -70,7 +72,7 @@ Public Function ExistsSheet(ByVal bookName As String, ByVal sheetname As String)
 Dim sht As Object
 ExistsSheet = False
 For Each sht In Workbooks(bookName).Worksheets
-        If sht.name = sheetname Then
+        If sht.name = sheetName Then
             ExistsSheet = True
             Exit For
         End If
@@ -78,7 +80,7 @@ Next sht
 ''
 End Function
 
-Public Function GetRenameSheetName(ByVal bookName As String, ByVal sheetname As String) As String
+Public Function GetRenameSheetName(ByVal bookName As String, ByVal sheetName As String) As String
 ''' /********************************************************
 '''  *@function getRenameSheetName
 '''  *</br> "_nn"でReNameされたシート名を取得する。
@@ -94,12 +96,12 @@ Dim i As Long
 i = 0
 Dim bln As Boolean
 bln = True
-str = sheetname
+str = sheetName
 ''
 Do While bln
         If Me.ExistsSheet(bookName, str) Then
             i = i + 1
-            str = sheetname & "_" & format(i, "00")
+            str = sheetName & "_" & format(i, "00")
         Else
             bln = False
         End If

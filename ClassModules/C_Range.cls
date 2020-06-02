@@ -14,6 +14,8 @@ Option Explicit
 ''''  *</pre>
 ''''  * @version 1.00
 ''''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 ''''  */
 ''
 '''' /********************************************************
@@ -39,13 +41,14 @@ Private Sub Class_Initialize()
 '''' /********************************************************
 ''''  * @event Class_Initialize
 ''''  */
-    CONS_RANGE_TYPE = Array("CELL", "AREAS", "ROW", "COLUMN", "HASHTABLE", "RECORD", "TABLE")
+CONS_RANGE_TYPE = Array("CELL", "AREAS", "ROW", "COLUMN", "HASHTABLE", "RECORD", "TABLE")
+''
 End Sub
 
 ''//--------------------------------------------------------
 ''// Class Method
 ''//
-Public Function TypeRangeNamePattern(ByVal sheetname As String _
+Public Function TypeRangeNamePattern(ByVal sheetName As String _
                            , ByVal rangeparam As String _
                            , Optional ByVal bookName As Variant) As String
 '''' /********************************************************
@@ -68,15 +71,15 @@ Dim ary() As Variant
 Dim itm As Variant
 Dim str As Variant
 Dim i As Long
-i = 0
+Let i = 0
 ''
 If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
-Set sht = Workbooks(bookName).Worksheets(sheetname)
+Set sht = Workbooks(bookName).Worksheets(sheetName)
 Set rng = sht.Range(rangeparam)
-rCnt = rng.rows.Count
-cCnt = rng.columns.Count
+rCnt = rng.Rows.Count
+cCnt = rng.Columns.Count
 ''
 If rCnt = 1 Then
     If cCnt = 1 Then
@@ -122,8 +125,8 @@ i = 0
 If rng.Areas.Count > 1 Then
     str = CONS_RANGE_TYPE(RANGE_TYPE.CELLS_AREA)
 Else
-    rCnt = rng.rows.Count
-    cCnt = rng.columns.Count
+    rCnt = rng.Rows.Count
+    cCnt = rng.Columns.Count
     ''
     If rCnt = 1 Then
         If cCnt = 1 Then
@@ -147,7 +150,7 @@ TypeRangePattern = str
 ''
 End Function
 
-Public Function ToArray(ByVal sheetname As String _
+Public Function ToArray(ByVal sheetName As String _
                     , ByVal rangeparam As String _
                     , Optional ByVal bookName As Variant _
                     , Optional ByVal isCurrent As Variant = False) As Variant
@@ -176,7 +179,7 @@ If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
 ''
-Set sht = Workbooks(bookName).Worksheets(sheetname)
+Set sht = Workbooks(bookName).Worksheets(sheetName)
 ''
 If isCurrent Then
     Set rng = sht.Range(rangeparam).CurrentRegion
@@ -184,8 +187,8 @@ Else
     Set rng = sht.Range(rangeparam)
 End If
 ''
-rCnt = rng.rows.Count
-cCnt = rng.columns.Count
+rCnt = rng.Rows.Count
+cCnt = rng.Columns.Count
 ''
 For Each itm In sht.Range(rng.Cells(1, 1), rng.Cells(rCnt, cCnt))
     ReDim Preserve ary(i)
@@ -196,7 +199,7 @@ ToArray = ary
 ''
 End Function
 
-Public Function ToArrayArray(ByVal sheetname As String _
+Public Function ToArrayArray(ByVal sheetName As String _
                     , ByVal rangeparam As String _
                     , Optional ByVal bookName As Variant _
                     , Optional ByVal isCurrent As Variant = False) As Variant
@@ -216,7 +219,7 @@ If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
 ''
-Set sht = Workbooks(bookName).Worksheets(sheetname)
+Set sht = Workbooks(bookName).Worksheets(sheetName)
 If isCurrent Then
     Set rng = sht.Range(rangeparam).CurrentRegion
 Else
@@ -226,7 +229,7 @@ ToArrayArray = rng.value
 ''
 End Function
 
-Public Function ToJagArray(ByVal sheetname As String _
+Public Function ToJagArray(ByVal sheetName As String _
                     , ByVal rangeparam As String _
                     , Optional ByVal bookName As Variant _
                     , Optional ByVal isCurrent As Variant = False) As Variant
@@ -253,16 +256,16 @@ Set C_Array = New C_Array
 If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
-Set sht = Workbooks(bookName).Worksheets(sheetname)
+Set sht = Workbooks(bookName).Worksheets(sheetName)
 If isCurrent Then
     Set rng = sht.Range(rangeparam).CurrentRegion
 Else
     Set rng = sht.Range(rangeparam)
 End If
-rCnt = rng.rows.Count
+rCnt = rng.Rows.Count
 Dim i As Long
 For i = 1 To rCnt
-    Call C_Array.Add(ary, Me.RangeToArray(rng.rows(i)))
+    Call C_Array.Add(ary, Me.RangeToArray(rng.Rows(i)))
 Next i
 ToJagArray = ary
 Set C_Array = Nothing
@@ -339,8 +342,8 @@ Dim ary() As Variant
 Dim itm As Variant
 Dim i As Long
 i = 0 'FIXME
-rCnt = rng.rows.Count
-cCnt = rng.columns.Count
+rCnt = rng.Rows.Count
+cCnt = rng.Columns.Count
 ''
 For Each itm In Range(rng.Cells(1, 1), rng.Cells(rCnt, cCnt))
     ReDim Preserve ary(i)
@@ -450,8 +453,8 @@ Public Function RangeToDictonary(ByRef rng As Range, ByRef aryHeader As Variant)
     Dim ub As Long
     Dim i As Long
     i = LBound(aryHeader)
-    rCnt = rng.rows.Count
-    cCnt = rng.columns.Count
+    rCnt = rng.Rows.Count
+    cCnt = rng.Columns.Count
     '
     Dim dict As Dictionary
     Set dict = New Dictionary
@@ -490,7 +493,7 @@ Let rngPattern = Me.TypeRangePattern(rng)
 
 If rngPattern = "HASHTABLE" Then
     Dim r As Long
-    For r = 1 To rng.rows.Count
+    For r = 1 To rng.Rows.Count
         C_Array.Add aryRtn, rng.Cells(r, 1).value
     Next r
 ElseIf rngPattern = "RECORD" Then
@@ -526,7 +529,7 @@ Dim r As Long
 Dim c As Long
 ''
 If rngPattern = "HASHTABLE" Then
-    For r = 1 To rng.rows.Count
+    For r = 1 To rng.Rows.Count
         C_Array.Add ary, rng.Cells(r, 2).value
     Next r
     C_Array.Add aryRtn, ary
@@ -556,10 +559,10 @@ Public Function GetRowRange(rng As Range, idx As Long) As Range
 ''''  * @return {Range} getRowRange
 ''''  */
 ''
-If idx > rng.rows.Count Then
+If idx > rng.Rows.Count Then
     Err.Raise 9, "C_Range.getRangeRow", "指定行がインデックスを超えています"
 End If
-Set GetRowRange = rng.rows(idx)
+Set GetRowRange = rng.Rows(idx)
 ''
 End Function
 
@@ -573,10 +576,10 @@ Public Function GetRowArray(rng As Variant, idx As Long) As Variant
 ''''  * @return {Variant<String>()} getRowArray
 ''''  */
 ''
-If idx > rng.rows.Count Then
+If idx > rng.Rows.Count Then
     Err.Raise 9, "C_Range.getRowArray", "指定行がインデックスを超えています"
 End If
-GetRowArray = Me.RangeToArray(rng.rows(idx))
+GetRowArray = Me.RangeToArray(rng.Rows(idx))
 ''
 End Function
 
@@ -656,10 +659,11 @@ Dim ary As Variant
 Dim headerRng As Range
 Dim bodyRng As Range
 Dim bodyRngAddr As String
+''
 Dim r As Long
-r = 1
+Let r = 1
 Dim i As Long
-i = 0
+Let i = 0
 Dim field_type As String
 If size = 1 Then
     field_type = "cell"
@@ -673,12 +677,12 @@ Else
     bottomRowNo = Split(bottomRightAddress, "$")(2)
     leftColumnNo = Range(topLeftAddress).column
     rightColumnNo = Range(bottomRightAddress).column
-    rowCnt = rng.rows.Count
-    columnCnt = rng.columns.Count
-    If Me.TypeRangeNamePattern(sht.name, rng.Address) = "Table" Then
-        Set headerRng = rng.rows(1)
+    rowCnt = rng.Rows.Count
+    columnCnt = rng.Columns.Count
+    If Me.TypeRangeNamePattern(sht.name, rng.Address, sht.Parent.name) = "Table" Then
+        Set headerRng = rng.Rows(1)
         Set bodyRng = sht.Range(topLeftAddress).Offset(1, 0).Resize(rowCnt - 1, columnCnt)
-    bodyRngAddr = bodyRng.Address
+        Let bodyRngAddr = bodyRng.Address
     End If
 End If
 '
@@ -709,7 +713,7 @@ End Function
 
 Public Function GetCellDetail( _
                     ByRef rng As Range, _
-                    Optional ByVal sheetname As Variant) As Object
+                    Optional ByVal sheetName As Variant) As Object
 '''' /**************************************************
 ''''  *@function getCellDetail
 ''''  *@param {Range} rng
@@ -722,10 +726,10 @@ If rng.Count > 2 Then ' Case : range size is 1 only.
     Return
 End If
 ''
-If IsMissing(sheetname) Then
-    sheetname = rng.Worksheet.name
+If IsMissing(sheetName) Then
+    sheetName = rng.Worksheet.name
 Else
-    Set rng = Worksheets(sheetname).Range(rng.Address)
+    Set rng = Worksheets(sheetName).Range(rng.Address)
 End If
 ''
 Dim dict As Object
@@ -734,7 +738,7 @@ Set dict = CreateObject("Scripting.Dictionary")
 'dict.add "name", rng.Name '' FIXME:If not set a name
 dict.Add "sheetName", rng.Worksheet.name
 dict.Add "address", rng.Address
-dict.Add "notetext", rng.noteText
+dict.Add "notetext", rng.NoteText
 dict.Add "value", rng.value
 dict.Add "numberformat", rng.NumberFormatLocal
 dict.Add "formula", rng.Formula
@@ -790,7 +794,7 @@ End Function
 
 Public Function FindInSheet( _
                     ByVal keyword As String, _
-                    ByVal sheetname As Variant, _
+                    ByVal sheetName As Variant, _
                     Optional ByVal rangeparam As Variant, _
                     Optional ByVal bookName As Variant) As Variant
 '''' /**************************************************
@@ -807,66 +811,18 @@ If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
 If IsMissing(rangeparam) Then
-    Set rng = Workbooks(bookName).Worksheets(sheetname).UsedRange
+    Set rng = Workbooks(bookName).Worksheets(sheetName).UsedRange
 Else
-    Set rng = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam)
+    Set rng = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
 End If
 ''
 FindInSheet = Me.Find(rng, keyword)
 ''
 End Function
 
-Public Function GetValueByKeyword( _
-                    ByVal keyword As String, _
-                    ByVal sheetname As Variant, _
-                    Optional ByVal rowOffset As Long = 0, _
-                    Optional ByVal colOffset As Long = 1, _
-                    Optional ByVal rangeparam As Variant, _
-                    Optional ByVal bookName As Variant) As String
-'''' /**************************************************
-''''  *@function getValueByKeyword
-''''  *  @note : it does not apply to Multiple searches and not_found
-''''  *@param {String} keyword
-''''  *@param {String} sheetname
-''''  *@param {Long} rowOffset Optional
-''''  *@param {Long} colOffset Optional
-''''  *@param {Variant} rangeparam Optional
-''''  *@param {Variant} bookname Optional
-''''  *@return {String} : Cell.value
-''''  */
-''
-Dim C_Array As C_Array
-Set C_Array = New C_Array
-Dim rng As Range
-If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
-End If
-If IsMissing(rangeparam) Then
-    Set rng = Workbooks(bookName).Worksheets(sheetname).UsedRange
-Else
-    Set rng = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam)
-End If
-''
-Dim ary As Variant
-ary = Me.Find(rng, keyword)
-
-If C_Array.TypeArrayPattern(ary) = "ArrayNotInit" Then
-    GetValueByKeyword = ""
-ElseIf C_Array.TypeArrayPattern(ary) = "ArrayEmpty" Then
-    GetValueByKeyword = ""
-ElseIf C_Array.TypeArrayPattern(ary) = "Array" Then
-    If UBound(ary) - LBound(ary) + 1 = 1 Then
-        GetValueByKeyword = Workbooks(bookName).Worksheets(sheetname).Range(ary(LBound(ary))).Offset(rowOffset, colOffset).value
-    End If
-Else
-    GetValueByKeyword = ""
-End If
-''
-End Function
-
 Public Sub ClearCurrentRegionByName( _
                 ByVal paramname As String, _
-                ByVal sheetname As Variant, _
+                ByVal sheetName As Variant, _
                 Optional ByVal rowOffset As Long = 0, _
                 Optional ByVal colOffset As Long = 0, _
                 Optional ByVal bookName As Variant)
@@ -886,14 +842,14 @@ If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
 Dim sht As Worksheet
-Set sht = Workbooks(bookName).Worksheets(sheetname)
+Set sht = Workbooks(bookName).Worksheets(sheetName)
 sht.Range(paramname).Offset(rowOffset, colOffset).CurrentRegion.ClearContents
 ''
 End Sub
 
 Public Sub ClearCurrentRegionByKeyword( _
                 ByVal keyword As Variant, _
-                ByVal sheetname As Variant, _
+                ByVal sheetName As Variant, _
                 Optional ByVal rowOffset As Long = 0, _
                 Optional ByVal colOffset As Long = 0, _
                 Optional ByVal bookName As Variant, _
@@ -921,9 +877,9 @@ If IsMissing(bookName) Then
     bookName = ThisWorkbook.name
 End If
 If IsMissing(rangeparam) Then
-    Set rng = Workbooks(bookName).Worksheets(sheetname).UsedRange
+    Set rng = Workbooks(bookName).Worksheets(sheetName).UsedRange
 Else
-    Set rng = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam)
+    Set rng = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
 End If
 ''
 Dim ary As Variant
@@ -935,7 +891,7 @@ ElseIf C_Array.TypeArrayPattern(ary) = "ArrayEmpty" Then
     '' continue
 ElseIf C_Array.TypeArrayPattern(ary) = "Array" Then
     If UBound(ary) - LBound(ary) + 1 = 1 Then
-        Workbooks(bookName).Worksheets(sheetname).Range(ary(LBound(ary))).CurrentRegion.ClearContents
+        Workbooks(bookName).Worksheets(sheetName).Range(ary(LBound(ary))).CurrentRegion.ClearContents
     End If
 Else
     '' continue
@@ -945,7 +901,7 @@ End Sub
 
 Public Function GetCurrentRegionByKeyword( _
                     ByVal keyword As String, _
-                    ByVal sheetname As Variant, _
+                    ByVal sheetName As Variant, _
                     Optional ByVal rowOffset As Long = 0, _
                     Optional ByVal colOffset As Long = 0, _
                     Optional ByVal bookName As Variant, _
@@ -975,12 +931,12 @@ End If
 ''
 On Error GoTo EXCEPTION
     If IsMissing(rangeparam) Then
-        Set rngTarget = Workbooks(bookName).Worksheets(sheetname).UsedRange
+        Set rngTarget = Workbooks(bookName).Worksheets(sheetName).UsedRange
     Else
-        Set rngTarget = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam)
+        Set rngTarget = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
     End If
     ''
-    Set rng = Me.GetRangeByKeyword(keyword, sheetname, rowOffset, colOffset, rngTarget.Address, bookName)
+    Set rng = Me.GetRangeByKeyword(keyword, sheetName, rowOffset, colOffset, rngTarget.Address, bookName)
     ''
     Set GetCurrentRegionByKeyword = rng.CurrentRegion
     ''
@@ -994,7 +950,7 @@ FINALLY: 'Label
 EXCEPTION: 'Label
     GoSub FINALLY
     Dim desc As String
-    desc = CONS_MODULE_NAME & vbCr & Err.Description
+    desc = CONS_MODULE_NAME & vbCr & Err.description
     Console.log ("Err.Number = " & Err.Number)
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Description = " & desc)
@@ -1003,84 +959,9 @@ EXCEPTION: 'Label
     ''
 End Function
 
-Public Function GetRangeByKeyword( _
-                    ByVal keyword As String, _
-                    ByVal sheetname As Variant, _
-                    Optional ByVal rowOffset As Long = 0, _
-                    Optional ByVal colOffset As Long = 0, _
-                    Optional ByVal rangeparam As Variant, _
-                    Optional ByVal bookName As Variant) As Range
-''' /**************************************************
-'''  *@function getRangeByKeyword
-'''  *@param {String} keyword
-'''  *@param {String} sheetname
-'''  *@param {Long} rowOffset Optional
-'''  *@param {Long} colOffset Optional
-'''  *@param {Variant} rangeparam Optional
-'''  *@param {Variant} bookname Optional
-'''  *@return {Range}
-'''  */
-'
-Dim CONS_MODULE_NAME As String
-CONS_MODULE_NAME = "C_Range.getRangeByKeyword"
-Dim C_Array As C_Array
-Set C_Array = New C_Array
-''
-If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
-End If
-''
-Dim rngTarget As Range
-Dim ary As Variant
-''
-On Error GoTo EXCEPTION
-    If IsMissing(sheetname) Then
-        sheetname = ActiveSheet.name
-    End If
-    If IsMissing(rangeparam) Then
-        Set rngTarget = Workbooks(bookName).Worksheets(sheetname).UsedRange
-    Else
-        Set rngTarget = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam)
-    End If
-    
-    ary = Me.Find(rngTarget, keyword)
-    Dim arytype As String
-    Let arytype = C_Array.TypeArrayPattern(ary)
-    
-    If arytype = "ArrayNotInit" Then
-        Call Err.Raise(Err.Number, Err.source, "keyword not found. -> """ & keyword & """")
-    ElseIf arytype = "ArrayEmpty" Then
-        Call Err.Raise(Err.Number, Err.source, "keyword not found. -> """ & keyword & """")
-    ElseIf arytype = "Array" Then
-        If C_Array.Count(ary) = 1 Then
-            Set GetRangeByKeyword = Workbooks(bookName).Worksheets(sheetname).Range(ary(LBound(ary))).Offset(rowOffset, colOffset)
-        Else
-            Set GetRangeByKeyword = Workbooks(bookName).Worksheets(sheetname).Range(ary(UBound(ary))).Offset(rowOffset, colOffset)
-        End If
-    Else
-         Call Err.Raise(Err.Number, Err.source, "not occurs. -> """ & keyword & """")
-    End If
-    GoSub FINALLY
-    Exit Function
-    '
-FINALLY: 'Label
-    Set rngTarget = Nothing
-    Return
-    '
-EXCEPTION: 'Label
-    GoSub FINALLY
-    Dim desc As String
-    desc = CONS_MODULE_NAME & vbCr & Err.Description
-    Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
-    Console.log ("Err.Description = " & desc)
-    Call Err.Raise(Err.Number, Err.source & "<-" & CONS_MODULE_NAME, desc)
-    Exit Function
-End Function
-
 Public Function GetCurrentRegionByName( _
                     ByVal rangeparam As String, _
-                    ByVal sheetname As String) As Range
+                    ByVal sheetName As String) As Range
 ''' /********************************************************
 '''  *@function getCurrentRegionByName
 '''  *<br/>対象シートの対象範囲名をターゲットにして、
@@ -1090,7 +971,7 @@ Public Function GetCurrentRegionByName( _
 '''  *@return {Range}
 '''  */
 '
-    Set GetCurrentRegionByName = Worksheets(sheetname).Range(rangeparam).CurrentRegion
+    Set GetCurrentRegionByName = Worksheets(sheetName).Range(rangeparam).CurrentRegion
 End Function
 
 Public Function GetRangeAreasByKeyword(ByVal strSheetName As Variant _
@@ -1136,9 +1017,132 @@ Set GetRangeAreasByKeyword = rng ''FIXME□□Union後の順番は勝手に変わる
 '
 End Function
 
+Public Function GetValueByKeyword( _
+                    ByVal keyword As String, _
+                    ByVal sheetName As Variant, _
+                    Optional ByVal rowOffset As Long = 0, _
+                    Optional ByVal colOffset As Long = 1, _
+                    Optional ByVal rangeparam As Variant, _
+                    Optional ByVal bookName As Variant) As String
+'''' /**************************************************
+''''  *@function getValueByKeyword
+''''  *  @note : it does not apply to Multiple searches and not_found
+''''  *@param {String} keyword
+''''  *@param {String} sheetname
+''''  *@param {Long} rowOffset Optional
+''''  *@param {Long} colOffset Optional
+''''  *@param {Variant} rangeparam Optional
+''''  *@param {Variant} bookname Optional
+''''  *@return {String} : Cell.value
+''''  */
+''
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim rng As Range
+If IsMissing(bookName) Then
+    bookName = ThisWorkbook.name
+End If
+If IsMissing(rangeparam) Then
+    Set rng = Workbooks(bookName).Worksheets(sheetName).UsedRange
+Else
+    Set rng = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
+End If
+''
+Dim ary As Variant
+ary = Me.Find(rng, keyword)
+
+If C_Array.TypeArrayPattern(ary) = "ArrayNotInit" Then
+    GetValueByKeyword = ""
+ElseIf C_Array.TypeArrayPattern(ary) = "ArrayEmpty" Then
+    GetValueByKeyword = ""
+ElseIf C_Array.TypeArrayPattern(ary) = "Array" Then
+    If UBound(ary) - LBound(ary) + 1 = 1 Then
+        GetValueByKeyword = Workbooks(bookName).Worksheets(sheetName).Range(ary(LBound(ary))).Offset(rowOffset, colOffset).value
+    End If
+Else
+    GetValueByKeyword = ""
+End If
+''
+End Function
+
+Public Function GetRangeByKeyword( _
+                    ByVal keyword As String, _
+                    ByVal sheetName As Variant, _
+                    Optional ByVal rowOffset As Long = 0, _
+                    Optional ByVal colOffset As Long = 0, _
+                    Optional ByVal rangeparam As Variant, _
+                    Optional ByVal bookName As Variant) As Range
+''' /**************************************************
+'''  *@function getRangeByKeyword
+'''  *@param {String} keyword
+'''  *@param {String} sheetname
+'''  *@param {Long} rowOffset Optional
+'''  *@param {Long} colOffset Optional
+'''  *@param {Variant} rangeparam Optional
+'''  *@param {Variant} bookname Optional
+'''  *@return {Range}
+'''  */
+'
+Dim CONS_MODULE_NAME As String
+CONS_MODULE_NAME = "C_Range.getRangeByKeyword"
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+''
+If IsMissing(bookName) Then
+    bookName = ThisWorkbook.name
+End If
+''
+Dim rngTarget As Range
+Dim ary As Variant
+''
+On Error GoTo EXCEPTION
+    If IsMissing(sheetName) Then
+        sheetName = ActiveSheet.name
+    End If
+    If IsMissing(rangeparam) Then
+        Set rngTarget = Workbooks(bookName).Worksheets(sheetName).UsedRange
+    Else
+        Set rngTarget = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
+    End If
+    
+    ary = Me.Find(rngTarget, keyword)
+    Dim arytype As String
+    Let arytype = C_Array.TypeArrayPattern(ary)
+    
+    If arytype = "ArrayNotInit" Then
+        Call Err.Raise(Err.Number, Err.source, "keyword not found. -> """ & keyword & """")
+    ElseIf arytype = "ArrayEmpty" Then
+        Call Err.Raise(Err.Number, Err.source, "keyword not found. -> """ & keyword & """")
+    ElseIf arytype = "Array" Then
+        If C_Array.Count(ary) = 1 Then
+            Set GetRangeByKeyword = Workbooks(bookName).Worksheets(sheetName).Range(ary(LBound(ary))).Offset(rowOffset, colOffset)
+        Else
+            Set GetRangeByKeyword = Workbooks(bookName).Worksheets(sheetName).Range(ary(UBound(ary))).Offset(rowOffset, colOffset)
+        End If
+    Else
+         Call Err.Raise(Err.Number, Err.source, "not occurs. -> """ & keyword & """")
+    End If
+    GoSub FINALLY
+    Exit Function
+    '
+FINALLY: 'Label
+    Set rngTarget = Nothing
+    Return
+    '
+EXCEPTION: 'Label
+    GoSub FINALLY
+    Dim desc As String
+    desc = CONS_MODULE_NAME & vbCr & Err.description
+    Console.log ("Err.Number = " & Err.Number)
+    Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
+    Console.log ("Err.Description = " & desc)
+    Call Err.Raise(Err.Number, Err.source & "<-" & CONS_MODULE_NAME, desc)
+    Exit Function
+End Function
+
 Public Sub PutArray( _
             ByVal rangeparam As String, _
-            ByVal sheetname As String, _
+            ByVal sheetName As String, _
             ByRef ary As Variant, _
             Optional style As Variant = "V", _
             Optional ByVal bookName As Variant)
@@ -1162,13 +1166,13 @@ If IsMissing(bookName) Then
 End If
 Dim rng As Range
 Dim rngCurrent As Range
-Set rngCurrent = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam).CurrentRegion
+Set rngCurrent = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam).CurrentRegion
 Call rngCurrent.ClearContents
 If UCase(style) = "V" Then
-    Set rng = rngCurrent.Resize(UBound(ary) + 1, 1)
+    Set rng = rngCurrent.Resize(UBound(ary) - LBound(ary) + 1, 1)
     rng.value = C_Array.ArrayToArrayArrayVertical(ary)
 ElseIf UCase(style) = "H" Then
-    Set rng = rngCurrent.Resize(1, UBound(ary) + 1)
+    Set rng = rngCurrent.Resize(1, UBound(ary) - LBound(ary) + 1)
     rng.value = C_Array.ArrayToArrayArray(ary)
 End If
 rng.WrapText = False
@@ -1179,7 +1183,7 @@ End Sub
 
 Public Sub PutArrayArray( _
             ByVal rangeparam As String, _
-            ByVal sheetname As String, _
+            ByVal sheetName As String, _
             ByRef aryary As Variant, _
             Optional ByVal bookName As Variant)
 ''' /********************************************************
@@ -1198,7 +1202,7 @@ If IsMissing(bookName) Then
 End If
 Dim rng As Range
 Dim rngCurrent As Range
-Set rngCurrent = Workbooks(bookName).Worksheets(sheetname).Range(rangeparam).CurrentRegion
+Set rngCurrent = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam).CurrentRegion
 Call rngCurrent.ClearContents
 '
 Dim clbMax As Long
@@ -1218,7 +1222,7 @@ End Sub
 
 Public Sub PutJagArray( _
             ByVal rangename As String, _
-            ByVal sheetname As String, _
+            ByVal sheetName As String, _
             ByRef jagary As Variant, _
             Optional ByVal bookName As Variant)
 ''' /********************************************************
@@ -1241,7 +1245,7 @@ End If
 ''
 Dim rng As Range
 Dim rngCurrent As Range
-Set rngCurrent = Worksheets(sheetname).Range(rangename).CurrentRegion
+Set rngCurrent = Worksheets(sheetName).Range(rangename).CurrentRegion
 Call rngCurrent.ClearContents
 ''
 Dim cubMax As Long
@@ -1264,9 +1268,9 @@ Set C_Array = Nothing
 '
 End Sub
 
-Public Sub PutJagArrayTranspose( _
+Public Function PutJagArrayTranspose( _
             ByVal rangename As String, _
-            ByVal sheetname As String, _
+            ByVal sheetName As String, _
             ByRef jagary As Variant, _
             Optional ByVal bookName As Variant)
 ''' /********************************************************
@@ -1280,9 +1284,10 @@ Public Sub PutJagArrayTranspose( _
 '''  *
 '''  *@require C_Array
 '''  */
+''
 '' FIXME
-End Sub
-
+''
+End Function
 
 Public Function GetRefertoString(ByRef rng As Range) As String
 ''' /********************************************************
@@ -1290,7 +1295,7 @@ Public Function GetRefertoString(ByRef rng As Range) As String
 '''  *@param {Range} rng
 '''  *
 '''  */
-'' FIXME
+''
 Dim shtName As String
 Dim addr As String
 Let shtName = rng.Parent.name
@@ -1298,6 +1303,33 @@ Let addr = rng.AddressLocal
 Console.log shtName
 Console.log addr
 GetRefertoString = "=" & shtName & "!" & addr
+''
+End Function
+
+Public Function GetValueByAddress(ByVal addr As String, _
+                Optional ByVal sheetName As Variant, _
+                Optional ByRef wb As Variant) As Variant
+''' /********************************************************
+'''  *@function GetValueByAddress
+'''  */
+Dim C_String As C_String
+Set C_String = New C_String
+''
+If IsMissing(wb) Then
+  Set wb = ThisWorkbook
+End If
+Dim aryTemp As Variant
+If IsMissing(sheetName) Then
+    If C_String.Contain(addr, "!") Then
+        Let aryTemp = Split(addr, "!")
+        Let sheetName = C_String.Chomp(aryTemp(LBound(aryTemp)), 1)
+    Else
+        Let sheetName = ThisWorkbook.ActiveSheet.name
+    End If
+End If
+Dim sht As Worksheet
+Set sht = wb.Worksheets(sheetName)
+GetValueByAddress = sht.Range(addr).value
 ''
 End Function
 
@@ -1378,19 +1410,20 @@ Public Sub Flush(ByRef rng As Range _
 '''  *
 '''  *@require O_StringBuilder
 '''  */
-'
-    Dim objSB As O_StringBuilder
-    Set objSB = New O_StringBuilder
-    Dim C_File As C_File
-    Set C_File = New C_File
-    If IsMissing(strFoldername) Then
+''
+Dim objSB As O_StringBuilder
+Set objSB = New O_StringBuilder
+Dim C_File As C_File
+Set C_File = New C_File
+If IsMissing(strFoldername) Then
         strFoldername = C_File.GetSpecialFolder()
-    End If
-    Dim str As String
-    str = Me.ToCsv(rng, delimiter)
-    Call objSB.AppendLine(str)
-    Call objSB.Flush(strFilename, strFoldername)
-    Set objSB = Nothing
+End If
+Dim str As String
+str = Me.ToCsv(rng, delimiter)
+Call objSB.AppendLine(str)
+Call objSB.Flush(strFilename, strFoldername)
+Set objSB = Nothing
+''
 End Sub
 
 Public Function ToCsv(ByRef rng As Range _
@@ -1405,13 +1438,13 @@ Public Function ToCsv(ByRef rng As Range _
 '''  *   @note if using tab, set delimiter vbTab
 '''  */
 '
-    Dim str As String
-    Dim aryTemp As Variant
-    Dim ary
-    Dim rngRow As Range
-    Dim i As Long
-    '
-    For Each rngRow In rng.rows
+Dim str As String
+Dim aryTemp As Variant
+Dim ary
+Dim rngRow As Range
+Dim i As Long
+'
+For Each rngRow In rng.Rows
         aryTemp = Me.RangeToArray(rngRow)
         ReDim ary(UBound(aryTemp))
         For i = 0 To UBound(aryTemp)
@@ -1422,9 +1455,10 @@ Public Function ToCsv(ByRef rng As Range _
             End If
         Next i
         str = str & Join(ary, delimiter) & vbCrLf
-    Next rngRow
-    '
-    ToCsv = Left(str, Len(str) - 2)
+Next rngRow
+'
+ToCsv = Left(str, Len(str) - 2)
+'
 End Function
 
 Public Function ToXml(rng As Range _
@@ -1443,63 +1477,64 @@ Public Function ToXml(rng As Range _
 '''  *
 '''  *@require C_String,C_Array,C_Template, O_Template
 '''  */
-    Dim C_Array As C_Array
-    Set C_Array = New C_Array
-    Dim C_Template As C_Template
-    Set C_Template = New C_Template
-    Dim objTemplate As O_Template
-    Set objTemplate = New O_Template
-    '
-    Dim C_String As C_String
-    Set C_String = New C_String
-    Dim template As String
-    Dim strTemp As String
-    Dim lngRowStart As Long
-    Dim ary As Variant
-    Dim dict As Dictionary
-    '
-    If IsMissing(aryHeader) Then
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim C_Template As C_Template
+Set C_Template = New C_Template
+Dim objTemplate As O_Template
+Set objTemplate = New O_Template
+'
+Dim C_String As C_String
+Set C_String = New C_String
+Dim template As String
+Dim strTemp As String
+Dim lngRowStart As Long
+Dim ary As Variant
+Dim dict As Dictionary
+'
+If IsMissing(aryHeader) Then
         aryHeader = Me.GetRowArray(rng, 1) '一行目をヘッダとする
         lngRowStart = 2
-    Else
+Else
         lngRowStart = 1
-    End If
-    '
-    'bodyの生成
-    template = C_Template.CreateXmlTemplate(recname, aryHeader)
-    objTemplate.template = template
-    '
-    Dim r As Long
-    '
-    For r = lngRowStart To rng.rows.Count
+End If
+'
+'bodyの生成
+template = C_Template.CreateXmlTemplate(recname, aryHeader)
+objTemplate.template = template
+'
+Dim r As Long
+'
+For r = lngRowStart To rng.Rows.Count
         Set dict = C_Array.ArrayToDictionary(Me.GetRowArray(rng, r), aryHeader)
         Set objTemplate.dict = dict
         strTemp = strTemp & objTemplate.Merge() & vbCrLf
         Set dict = New Dictionary
-    Next r
-    '
-    strTemp = Left(strTemp, Len(strTemp) - 2)
-    '
-    'XMLの生成
-    Dim strHeader As String
-    If Not isBodyOnly Then
+Next r
+'
+strTemp = Left(strTemp, Len(strTemp) - 2)
+'
+'XMLの生成
+Dim strHeader As String
+If Not isBodyOnly Then
         strHeader = "<" & recname & "s>" & vbCrLf _
                 & "${body}" & vbCrLf & "</" & recname & "s>" & vbCrLf
         strTemp = C_String.Indents(strTemp)
-    Else
+Else
         strHeader = "${body}"
-    End If
-    '
-    Call dict.Add("body", strTemp)
-    objTemplate.template = strHeader
-    Set objTemplate.dict = dict
-    ToXml = objTemplate.Merge()
-    '
-    Set C_Array = Nothing
-    Set C_Template = Nothing
-    Set objTemplate = Nothing
-    Set C_String = Nothing
-    Set dict = Nothing
+End If
+'
+Call dict.Add("body", strTemp)
+objTemplate.template = strHeader
+Set objTemplate.dict = dict
+ToXml = objTemplate.Merge()
+'
+Set C_Array = Nothing
+Set C_Template = Nothing
+Set objTemplate = Nothing
+Set C_String = Nothing
+Set dict = Nothing
+''
 End Function
 
 Public Function ToXml2(rng As Range _
@@ -1518,63 +1553,64 @@ Public Function ToXml2(rng As Range _
 '''  *
 '''  *@require C_Template,C_String,C_Array,O_Template
 '''  */
-    Dim C_Array As C_Array
-    Set C_Array = New C_Array
-    Dim C_Template As C_Template
-    Set C_Template = New C_Template
-    Dim objTemplate As O_Template
-    Set objTemplate = New O_Template
-    '
-    Dim C_String As C_String
-    Set C_String = New C_String
-    Dim template As String
-    Dim strTemp As String
-    Dim lngRowStart As Long
-    Dim ary As Variant
-    Dim dict As Dictionary
-    '
-    If IsMissing(aryHeader) Then
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim C_Template As C_Template
+Set C_Template = New C_Template
+Dim objTemplate As O_Template
+Set objTemplate = New O_Template
+'
+Dim C_String As C_String
+Set C_String = New C_String
+Dim template As String
+Dim strTemp As String
+Dim lngRowStart As Long
+Dim ary As Variant
+Dim dict As Dictionary
+'
+If IsMissing(aryHeader) Then
         aryHeader = Me.GetRowArray(rng, 1) '一行目をヘッダとする
         lngRowStart = 2
-    Else
+Else
         lngRowStart = 1
-    End If
-    '
-    'bodyの生成
-    template = C_Template.CreateXml2Template(recname, aryHeader)
-    objTemplate.template = template
-    '
-    Dim r As Long
-    '
-    For r = lngRowStart To rng.rows.Count
+End If
+'
+'bodyの生成
+template = C_Template.CreateXml2Template(recname, aryHeader)
+objTemplate.template = template
+'
+Dim r As Long
+'
+For r = lngRowStart To rng.Rows.Count
         Set dict = C_Array.ArrayToDictionary(Me.GetRowArray(rng, r), aryHeader)
         Set objTemplate.dict = dict
         strTemp = strTemp & objTemplate.Merge() & vbCrLf
         Set dict = New Dictionary
-    Next r
-    '
-    strTemp = Left(strTemp, Len(strTemp) - 2)
-    '
-    'XMLの生成
-    Dim strHeader As String
-    If Not isBodyOnly Then
+Next r
+'
+strTemp = Left(strTemp, Len(strTemp) - 2)
+'
+'XMLの生成
+Dim strHeader As String
+If Not isBodyOnly Then
         strHeader = "<" & recname & "s>" & vbCrLf _
                 & "${body}" & vbCrLf & "</" & recname & "s>" & vbCrLf
         strTemp = C_String.Indents(strTemp)
-    Else
+Else
         strHeader = "${body}"
-    End If
-    '
-    Call dict.Add("body", strTemp)
-    objTemplate.template = strHeader
-    Set objTemplate.dict = dict
-    ToXml2 = objTemplate.Merge()
-    '
-    Set C_Array = Nothing
-    Set C_Template = Nothing
-    Set objTemplate = Nothing
-    Set C_String = Nothing
-    Set dict = Nothing
+End If
+'
+Call dict.Add("body", strTemp)
+objTemplate.template = strHeader
+Set objTemplate.dict = dict
+ToXml2 = objTemplate.Merge()
+'
+Set C_Array = Nothing
+Set C_Template = Nothing
+Set objTemplate = Nothing
+Set C_String = Nothing
+Set dict = Nothing
+''
 End Function
 
 Public Function ToJsonObject(ByRef rng As Range) As Variant
@@ -1583,19 +1619,19 @@ Public Function ToJsonObject(ByRef rng As Range) As Variant
 '''  *@param {Range} rng
 '''  *@return {Variant} ToVariable
 '''  */
-    Dim C_Array As C_Array
-    Set C_Array = New C_Array
-    Dim C_String As C_String
-    Set C_String = New C_String
-    '
-    Dim vntRtn As Variant
-    Dim ary As Variant
-    Dim aryHeader As Variant
-    Dim dict As Dictionary
-    Set dict = New Dictionary
-    Dim i As Long
-    '
-    Select Case Me.TypeRangePattern(rng)
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim C_String As C_String
+Set C_String = New C_String
+'
+Dim vntRtn As Variant
+Dim ary As Variant
+Dim aryHeader As Variant
+Dim dict As Dictionary
+Set dict = New Dictionary
+Dim i As Long
+'
+Select Case Me.TypeRangePattern(rng)
         Case CONS_RANGE_TYPE(RANGE_TYPE.cell)
             If C_String.IsJsonObject(rng.value) Then
                 Set vntRtn = C_Commons.ParseToJson(rng.value)
@@ -1607,13 +1643,13 @@ Public Function ToJsonObject(ByRef rng As Range) As Variant
         Case CONS_RANGE_TYPE(RANGE_TYPE.ARRAY_VERTICAL)
             vntRtn = Me.RangeToArray(rng)
         Case CONS_RANGE_TYPE(RANGE_TYPE.HASHTABLE)         '''FIXME□□"#"でSkip
-            aryHeader = Me.RangeToArray(rng.columns(1))
-            ary = Me.RangeToArray(rng.columns(2))
+            aryHeader = Me.RangeToArray(rng.Columns(1))
+            ary = Me.RangeToArray(rng.Columns(2))
             Set dict = C_Array.ArrayToDictionary(ary, aryHeader)
             Set vntRtn = dict
         Case CONS_RANGE_TYPE(RANGE_TYPE.RECORDROW)         '''FIXME□□"#"でSkip
-            aryHeader = Me.RangeToArray(rng.rows(1))
-            ary = Me.RangeToArray(rng.rows(2))
+            aryHeader = Me.RangeToArray(rng.Rows(1))
+            ary = Me.RangeToArray(rng.Rows(2))
             Set dict = C_Array.ArrayToDictionary(ary, aryHeader)
             Set vntRtn = dict
         Case CONS_RANGE_TYPE(RANGE_TYPE.TABLEDATA)
@@ -1628,17 +1664,18 @@ Public Function ToJsonObject(ByRef rng As Range) As Variant
                 End If
             Next i
             vntRtn = ary
-    End Select
-    '
-    If IsObject(vntRtn) Then
+End Select
+'
+If IsObject(vntRtn) Then
         Set ToJsonObject = vntRtn
-    Else
+Else
         Let ToJsonObject = vntRtn
-    End If
-    '
-    Set C_Array = Nothing
-    Set C_String = Nothing
-    Set dict = Nothing
+End If
+'
+Set C_Array = Nothing
+Set C_String = Nothing
+Set dict = Nothing
+''
 End Function
 
 '/////////////////////////////////////////////////////////////
@@ -1671,7 +1708,7 @@ FINALLY: 'Label
 EXCEPTION: 'Label
     GoSub FINALLY
     Dim desc As String
-    desc = CONS_MODULE_NAME & vbCr & Err.Description
+    desc = CONS_MODULE_NAME & vbCr & Err.description
     Console.error ("Err.Number = " & Err.Number)
     Console.error ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.error ("Err.Description = " & desc)

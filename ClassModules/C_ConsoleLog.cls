@@ -10,9 +10,9 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ''' /**-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-'''  * @file C_Console.cls
-'''  *<br/>Console Class (Common)
-'''  *<br/>Debug.Print on Immediate Window Wrapper
+'''  * @file C_ConsoleLog.cls
+'''  *<br/>Console Log Class (Common)
+'''  *<br/>Debug.Print on Immediate Window Wrapper and output a log file.
 '''  * @version 1.00
 '''  * @since 2020/03/31
 '''  * @author sakai-memoru
@@ -20,17 +20,25 @@ Option Explicit
 '''  */
 '
 ''' /********************************************************
-'''  * @class C_Console
-'''  * @classdesc Console Classe
+'''  * @class C_ConsoleLog
+'''  * @classdesc Console Log Class
 '''  *
 '''  * @require C_Commons (in GlobalVariable.bas)
-'''  * @require If output log file, require O_StringBuilder ,C_File
+'''  * @require O_StringBuilder , C_File
 '''  */
 '
 '//--------------------------------------------------------
 '// Class Property
 '//
-'
+Dim blnFirst_ As Boolean
+Property Let blnFirst(bln)
+    blnFirst_ = bln
+End Property
+Property Get blnFirst()
+    blnFirst = blnFirst_
+End Property
+
+
 '//--------------------------------------------------------
 '// Class Event
 '//
@@ -39,12 +47,16 @@ Private Sub Class_Initialize()
 '''  * @event Class_Initialize
 '''  *<br/>Initialize function when creating class
 '''  */
-On Error Resume Next
-#If LANG_EN = 1 Then
-    Application.VBE.Windows("immediate").Visible = True
-#Else
-    Application.VBE.Windows("イミディエイト").Visible = True ''For ja
-#End If
+    #If LANG_EN = 1 Then
+        Application.VBE.Windows("immediate").Visible = True
+    #Else
+        Application.VBE.Windows("イミディエイト").Visible = True ''For ja
+    #End If
+    Me.blnFirst = True
+    #If LOG_MODE = 1 Then
+        ObjLogBuff.AppendLine ("// Logging Start //--------------------------")
+        ObjLogBuff.AppendLine (Format(Now(), "yyyy-mm-dd hh:mm:ss --"))
+    #End If
 End Sub
 
 Private Sub Class_Terminate()
@@ -52,6 +64,11 @@ Private Sub Class_Terminate()
 '''  *Class_Terminate
 '''  *<br/>Terminate function
 '''  */
+    #If LOG_MODE = 1 Then
+        ObjLogBuff.AppendLine (Format(Now(), "yyyy-mm-dd hh:mm:ss --"))
+        ObjLogBuff.AppendLine ("// Logging End   //--------------------------")
+    #End If
+    Set ObjLogBuff = Nothing
 End Sub
 
 
@@ -68,6 +85,9 @@ Public Sub log(vnt As Variant)
     '#Const DEBUG_MODE = 0
     #If DEBUG_MODE = 1 Then
         Debug.Print "[DEBUG] " & vnt
+        #If LOG_MODE = 1 Then
+            ObjLogBuff.AppendLine ("[DEBUG] " & Format(Now(), "yyyy-mm-dd hh:mm:ss : ") & vnt)
+        #End If
     #End If
 End Sub
 
@@ -78,15 +98,22 @@ Public Sub info(vnt As Variant)
 '''  *@param {variant} vnt
 '''  */
     Debug.Print vnt
+    #If LOG_MODE = 1 Then
+        ObjLogBuff.AppendLine ("[INFO] " & Format(Now(), "yyyy-mm-dd hh:mm:ss : ") & vnt)
+        'Console.Dump (objStringBuff.ToSource)
+    #End If
 End Sub
 
 Public Sub error(vnt As Variant)
 ''' /********************************************************
-'''  * @function error
-'''  *</br>Console.error
+'''  * @function info
+'''  *</br>Console.info
 '''  *@param {variant} vnt
 '''  */
     Debug.Print "<err> " & vnt
+    #If LOG_MODE = 1 Then
+        ObjLogBuff.AppendLine ("<err> " & Format(Now(), "yyyy-mm-dd hh:mm:ss : ") & vnt)
+    #End If
 End Sub
 
 Public Sub dump(ByRef vnt As Variant)
@@ -102,7 +129,40 @@ On Error GoTo EXCEPTION
     Debug.Print C_Commons.ToString(vnt)
     Exit Sub
 EXCEPTION:
-    Err.Raise 21001, CONS_MODULE_NAME & vbCr & Err.description, "????????"
+    Err.Raise 21001, CONS_MODULE_NAME & vbCr & Err.Description, "????????"
+End Sub
+
+Public Function getConsole() As Variant
+''' /********************************************************
+'''  *@function getConsole
+'''  *</br>get buff
+'''  * NO USE
+'''  */
+    Dim CONS_MODULE_NAME As String
+    CONS_MODULE_NAME = "C_Console.getConsole"
+    Dim str As String
+On Error GoTo EXCEPTION
+    str = ObjLogBuff.ToString
+    getConsole = Split(str, vbCrLf)
+    Exit Function
+EXCEPTION:
+    Err.Raise 21001, CONS_MODULE_NAME & vbCr & Err.Description, "????????"
+End Function
+
+Public Sub Clear()
+''' /********************************************************
+'''  *@function Clear
+'''  *</br>Console Window（Immediate Window)のbuf情報を
+'''  *</br>Clear
+'''  *
+'''  */
+    Dim CONS_MODULE_NAME As String
+    CONS_MODULE_NAME = "C_Console.Clear"
+On Error GoTo EXCEPTION
+    Set ObjLogBuff = New O_StringBuilder
+    Exit Sub
+EXCEPTION:
+    Err.Raise 21001, CONS_MODULE_NAME & vbCr & Err.Description, "????????"
 End Sub
 
 '/////////////////////////////////////////////////////////////
@@ -112,7 +172,7 @@ End Sub
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub unitTest()
 ' /************************************
 '  * debug
 '  */
@@ -130,9 +190,9 @@ Public Sub unittest()
     ary = Array("sak", "miss", "sakot", "mit")
     Dim dict2
     Set dict2 = CreateObject("Scripting.Dictionary")
-    dict2.Add "sak", "mits"
-    dict2.Add "sakot", "miss"
-    dict2.Add "ao", "saki"
+    dict2.add "sak", "mits"
+    dict2.add "sakot", "miss"
+    dict2.add "ao", "saki"
     Dim dict  As Object
 '    Set dict = Dictionary(Array("sak", "mit", "sakot", "miss", "ayo", "saki"))
 '    Set dict = Dictionary(Array("sak", "mit", "sakot", "miss", "ayo", "saki", "aka", "gira"))
@@ -166,6 +226,10 @@ On Error GoTo EXCEPTION
 '        Set lstObject = ActiveSheet.ListObjects(1)
 '        Console.Dump lstObject
 '    End If
+    #If LOG_MODE = 1 Then
+        'Console.Dump (objStringBuff.ToSource)
+        ObjLogBuff.flush
+    #End If
     Dim i As Integer
     i = 12 / 0
 
@@ -187,6 +251,6 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.error ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.error ("Err.Number = " & Err.Number)
-    Console.error ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Console.error ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
     
 End Sub

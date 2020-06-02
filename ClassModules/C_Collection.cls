@@ -10,10 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 ''' /**-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 '''  * @file C_Collection.cls
-'''  *<pre>コレクション用ユーティリティ・クラス
+'''  *<pre>Collection Utility
 '''  *</pre>
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  */
 '
@@ -44,10 +46,10 @@ Public Function TypeNameEx(ByRef clts As Variant) As String
 '''  *  @return {String} TypeNameEx
 '''  */
 '
-    Dim strType As String
-    Dim strRtn As String
-    strType = TypeName(clts)
-    Select Case strType
+Dim strType As String
+Dim strRtn As String
+strType = TypeName(clts)
+Select Case strType
         Case "Collection"
             strRtn = "Collection<Item>(idx_or_key)" & " <" & strType & ">"
         Case "Workbooks"
@@ -72,8 +74,9 @@ Public Function TypeNameEx(ByRef clts As Variant) As String
             strRtn = "Collection<Item>(idx).Name" & " <" & strType & ">"
         Case Else
             strRtn = "Unknown"
-    End Select
-    TypeNameEx = strRtn
+End Select
+TypeNameEx = strRtn
+''
 End Function
 
 Public Function VarTypeEx(ByRef clts As Variant) As String
@@ -84,10 +87,10 @@ Public Function VarTypeEx(ByRef clts As Variant) As String
 '''  *  @return {String} TypeNameEx
 '''  */
 '
-    Dim strType As String
-    Dim strRtn As String
-    strType = TypeName(clts)
-    Select Case strType
+Dim strType As String
+Dim strRtn As String
+strType = TypeName(clts)
+Select Case strType
         Case "Collection"
             strRtn = "clts(idx_or_key)"
         Case "Workbooks"
@@ -112,8 +115,9 @@ Public Function VarTypeEx(ByRef clts As Variant) As String
             strRtn = "clts(idx).Name"
         Case Else
             strRtn = "Unknown"
-    End Select
-    VarTypeEx = strRtn
+End Select
+VarTypeEx = strRtn
+''
 End Function
 
 Public Function ToString(ByRef clts As Variant) As String
@@ -170,8 +174,8 @@ Public Function Exists(ByRef clts As Variant, ByVal key As Variant) As Boolean
 ''''  *
 ''''  */
 ''
-    Dim dammy As Variant
-    Dim blnRtn As Boolean
+Dim dammy As Variant
+Dim blnRtn As Boolean
 ''
 On Error Resume Next
     Err.Clear
@@ -188,8 +192,8 @@ On Error Resume Next
             Else
                 blnRtn = False
                 If Err.Number = 438 Then
-                    Err.Description = Err.Description & vbCrLf & "このコレクションにItemプロパティが存在しないため、判別できません"
-                    Console.log Err.Description
+                    Err.description = Err.description & vbCrLf & "このコレクションにItemプロパティが存在しないため、判別できません"
+                    Console.log Err.description
                 End If
             End If
     End If
@@ -207,12 +211,12 @@ Public Sub PutValue(ByRef clts As Collection, ByVal value As Variant, ByVal key 
 '''  *  @note Collection変数をNew で作成した場合に、当該functionの利用を想定
 '''  */
 '
-    If Me.Exists(clts, key) Then
+If Me.Exists(clts, key) Then
         Call clts.Remove(key)
         Call clts.Add(value, key)
-    Else
+Else
         Call clts.Add(value, key)
-    End If
+End If
 End Sub
 
 Public Function ExistsNameOfObject(ByRef clts As Variant, ByVal name As String) As Boolean
@@ -259,6 +263,7 @@ Next cl
 ''
 Set FilterNameMatchOfObject = cltRtns
 Set cltRtns = Nothing
+''
 End Function
 
 Public Function FilterNameMatchPrefixOfObject(ByRef clts As Variant, ByVal prefix As String) As Collection
@@ -281,6 +286,7 @@ For Each cl In clts
 Next cl
 Set FilterNameMatchPrefixOfObject = cltRtns
 Set cltRtns = Nothing
+''
 End Function
 
 Public Function ContainsNameOfObject(ByRef clts As Variant, ByVal str As String) As Boolean
@@ -309,6 +315,7 @@ End If
 ''
 ContainsNameOfObject = blnRtn
 Set cltsTemp = Nothing
+''
 End Function
 
 Public Function ContainsNameMatchPrefixOfObject(ByRef clts As Variant, ByVal str As String) As Boolean
@@ -337,6 +344,7 @@ End If
 ''
 ContainsNameMatchPrefixOfObject = blnRtn
 Set cltsTemp = Nothing
+''
 End Function
 
 Public Function ToArray(ByRef clts As Collection) As Variant
@@ -418,6 +426,7 @@ If cnt > 0 Then
 Else
     ToArrayNameOfObject = ""
 End If
+''
 End Function
 
 Public Function ToDictionary(ByVal clts As Variant, ByRef aryHeader As Variant) As Dictionary
@@ -620,5 +629,5 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
 End Sub

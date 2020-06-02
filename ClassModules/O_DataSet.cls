@@ -13,6 +13,8 @@ Option Explicit
 '''  * Common Data Set Object for this Framework
 '''  * @version 1.00
 '''  * @since 2020/04/01
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  * @Require C_String,C_Collection,C_Range
 '''  */
@@ -227,7 +229,7 @@ Set PutValue = Me
 ''
 End Function
 
-Public Function PutByKeyword(ByVal sheetname As Variant _
+Public Function PutByKeyword(ByVal sheetName As Variant _
                     , ByVal searchWord As Variant _
                     , Optional ByVal key As Variant _
                     , Optional Row As Long = 0 _
@@ -246,7 +248,7 @@ Set C_String = New C_String
 Dim rngFindResult As Range
 Dim rngFindFirst  As Range
 Dim rngUsed As Range
-Set rngUsed = ThisWorkbook.Worksheets(sheetname).UsedRange
+Set rngUsed = ThisWorkbook.Worksheets(sheetName).UsedRange
 Set rngFindResult = rngUsed.Find(What:=searchWord, Lookat:=xlWhole)
 Set rngFindFirst = rngFindResult
 Dim strTemp As String
@@ -286,7 +288,7 @@ Set PutByKeyword = Me
 ''
 End Function
 
-Public Function PutByName(ByVal sheetname As Variant _
+Public Function PutByName(ByVal sheetName As Variant _
                     , ByVal name As Variant _
                     , Optional ByVal key As Variant _
                     , Optional Row As Long = 0 _
@@ -345,7 +347,7 @@ End Function
 
 
 Public Function PutByCurrentTable( _
-                      ByVal sheetname As Variant _
+                      ByVal sheetName As Variant _
                     , ByVal searchWord As Variant _
                     , Optional ByVal key As Variant _
                     , Optional Row As Long = 0 _
@@ -360,7 +362,7 @@ If IsMissing(key) Then
 End If
 Dim rng As Range
 Dim ary() As Variant
-Set rng = C_Range.GetCurrentRegionByKeyword(searchWord, sheetname, Row, column)
+Set rng = C_Range.GetCurrentRegionByKeyword(searchWord, sheetName, Row, column)
 Dim aryary() As Variant
 Let aryary = C_Array.FilterRowForArrayArray(rng.value, 1, 2)
 Let ary = C_Array.ArrayArrayToArrayDictionary(aryary)

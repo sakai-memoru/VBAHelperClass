@@ -9,11 +9,21 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-
+''' /**-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+'''  * @file C_ListObject.cls
+'''  *<pre>Table(ListObject)用ユーティリティ・クラス
+'''  *</pre>
+'''  * @version 1.00
+'''  * @since 2020/04/30
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
+'''  *
+'''  */
+'
 '//--------------------------------------------------------
 '// Class Method
 '//
-Public Function Exists(ByVal sheetname As String, ByVal tblName As String) As Boolean
+Public Function Exists(ByVal sheetName As String, ByVal tblName As String) As Boolean
 '''' /********************************************************
 ''''  *@function Exists
 ''''  *<pre>
@@ -29,7 +39,7 @@ Public Function Exists(ByVal sheetname As String, ByVal tblName As String) As Bo
     Dim blnRtn As Boolean
 On Error Resume Next
     blnRtn = False
-    Set clts = ActiveWorkbook.Worksheets(sheetname).ListObjects
+    Set clts = ActiveWorkbook.Worksheets(sheetName).ListObjects
     If Err.Number <> 0 Then
         Err.Clear
         GoTo FINALLY

@@ -14,6 +14,8 @@ Option Explicit
 '''  *</pre>
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  */
 '
 ''' /********************************************************
@@ -209,7 +211,7 @@ FINALLY:
     ' Object開放
     If Err.Number <> 0 Then
         Console.info TypeName(value)
-        Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+        Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     End If
     Err.Clear
     Set clt = Nothing
@@ -396,8 +398,8 @@ EXCEPTION:
     GoSub FINALLY
     Console.info ("Err.Number = " & Err.Number)
     Console.info ("Err.Source = " & Err.source)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     Exit Function
 End Function
 
@@ -434,8 +436,8 @@ EXCEPTION:
     GoSub FINALLY
     Console.info ("Err.Number = " & Err.Number)
     Console.info ("Err.Source = " & Err.source)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     Exit Function
 End Function
 
@@ -478,8 +480,8 @@ EXCEPTION:
     GoSub FINALLY
     Console.info ("Err.Number = " & Err.Number)
     Console.info ("Err.Source = " & Err.source)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     Exit Function
 End Function
 
@@ -522,8 +524,8 @@ EXCEPTION:
     GoSub FINALLY
     Console.info ("Err.Number = " & Err.Number)
     Console.info ("Err.Source = " & Err.source)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     Exit Function
 End Function
 
@@ -639,7 +641,7 @@ Public Function ShowWorksheets(value)
         ReDim Preserve ary(i)
         Set ary(i) = CreateObject("Scripting.Dictionary")
         Call ary(i).Add("Name", sht.name)
-        Call ary(i).Add("Index", sht.index)
+        Call ary(i).Add("Index", sht.Index)
     Next sht
     ShowWorksheets = "<Worksheets> " & VBA.Right(Me.ToString(ary), Len(Me.ToString(ary)) - 8)
 End Function
@@ -653,7 +655,7 @@ Public Function ShowWorksheet(value)
     Dim dict As Object
     Set dict = CreateObject("Scripting.Dictionary")
     Call dict.Add("Name", value.name)
-    Call dict.Add("Index", value.index)
+    Call dict.Add("Index", value.Index)
     Call dict.Add("UsedRange", value.UsedRange.Address)
     Call dict.Add("Parent", value.Parent.name)
     Call dict.Add("CustomProperties", value.CustomProperties)
@@ -698,9 +700,9 @@ Public Function ShowShape(value)
     Call dict.Add("SheetName", value.Parent.name)
     Call dict.Add("Text", value.TextFrame.Characters.Text)
     Call dict.Add("Type", value.Type)
-    Call dict.Add("Id", value.ID)
-    Call dict.Add("TopLeftCell", value.TopLeftCell.Address)
-    Call dict.Add("BottomRightCell", value.BottomRightCell.Address)
+    Call dict.Add("Id", value.id)
+    Call dict.Add("TopLeftCell", value.topLeftCell.Address)
+    Call dict.Add("BottomRightCell", value.bottomRightCell.Address)
     Call dict.Add("FillForeColor", Me.RGBToHexStr(value.Fill.ForeColor.RGB))
     Call dict.Add("FillBackColor", Me.RGBToHexStr(value.Fill.BackColor.RGB))
     Call dict.Add("Top", value.Top)
@@ -751,9 +753,9 @@ On Error GoTo EXCEPTION
     End If
     ''
     Dim rowCnt As Long
-    rowCnt = value.rows.Count
+    rowCnt = value.Rows.Count
     Dim colCnt As Long
-    colCnt = value.columns.Count
+    colCnt = value.Columns.Count
     '
     ''a Cell
     If rowCnt = 1 And colCnt = 1 Then
@@ -777,8 +779,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Number = " & Err.Number)
     Console.info ("Err.Source = " & Err.source)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     Exit Function
     '
 End Function
@@ -802,9 +804,9 @@ On Error GoTo EXCEPTION
     Dim ary As Variant
     '
     Dim rowCnt As Long
-    rowCnt = rng.rows.Count
+    rowCnt = rng.Rows.Count
     Dim colCnt As Long
-    colCnt = rng.columns.Count
+    colCnt = rng.Columns.Count
     '
     ReDim jagary(rowCnt - 1)
     ReDim ary(colCnt - 1)
@@ -829,8 +831,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Number = " & Err.Number)
     Console.info ("Err.Source = " & Err.source)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     Exit Function
     '
 End Function
@@ -896,8 +898,8 @@ EXCEPTION:   'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
 End Function
 
 Public Function ShowArrayArray(aryary As Variant) As String
@@ -936,8 +938,8 @@ EXCEPTION:   ''Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
 End Function
 
 '-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1084,7 +1086,7 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     '
 End Function
 
@@ -1249,21 +1251,21 @@ Public Sub unittest()
     ary1 = Me.ParseToArray(str1)
     ary2 = Me.ParseToArray(str2, " ")
 '    ary3 = Me.parseToArray(str3, vbLf)
-    Console.Dump ary1
-    Console.Dump ary2
-    Console.Dump ary3
+    Console.dump ary1
+    Console.dump ary2
+    Console.dump ary3
     '
     Dim strr1 As String
     Dim obj1 As Variant
     strr1 = "{saka : mits , 　aki : miss , sak2 : ao }"
     Set obj1 = Me.ParseToDictionary(strr1)
-    Console.Dump obj1
+    Console.dump obj1
     '
     Dim strr2 As String
     Dim obj2 As Variant
     strr2 = "{""sak1"" : mit ,     　""sass ai"" : miss , ""sak2"" : ao ""}"
     Set obj2 = Me.ParseToDictionary(strr2)
-    Console.Dump obj2
+    Console.dump obj2
     '
     Dim strr3 As String
     Dim obj3 As Variant
@@ -1273,14 +1275,14 @@ Public Sub unittest()
     strr3 = C_Commons.ToString(dict)
     '
     Set obj3 = Me.ParseToDictionary(strr3) ''両方に"があるものは対応可能
-    Console.Dump obj3
+    Console.dump obj3
     '
-    Console.Dump Workbooks
-    Console.Dump ThisWorkbook.Worksheets
-    Console.Dump ThisWorkbook.Names
-    Console.Dump ActiveSheet.ListObjects
+    Console.dump Workbooks
+    Console.dump ThisWorkbook.Worksheets
+    Console.dump ThisWorkbook.Names
+    Console.dump ActiveSheet.ListObjects
     '
-    Console.Dump Me.ParseToString("saksak")
+    Console.dump Me.ParseToString("saksak")
     '
 ''''RGBToHexStr,HexStrToRGB
 'Dim lng As Long

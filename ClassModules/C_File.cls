@@ -14,8 +14,9 @@ Option Explicit
 '''  * @version 1.00
 '''  * @since 2020/03/31
 '''  *
-'''  * Copyright (c) 2020 sakai.memoru
-'''  * Released under the MIT license
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
+'''  */
 '
 ''' /********************************************************
 '''  * @class C_File
@@ -94,8 +95,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -180,8 +181,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -214,8 +215,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -284,8 +285,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -321,8 +322,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -359,8 +360,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -428,8 +429,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -559,8 +560,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -594,8 +595,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -631,8 +632,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -668,8 +669,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -704,8 +705,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -740,8 +741,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -779,8 +780,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -818,8 +819,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -861,8 +862,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Sub
 
@@ -912,8 +913,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -951,8 +952,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -990,8 +991,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     '
 End Function
 
@@ -1352,7 +1353,7 @@ EXCEPTION: 'Label
     Console.log ("// ================== error detail..")
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     Console.log ("")
     
 End Sub

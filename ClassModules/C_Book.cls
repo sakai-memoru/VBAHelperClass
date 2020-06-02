@@ -14,6 +14,8 @@ Option Explicit
 '''  *</pre>
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  */
 '
@@ -46,20 +48,21 @@ GetXlsxes = C_File.GetFilesByWildcard(strPath, strExt)
 ''
 End Function
 
-Public Sub OpenBook(ByVal filepath As String, Optional updateLinks As Boolean = False, Optional readOnly As Boolean = True)
+Public Sub OpenBook(ByVal filePath As String, Optional updateLinks As Boolean = False, Optional readOnly As Boolean = True)
 '''/****************************************
 ''' * @function openBook
 ''' * <br/> open a workbook file
 ''' * <br/>
 ''' * @param {Variant}filePath
 ''' */
-Const CONS_MODULE_NAME As String = "C_Book.openBook"
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "C_Book.openBook"
 Dim tempFilename As String
 Dim bk As Workbook
 ''
 On Error GoTo EXCEPTION
     ' if it exists
-    tempFilename = Dir(filepath)
+    tempFilename = Dir(filePath)
     If tempFilename = "" Then
         Call Err.Raise(12001, CONS_MODULE_NAME, CONS_MODULE_NAME & vbCr & "File Not Found", Err.HelpFile, Err.HelpContext)
     End If
@@ -69,7 +72,7 @@ On Error GoTo EXCEPTION
             Call Err.Raise(12001, CONS_MODULE_NAME, CONS_MODULE_NAME & vbCr & "The same file already has been opened ", Err.HelpFile, Err.HelpContext)
         End If
     Next bk
-    Workbooks.Open filepath, updateLinks, readOnly
+    Workbooks.Open filePath, updateLinks, readOnly
     '// release and return
     GoSub FINALLY
     Exit Sub
@@ -83,19 +86,20 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
 ''
 End Sub
 
-Public Function CloseBook(ByVal filepath As String, Optional saveChanges As Boolean = True)
+Public Function CloseBook(ByVal filePath As String, Optional saveChanges As Boolean = True)
 '''/****************************************
 ''' * @function closeBook
 ''' * <br/> close a workbook
 ''' * <br/>
 ''' * @param {Variant}filePath
 ''' */
-Const CONS_MODULE_NAME As String = "C_Book.closeBook"
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "C_Book.closeBook"
 Dim C_File As C_File
 Set C_File = New C_File
 Dim C_Collecton As C_Collection
@@ -107,7 +111,7 @@ On Error GoTo EXCEPTION
     ''If C_Collection.ExistsNameOfObject(clt, C_File.GetFileName(filepath)) Then
     ''    Workbooks(GetBookName(filepath)).Close saveChanges:=saveChanges
     ''End If
-    Workbooks(GetBookName(filepath)).Close saveChanges:=saveChanges
+    Workbooks(GetBookName(filePath)).Close saveChanges:=saveChanges
     '//release and return
     GoSub FINALLY
     Exit Function
@@ -121,8 +125,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
 ''
 End Function
 
@@ -432,8 +436,8 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Number = " & Err.Number)
-    Console.log ("Err.Description = " & Err.Description)
-    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.Description, Err.HelpFile, Err.HelpContext)
+    Console.log ("Err.Description = " & Err.description)
+    Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
 '''****************************************
 End Function
 
@@ -465,7 +469,14 @@ Set bkDest = Nothing
 '''****************************************
 End Function
 
-Public Function DeleteSheet(ByVal bookName As String, ByVal sheetname)
+Public Function MergeBook(ByVal sourceBookpath As String, ByVal destinationBookpath As String)
+'''/****************************************
+''' * @function MergeBook
+''' */
+'' FIXME
+End Function
+
+Public Function DeleteSheet(ByVal bookName As String, ByVal sheetName)
 '''/****************************************
 ''' * @function deleteSheet
 ''' * <br/>対象シートを、削除する。
@@ -473,7 +484,7 @@ Public Function DeleteSheet(ByVal bookName As String, ByVal sheetname)
 ''' * @param {Variant}sheetname ByVal
 ''' */
 Application.DisplayAlerts = False
-Workbooks(bookName).Worksheets(sheetname).Delete
+Workbooks(bookName).Worksheets(sheetName).Delete
 '
 Application.DisplayAlerts = True
 '''****************************************
@@ -539,7 +550,8 @@ Public Sub unittest()
 ''
 '//--------------------------------------
 '//variables
-Const CONS_MODULE_NAME As String = "C_Book.unitTest"
+Dim CONS_MODULE_NAME As String
+Let CONS_MODULE_NAME = "C_Book.unitTest"
 Dim dict As Dictionary
 '
 On Error GoTo EXCEPTION
@@ -552,13 +564,13 @@ On Error GoTo EXCEPTION
     dict.Add "sakamoto", "misa"
     dict.Add "kida", "keisuke"
     
-    Console.Dump dict
+    Console.dump dict
     
     Call Me.SetBookProperties(ThisWorkbook.name, dict)
     
     Set dict = Me.GetBookProperties(ThisWorkbook.name)
     
-    Console.Dump dict
+    Console.dump dict
     
     GoSub FINALLY
     Exit Sub
@@ -575,7 +587,7 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     
 End Sub
 

@@ -13,11 +13,14 @@ Option Explicit
 '''  *<br/>String Utility Class
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  */
 '
 ''' /********************************************************
 '''  * @class C_String
 '''  * @classdesc String Utility
+'''  * @require C_Commons, C_Array
 '''  */
 '
 '//--------------------------------------------------------
@@ -39,7 +42,7 @@ Private Enum RE_PTN
     ASCII2 = 9
 End Enum
 
-Private aryPTN As Variant
+Private aryPATTERN As Variant
 
 
 '//--------------------------------------------------------
@@ -51,28 +54,28 @@ Private Sub Class_Initialize()
 '''  *<br/>Initialize 関数
 '''  *<br/>Class生成時に、実行される。
 '''  */
-    Set objRegExp_ = CreateObject("VBScript.RegExp")
-    Dim RE_PTN_DIGIT As String
-    RE_PTN_DIGIT = "^[0-9]+$"
-    Dim RE_PTN_NUMBER As String
-    RE_PTN_NUMBER = "^[-]?[0-9]+(\.[0-9]+)?$"
-    Dim RE_PTN_ALPHA As String
-    RE_PTN_ALPHA = "^[a-zA-Z]+$"
-    Dim RE_PTN_ASCII As String
-    RE_PTN_ASCII = "^[a-zA-Z0-9]+$"
-    Dim RE_PTN_KANA As String
-    RE_PTN_KANA = "^[ァ-ン]+$"
-    Dim RE_PTN_MAIL As String
-    RE_PTN_MAIL = "^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$"
-    Dim RE_PTN_URL As String
-    RE_PTN_URL = "^(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)$"
-    Dim RE_PTN_POSTNO As String
-    RE_PTN_POSTNO = "^\d{3}\-\d{4}$"
-    Dim RE_PTN_TEL As String
-    RE_PTN_TEL = "^[0-9-]{6,9}$|^[0-9-]{12}$"
-    'Dim RE_PTN_ASCII2 As String
-    'RE_PTN_ASCII2= "^[a-zA-Z0-9]+$"
-    aryPTN = Array(RE_PTN_DIGIT _
+Set objRegExp_ = CreateObject("VBScript.RegExp")
+Dim RE_PTN_DIGIT As String
+RE_PTN_DIGIT = "^[0-9]+$"
+Dim RE_PTN_NUMBER As String
+RE_PTN_NUMBER = "^[-]?[0-9]+(\.[0-9]+)?$"
+Dim RE_PTN_ALPHA As String
+RE_PTN_ALPHA = "^[a-zA-Z]+$"
+Dim RE_PTN_ASCII As String
+RE_PTN_ASCII = "^[a-zA-Z0-9]+$"
+Dim RE_PTN_KANA As String
+RE_PTN_KANA = "^[ァ-ン]+$"
+Dim RE_PTN_MAIL As String
+RE_PTN_MAIL = "^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$"
+Dim RE_PTN_URL As String
+RE_PTN_URL = "^(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)$"
+Dim RE_PTN_POSTNO As String
+RE_PTN_POSTNO = "^\d{3}\-\d{4}$"
+Dim RE_PTN_TEL As String
+RE_PTN_TEL = "^[0-9-]{6,9}$|^[0-9-]{12}$"
+'Dim RE_PTN_ASCII2 As String
+'RE_PTN_ASCII2= "^[a-zA-Z0-9]+$"
+aryPATTERN = Array(RE_PTN_DIGIT _
                 , RE_PTN_NUMBER _
                 , RE_PTN_ALPHA _
                 , RE_PTN_ASCII _
@@ -90,7 +93,7 @@ Private Sub Class_Terminate()
 '''  *<br/>Terminate 関数
 '''  *<br/>Class廃棄時(Set Nothing)に、実行される。
 '''  */
-    Set objRegExp_ = Nothing
+Set objRegExp_ = Nothing
 End Sub
 
 
@@ -106,25 +109,25 @@ Public Function Contain(ByVal str As String, ByVal strSet As String, Optional ig
 '''  *　@param {string} strSet 文字集合
 '''  *　@return {boolean} 含むか否か {True :含む,False:含まない}
 '''  */
-    Dim blnRet As Boolean
-    blnRet = False
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
+Dim blnRet As Boolean
+blnRet = False
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = strSet
-    objRegExp_.ignorecase = ignorecase
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = strSet
+objRegExp_.ignorecase = ignorecase
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             blnRet = True
         End If
-    Next i
+Next i
     
-    Contain = blnRet
+Contain = blnRet
 End Function
 
 Public Function ContainWord(ByVal strSentence As String, ByVal strWord As String, Optional ignorecase As Boolean = False) As Boolean
@@ -136,12 +139,12 @@ Public Function ContainWord(ByVal strSentence As String, ByVal strWord As String
 '''  *　@param {string} strWord 文字列
 '''  *　@return {boolean} 含むか否か {True :含む,False:含まない}
 '''  */
-    Dim blnRet As Boolean
-    blnRet = False
-    objRegExp_.pattern = strWord
-    objRegExp_.ignorecase = ignorecase
-    objRegExp_.Global = True
-    ContainWord = objRegExp_.Test(strSentence)
+Dim blnRet As Boolean
+blnRet = False
+objRegExp_.pattern = strWord
+objRegExp_.ignorecase = ignorecase
+objRegExp_.Global = True
+ContainWord = objRegExp_.Test(strSentence)
 End Function
 
 Public Function ContainRegExp(ByVal strSentence As String _
@@ -155,12 +158,12 @@ Public Function ContainRegExp(ByVal strSentence As String _
 '''  *　@param {string} pattern RegPattern
 '''  *　@return {boolean} 含むか否か {True :含む,False:含まない}
 '''  */
-    Dim blnRet As Boolean
-    blnRet = False
-    objRegExp_.pattern = pattern
-    objRegExp_.ignorecase = ignorecase
-    objRegExp_.Global = True
-    ContainRegExp = objRegExp_.Test(strSentence)
+Dim blnRet As Boolean
+blnRet = False
+objRegExp_.pattern = pattern
+objRegExp_.ignorecase = ignorecase
+objRegExp_.Global = True
+ContainRegExp = objRegExp_.Test(strSentence)
 End Function
 
 Public Function Test(ByVal strSentence As String _
@@ -203,28 +206,28 @@ Public Function IsAlphanumeric(ByVal str As String) As Boolean
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    blnRet = True
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = "^[a-zA-Z0-9]+$"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = "^[a-zA-Z0-9]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             '
         Else
             blnRet = False
         End If
-    Next i
-    
-    IsAlphanumeric = blnRet
-
+Next i
+'
+IsAlphanumeric = blnRet
+''
 End Function
 
 Public Function IsAlphanumericSpace(ByVal str As String) As Boolean
@@ -235,27 +238,27 @@ Public Function IsAlphanumericSpace(ByVal str As String) As Boolean
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    blnRet = True
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = "^[a-zA-Z0-9 ,\.]+$"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = "^[a-zA-Z0-9 ,\.]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             '
         Else
             blnRet = False
         End If
-    Next i
-    IsAlphanumericSpace = blnRet
-
+Next i
+IsAlphanumericSpace = blnRet
+''
 End Function
 
 Public Function IsAlphaSpace(ByVal str As String) As Boolean
@@ -266,28 +269,143 @@ Public Function IsAlphaSpace(ByVal str As String) As Boolean
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    blnRet = True
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = "^[a-zA-Z ,\.]+$"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = "^[a-zA-Z ,\.]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             '
         Else
             blnRet = False
         End If
-    Next i
-    IsAlphaSpace = blnRet
-
+Next i
+IsAlphaSpace = blnRet
+''
 End Function
+
+Public Function IsEmail(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+Let IsEmail = Me.Test(vnt, aryPATTERN(RE_PTN.MAIL))
+End Function
+
+Public Function IsUrl(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+Let IsUrl = Me.Test(vnt, aryPATTERN(RE_PTN.URL))
+End Function
+
+Public Function IsTel(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+Let IsTel = Me.Test(vnt, aryPATTERN(RE_PTN.TEL))
+End Function
+
+Public Function IsPostCode(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+Let IsPostCode = Me.Test(vnt, aryPATTERN(RE_PTN.POSTNO))
+End Function
+
+Public Function IsKana(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+Let IsKana = Me.Test(vnt, aryPATTERN(RE_PTN.KANA))
+End Function
+
+Public Function IsAddress(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+
+Dim ptn As String
+Let ptn = "^[a-zA-Z]{1,3}[0-9]{1,7}$"
+Dim bln As Boolean
+Let bln = Me.Test(vnt, ptn)
+On Error Resume Next
+Dim rng As Range
+If bln Then
+    Set rng = Range(vnt)
+End If
+If Err.Number <> 0 Then
+    Let bln = False
+End If
+Let IsAddress = bln
+End Function
+
+
+Public Function IsZenkaku(chr As String) As Boolean
+''' /********************************************************
+'''  *@function Is2Byte
+'''  *<pre>２バイト文字を含むか否かを判定
+'''  *</pre>
+'''  *　@param {String} chr 対象文字
+'''  *　@return {Boolean} Is2Byte
+'''  */
+IsZenkaku = Not (Len(chr) = Me.Length(chr))
+End Function
+
+Public Function IsNumber(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsNumber
+'''  * FIXME
+'''  */
+''
+Dim blnRtn As Boolean
+If (VBA.VarType(vnt) = VBA.vbInteger) Then
+    Let blnRtn = True
+ElseIf (VBA.VarType(vnt) = VBA.vbSingle) Then
+    Let blnRtn = True
+ElseIf (VBA.VarType(vnt) = VBA.vbLong) Then
+    Let blnRtn = True
+ElseIf (VBA.VarType(vnt) = VBA.vbDouble) Then
+    Let blnRtn = True
+ElseIf (VBA.VarType(vnt) = VBA.vbCurrency) Then
+    Let blnRtn = True
+ElseIf (VBA.VarType(vnt) = VBA.vbVariant) Then
+    If (Me.IsNumeric2(vnt)) Then
+        Let blnRtn = Me.Test(vnt, aryPATTERN(RE_PTN.num))
+    Else
+        Let blnRtn = False
+    End If
+ElseIf (VBA.VarType(vnt) = VBA.vbString) Then
+    If (Me.IsNumeric2(vnt)) Then
+        Let blnRtn = Me.Test(vnt, aryPATTERN(RE_PTN.num))
+    Else
+        Let blnRtn = False
+    End If
+Else
+    Let blnRtn = False
+End If
+Let IsNumber = blnRtn
+End Function
+
 
 Public Function IsNumeric(ByVal str As String) As Boolean
 ''' /********************************************************
@@ -297,58 +415,89 @@ Public Function IsNumeric(ByVal str As String) As Boolean
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    blnRet = True
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = "^[0123456789]+$"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = "^[0123456789]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             '
         Else
             blnRet = False
         End If
-    Next i
-    IsNumeric = blnRet
-
+Next i
+IsNumeric = blnRet
+''
 End Function
 
-Public Function IsNumericSpace(ByVal str As String) As Boolean
+Public Function IsNumeric2(ByVal str As String) As Boolean
 ''' /********************************************************
-'''  * @function isNumericSpace
+'''  * @function isNumeric
 '''  *</br>対象がアルファベットもしくは数字で構成されているか
 '''  *</br>否かを判定する。
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    blnRet = True
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
-        aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
+    aryPTN(i - 1) = Mid$(str, i, 1)
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = "^[0123456789 ]+$"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = "^[-0123456789.]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
+    If objRegExp_.Test(aryPTN(i - 1)) Then
+        '
+    Else
+        blnRet = False
+    End If
+Next i
+IsNumeric2 = blnRet
+''
+End Function
+
+Public Function IsNumericSpace(ByVal str As String) As Boolean
+''' /********************************************************
+'''  * @function isNumericSpace
+'''  *</br>対象が数字もしくは空白で構成されているか
+'''  *</br>否かを判定する。
+'''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
+'''  *　@return {boolean}{ True : OK, False : NG }
+'''  */
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
+        aryPTN(i - 1) = Mid$(str, i, 1)
+Next i
+'    Console.dump (aryPTN)
+objRegExp_.pattern = "^[0123456789 ]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             '
         Else
             blnRet = False
         End If
-    Next i
-    IsNumericSpace = blnRet
-
+Next i
+IsNumericSpace = blnRet
+''
 End Function
 
 Public Function IsAlpha(ByVal str As String) As Boolean
@@ -359,44 +508,61 @@ Public Function IsAlpha(ByVal str As String) As Boolean
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    blnRet = True
-    Dim aryPTN() As String
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Integer
-    For i = 1 To Len(str)
+Dim blnRet As Boolean
+blnRet = True
+Dim aryPTN() As String
+ReDim aryPTN(Len(str) - 1)
+Dim i As Integer
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
-    Next i
+Next i
 '    Console.dump (aryPTN)
-    objRegExp_.pattern = "^[a-zA-Z]+$"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    For i = 1 To Len(str)
+objRegExp_.pattern = "^[a-zA-Z]+$"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+For i = 1 To Len(str)
         If objRegExp_.Test(aryPTN(i - 1)) Then
             '
         Else
             blnRet = False
         End If
-    Next i
-    IsAlpha = blnRet
+Next i
+IsAlpha = blnRet
+End Function
+
+Public Function IsString(ByVal vnt As Variant) As Boolean
+''' /********************************************************
+'''  *@function IsString
+'''  */
+Dim blnRtn As Boolean
+If (VBA.VarType(vnt) = VBA.vbString) Then
+    Let blnRtn = True
+ElseIf (VBA.VarType(vnt) = VBA.vbVariant) Then
+    Let blnRtn = Not Me.IsNumeric(vnt)
+Else
+    Let blnRtn = False
+End If
+Let IsString = blnRtn
 End Function
 
 Public Function IsJsonObject(ByVal str As String) As Boolean
 ''' /********************************************************
 '''  *@function isJsonObject
 '''  *<pre>文字列が、JSONのObject形式かを判定する。
-'''  *※開始と終了が、{}で括られている場合、Object形式と判定する。
+'''  *※開始と終了が、{} or []で括られている場合、Object形式と判定する。
 '''  *</pre>
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
 '''  */
-    Dim blnRet As Boolean
-    If Me.StartWith(Me.TrimSpace(str)) = "{" And Me.EndWith(Me.TrimSpace(str)) = "}" Then
+Dim blnRet As Boolean
+If Me.StartWith(Me.TrimSpace(str)) = "{" And Me.EndWith(Me.TrimSpace(str)) = "}" Then
+    blnRet = True
+ElseIf Me.StartWith(Me.TrimSpace(str)) = "[" And Me.EndWith(Me.TrimSpace(str)) = "]" Then
         blnRet = True
-    Else
+Else
         blnRet = False
-    End If
-    IsJsonObject = blnRet
+End If
+IsJsonObject = blnRet
 End Function
 
 Public Function SqueezeSpace(ByVal str As String) As String
@@ -407,16 +573,16 @@ Public Function SqueezeSpace(ByVal str As String) As String
 '''  *　@param {string} str 変換したい文字列
 '''  *　@return {String} 変換後の文字列
 '''  */
-    Dim strTemp As String
-    objRegExp_.pattern = "[　\t]"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    strTemp = objRegExp_.Replace(str, " ")
-    
-    objRegExp_.pattern = "\s{2,}"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    SqueezeSpace = objRegExp_.Replace(strTemp, " ")
+Dim strTemp As String
+objRegExp_.pattern = "[　\t]"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+strTemp = objRegExp_.Replace(str, " ")
+
+objRegExp_.pattern = "\s{2,}"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+SqueezeSpace = objRegExp_.Replace(strTemp, " ")
 End Function
 
 Public Function DeleteSpace(ByVal str As String) As String
@@ -428,10 +594,10 @@ Public Function DeleteSpace(ByVal str As String) As String
 '''  *　@param {string} str 変換したい文字列
 '''  *　@return {String} 変換後の文字列
 '''  */
-    objRegExp_.pattern = "[ 　]"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    DeleteSpace = objRegExp_.Replace(str, "")
+objRegExp_.pattern = "[ 　]"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+DeleteSpace = objRegExp_.Replace(str, "")
 End Function
 
 Public Function DeleteWhiteSpace(ByVal str As String) As String
@@ -443,13 +609,13 @@ Public Function DeleteWhiteSpace(ByVal str As String) As String
 '''  *　@param {string} str 変換したい文字列
 '''  *　@return {String} 変換後の文字列
 '''  */
-    Dim temp As String
-    objRegExp_.pattern = "\s+"
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    temp = objRegExp_.Replace(str, "")
-    objRegExp_.pattern = "　"
-    DeleteWhiteSpace = objRegExp_.Replace(temp, "")
+Dim temp As String
+objRegExp_.pattern = "\s+"
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+temp = objRegExp_.Replace(str, "")
+objRegExp_.pattern = "　"
+DeleteWhiteSpace = objRegExp_.Replace(temp, "")
 End Function
 
 Public Function Strip(ByVal str As String, Optional strDel As String = vbLf) As String
@@ -461,13 +627,12 @@ Public Function Strip(ByVal str As String, Optional strDel As String = vbLf) As 
 '''  *　@param {string} strDel 削除したい文字　Default=vbLf
 '''  *　@return {String} 変換後の文字列
 '''  */
-    Dim strBuff As String
-    strBuff = strDel & "+"
-    objRegExp_.pattern = strBuff
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    
-    Strip = objRegExp_.Replace(str, "")
+Dim strBuff As String
+strBuff = strDel & "+"
+objRegExp_.pattern = strBuff
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+Strip = objRegExp_.Replace(str, "")
 End Function
 
 Public Function StripEx(ByVal str As String, regpattern As String) As String
@@ -479,12 +644,11 @@ Public Function StripEx(ByVal str As String, regpattern As String) As String
 '''  *　@param {string} strSet 削除したい正規表現の文字セット（例：[ABC]）
 '''  *　@return {String} 変換後の文字列
 '''  */
-    Dim strBuff As String
-    objRegExp_.pattern = regpattern
-    objRegExp_.ignorecase = False
-    objRegExp_.Global = True
-    
-    StripEx = objRegExp_.Replace(str, "")
+Dim strBuff As String
+objRegExp_.pattern = regpattern
+objRegExp_.ignorecase = False
+objRegExp_.Global = True
+StripEx = objRegExp_.Replace(str, "")
 End Function
 
 Public Function StripCrLf(ByVal str As String) As String
@@ -496,7 +660,15 @@ Public Function StripCrLf(ByVal str As String) As String
 '''  *　@param {string} strSet 削除したい正規表現の文字セット（例：[ABC]）
 '''  *　@return {String} 変換後の文字列
 '''  */
-    StripCrLf = Me.StripEx(str, "[\n\r\f]")
+StripCrLf = Me.StripEx(str, "[\n\r\f]")
+End Function
+
+Public Function Clean(ByVal str As String) As String
+''' /********************************************************
+'''  * @function Clean
+'''  * </br> Removes all nonprintable characters from text.
+'''  */
+Clean = WorksheetFunction.Clean(str)
 End Function
 
 Public Function RandamString(Optional intLength As Integer = 8, Optional blnIncUpper As Boolean = True, Optional blnIncSign As Boolean = True)
@@ -509,28 +681,32 @@ Public Function RandamString(Optional intLength As Integer = 8, Optional blnIncU
 '''  *　@param {boolean} blnIncSign 【Optional】記号文字を含むか否か　規定値:True
 '''  *　@return {String} 変換後の文字列
 '''  */
-    Dim strRet As String
-    Const strLower As String = "abcdefghijklmnopqrstuvwxyz"
-    Const strUpper As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    Const strNumber As String = "0123456789"
-    Const strSign As String = "-^@[;],!#$%&'()=~`{+}<>_"  'ファイル名に使えない記号 /\?*:|".
-    Dim strBuff As String
-    Dim intMax As Integer
-    Dim i As Integer
+Dim strRet As String
+Dim strLower As String
+Let strLower = "abcdefghijklmnopqrstuvwxyz"
+Dim strUpper As String
+Let strUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+Dim strNumber As String
+Let strNumber = "0123456789"
+Dim strSign As String
+Let strSign = "-^@[;],!#$%&'()=~`{+}<>_"   'ファイル名に使えない記号 /\?*:|".
+Dim strBuff As String
+Dim intMax As Integer
+Dim i As Integer
     
-    strBuff = strLower & strNumber
-    If blnIncUpper = True Then
+strBuff = strLower & strNumber
+If blnIncUpper = True Then
         strBuff = strBuff & strUpper
-    End If
-    If blnIncSign = True Then
+End If
+If blnIncSign = True Then
         strBuff = strBuff & strSign
-    End If
-
-    intMax = Len(strBuff)
-    For i = 1 To intLength
+End If
+''
+intMax = Len(strBuff)
+For i = 1 To intLength
         strRet = strRet & Mid(strBuff, Int((intMax - 1 + 1) * Rnd + 1), 1)
-    Next i
-    RandamString = strRet
+Next i
+RandamString = strRet
 End Function
 
 Public Function StartWith(ByVal str As String, Optional lngNum As Long = 1) As String
@@ -542,7 +718,7 @@ Public Function StartWith(ByVal str As String, Optional lngNum As Long = 1) As S
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 1
 '''  *　@return {String} 最初の文字
 '''  */
-    StartWith = Left(str, lngNum)
+StartWith = Left(str, lngNum)
 End Function
 
 Public Function EndWith(ByVal str As String, Optional lngNum As Long = 1) As String
@@ -554,7 +730,7 @@ Public Function EndWith(ByVal str As String, Optional lngNum As Long = 1) As Str
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 1
 '''  *　@return {String} 最後の文字
 '''  */
-    EndWith = Right(str, lngNum)
+EndWith = Right(str, lngNum)
 End Function
 
 Public Function StartsWith(ByVal str As String, ByVal substr As String) As Boolean
@@ -598,7 +774,6 @@ Else
 End If
 ''' *********************************************************
 End Function
-
 
 Public Function TrimSpace(ByVal str As String) As String
 '''' /********************************************************
@@ -670,6 +845,33 @@ Public Function ToLower(ByVal str As String) As String
 ToLower = LCase(str)
 End Function
 
+Public Function HankakuKanaToZen(ByVal str As String) As String
+'''' /********************************************************
+''''  * @function HankakuKanaToZen
+''''  * FIXME: Not be able to use WorksheetFunction.JIS in English Language mode
+''''  */
+Dim strRtn As String
+Dim strTemp As String
+Dim i As Long
+Dim s As Variant
+For i = 1 To Len(str)
+    Let s = Mid(str, i, 1)
+    '' from 161 to 223
+    If asc(s) >= 161 And asc(s) <= 223 Then
+        Let strTemp = strTemp & s
+    Else
+        If strTemp <> "" Then
+            strRtn = strRtn & StrConv(strTemp, vbWide)
+        End If
+    End If
+    strRtn = strRtn & s
+Next i
+If strTemp <> "" Then
+    strRtn = strRtn & StrConv(strTemp, vbWide)
+End If
+HankakuKanaToZen = strRtn
+End Function
+
 Public Function Length(ByVal str As String) As Long
 ''' /********************************************************
 '''  * @function length
@@ -691,7 +893,7 @@ Public Function Chop(ByVal str As String, Optional lngNum As Long = 2) As String
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 1
 '''  *　@return {String}変換後の文字列
 '''  */
-    Chop = Mid(str, 1, Len(str) - lngNum)
+Chop = Mid(str, 1, Len(str) - lngNum)
 End Function
 
 Public Function Chomp(ByVal str As String, Optional lngNum As Long = 2) As String
@@ -703,7 +905,7 @@ Public Function Chomp(ByVal str As String, Optional lngNum As Long = 2) As Strin
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 1
 '''  *　@return {String}変換後の文字列
 '''  */
-    Chomp = Mid(str, lngNum + 1, Len(str) - lngNum + 1)
+Chomp = Mid(str, lngNum + 1, Len(str) - lngNum + 1)
 End Function
 
 Public Function ChopDouble(ByVal str As String, Optional lngNum As Long = 2) As String
@@ -715,9 +917,20 @@ Public Function ChopDouble(ByVal str As String, Optional lngNum As Long = 2) As 
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 1
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim strBuff As String
-    strBuff = Me.Chomp(str, lngNum)
-    ChopDouble = Me.Chop(strBuff, lngNum)
+Dim strBuff As String
+strBuff = Me.Chomp(str, lngNum)
+ChopDouble = Me.Chop(strBuff, lngNum)
+End Function
+
+Public Function CutPrefix(ByVal str As String, ByVal prefix As String) As String
+''' ********************************************************
+''
+If Me.StartsWith(str, prefix) Then
+    Let CutPrefix = Me.Chomp(str, Len(prefix))
+Else
+    Let CutPrefix = str
+End If
+''
 End Function
 
 Public Function Abbreviate(ByVal str As String, Optional lngNum As Long = 15) As String
@@ -729,7 +942,8 @@ Public Function Abbreviate(ByVal str As String, Optional lngNum As Long = 15) As
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 15
 '''  *　@return {String}変換後の文字列
 '''  */
-    Abbreviate = Mid(str, 1, Len(str) - lngNum - 3) & "..."
+Abbreviate = Mid(str, 1, Len(str) - lngNum - 3) & "..."
+''
 End Function
 
 Public Function Quote(ByVal str As String, Optional strQuote As Variant = vbTab) As String
@@ -741,8 +955,8 @@ Public Function Quote(ByVal str As String, Optional strQuote As Variant = vbTab)
 '''  *　@param {Variant<string>} strQuate 引用符文字列
 '''  *　@return {String}変換後の文字列
 '''  */
-    objRegExp_.pattern = "^"
-    Quote = objRegExp_.Replace(str, strQuote)
+objRegExp_.pattern = "^"
+Quote = objRegExp_.Replace(str, strQuote)
 End Function
 
 Public Function Quotes(ByVal str As String _
@@ -756,18 +970,18 @@ Public Function Quotes(ByVal str As String _
 '''  *　@param {string} strQuate 引用符文字列
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim aryPTNTemp As Variant
-    aryPTNTemp = Split(str, vbCrLf)
-    objRegExp_.pattern = "^"
-    Dim r As Long
-    For r = LBound(aryPTNTemp) To UBound(aryPTNTemp)
+Dim aryPTNTemp As Variant
+aryPTNTemp = Split(str, vbCrLf)
+objRegExp_.pattern = "^"
+Dim r As Long
+For r = LBound(aryPTNTemp) To UBound(aryPTNTemp)
         aryPTNTemp(r) = objRegExp_.Replace(aryPTNTemp(r), strQuote)
-    Next r
-    Quotes = Join(aryPTNTemp, delimiter)
+Next r
+Quotes = Join(aryPTNTemp, delimiter)
 End Function
 
 Public Function IsQuoted(ByVal str As String _
-                    , Optional strQuote As String = vbTab) As Boolean
+                    , Optional strQuote As String = """") As Boolean
 ''' /********************************************************
 '''  *@function isQuoted
 '''  *</br>行に対して引用符がついているか判定
@@ -776,15 +990,15 @@ Public Function IsQuoted(ByVal str As String _
 '''  *　@param {string} strQuate 引用符文字列
 '''  *　@return {Boolean} isQuoted
 '''  */
-    Dim blnRtn As Boolean
-    Dim cnt As Long
-    cnt = Len(strQuote)
-    If Me.StartWith(str, cnt) = strQuote Then
+Dim blnRtn As Boolean
+Dim cnt As Long
+cnt = Len(strQuote)
+If Me.StartWith(str, cnt) = strQuote Then
         blnRtn = True
-    Else
+Else
         blnRtn = False
-    End If
-    IsQuoted = blnRtn
+End If
+IsQuoted = blnRtn
 End Function
 
 Public Function Indent(ByVal str As String _
@@ -799,13 +1013,13 @@ Public Function Indent(ByVal str As String _
 '''  *　@param {Variant<Long>} lngNum 繰り返し数
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim i As Long
-    Dim strTemp As String
-    For i = 1 To lngNum
+Dim i As Long
+Dim strTemp As String
+For i = 1 To lngNum
         strTemp = strTemp & strIndent
-    Next i
-    objRegExp_.pattern = "^"
-    Indent = objRegExp_.Replace(str, strTemp)
+Next i
+objRegExp_.pattern = "^"
+Indent = objRegExp_.Replace(str, strTemp)
 End Function
 
 Public Function Indents(ByVal str As String _
@@ -822,21 +1036,21 @@ Public Function Indents(ByVal str As String _
 '''  *　@param {Variant<String>} delimiter 行区切り文字
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim i As Long
-    Dim strTemp As String
-    For i = 1 To lngNum
+Dim i As Long
+Dim strTemp As String
+For i = 1 To lngNum
         strTemp = strTemp & strIndent
-    Next i
-    Dim aryPTNTemp As Variant
-    aryPTNTemp = Split(str, vbCrLf)
-    
-    objRegExp_.pattern = "^"
-    Dim r As Long
-    For r = LBound(aryPTNTemp) To UBound(aryPTNTemp)
+Next i
+Dim aryPTNTemp As Variant
+aryPTNTemp = Split(str, vbCrLf)
+
+objRegExp_.pattern = "^"
+Dim r As Long
+For r = LBound(aryPTNTemp) To UBound(aryPTNTemp)
         aryPTNTemp(r) = objRegExp_.Replace(aryPTNTemp(r), strTemp)
-    Next r
-    Indents = Join(aryPTNTemp, delimiter)
-    
+Next r
+Indents = Join(aryPTNTemp, delimiter)
+''
 End Function
 
 Public Function Quotation(ByVal str As String, Optional strQuotation As Variant = """") As String
@@ -848,7 +1062,7 @@ Public Function Quotation(ByVal str As String, Optional strQuotation As Variant 
 '''  *　@param {Variant<String>} strQuotation 引用符文字列
 '''  *　@return {String}変換後の文字列
 '''  */
-    Quotation = strQuotation & str & strQuotation
+Quotation = strQuotation & str & strQuotation
 End Function
 
 Public Function IsQuotation(ByVal str As String, Optional strQuotation As Variant = """") As Boolean
@@ -860,15 +1074,15 @@ Public Function IsQuotation(ByVal str As String, Optional strQuotation As Varian
 '''  *　@param {Variant<String>} strQuotation 引用符文字列
 '''  *　@return {Boolean} Boolean
 '''  */
-    Dim blnRtn As Boolean
-    Dim cnt As Long
-    cnt = Len(strQuotation)
-    If (Me.StartWith(Me.TrimSpace(str), cnt) = strQuotation) And (Me.EndWith(Me.TrimSpace(str), cnt) = strQuotation) Then
+Dim blnRtn As Boolean
+Dim cnt As Long
+cnt = Len(strQuotation)
+If (Me.StartWith(Me.TrimSpace(str), cnt) = strQuotation) And (Me.EndWith(Me.TrimSpace(str), cnt) = strQuotation) Then
         blnRtn = True
-    Else
+Else
         blnRtn = False
-    End If
-    IsQuotation = blnRtn
+End If
+IsQuotation = blnRtn
 End Function
 
 Public Function FormatString(ByVal str As String, ByVal strFormat As String) As String
@@ -884,7 +1098,7 @@ Public Function FormatString(ByVal str As String, ByVal strFormat As String) As 
 '''  *　@param {string} strFormat フォーマット定義文字列
 '''  *　@return {String}変換後の文字列
 '''  */
-    FormatString = format(str, strFormat)
+FormatString = format(str, strFormat)
 End Function
 
 Public Function Repeat(ByVal str As String, lngNum As Long) As String
@@ -896,14 +1110,21 @@ Public Function Repeat(ByVal str As String, lngNum As Long) As String
 '''  *　@param {Long} lngNum 文字数
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim aryPTN() As String
-    ReDim aryPTN(lngNum - 1)
-    Dim i As Integer
+Dim aryPTN() As String
+ReDim aryPTN(lngNum - 1)
+Dim i As Integer
     
-    For i = 0 To lngNum - 1
+For i = 0 To lngNum - 1
         aryPTN(i) = str
-    Next
-    Repeat = Join(aryPTN(), "")
+Next
+Repeat = Join(aryPTN(), "")
+End Function
+
+Public Function Rept(ByVal str As String, lngNum As Long) As String
+''' /********************************************************
+'''  *@function Rept
+'''  */
+Rept = WorksheetFunction.Rept(str, lngNum)
 End Function
 
 Public Function Spaces(lngNum As Long) As String
@@ -914,7 +1135,7 @@ Public Function Spaces(lngNum As Long) As String
 '''  *　@param {Long} lngNum 文字数
 '''  *　@return {String}文字列
 '''  */
-    Spaces = Me.Repeat(" ", lngNum)
+Spaces = Me.Repeat(" ", lngNum)
 End Function
 
 Public Function RightPad(str As String, lngNum As Long, Optional strPad As String = " ") As String
@@ -927,7 +1148,7 @@ Public Function RightPad(str As String, lngNum As Long, Optional strPad As Strin
 '''  *　@param {String} strPad 【Optional】パッドする文字 default=半角Space
 '''  *　@return {String}変換後の文字列
 '''  */
-    RightPad = Me.Repeat(strPad, lngNum - Len(str)) & str
+RightPad = Me.Repeat(strPad, lngNum - Len(str)) & str
 End Function
 
 Public Function LeftPad(str As String, lngNum As Long, Optional strPad As String = " ") As String
@@ -940,10 +1161,10 @@ Public Function LeftPad(str As String, lngNum As Long, Optional strPad As String
 '''  *　@param {String} 【Optional】strPad パッドする文字 default=半角Space
 '''  *　@return {String}変換後の文字列
 '''  */
-    LeftPad = str & Me.Repeat(strPad, lngNum - Len(str))
+LeftPad = str & Me.Repeat(strPad, lngNum - Len(str))
 End Function
 
-Public Function CapitalizeFully(str As String, Optional strSplit As String = " ") As String
+Public Function CapitalizeFully(str As String, Optional ByVal strSplit As String = " ") As String
 ''' /********************************************************
 '''  * @function capitalizeFully
 '''  *</br>文字列の文で、空白の後は、大文字とする
@@ -952,16 +1173,16 @@ Public Function CapitalizeFully(str As String, Optional strSplit As String = " "
 '''  *　@param {string} strSplit 返却時の結合区切り文字
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim aryPTN As Variant 'variant型で受ける
-    aryPTN = Split(Me.SqueezeSpace(Trim(str)), " ")
+Dim aryPTN As Variant 'variant型で受ける
+aryPTN = Split(Me.SqueezeSpace(Trim(str)), " ")
 '    Console.dump (aryPTN)
-    Dim aryPTNRet() As String
-    ReDim aryPTNRet(UBound(aryPTN))
-    Dim i As Integer
-    For i = 0 To UBound(aryPTN)
-        aryPTNRet(i) = UCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i))
-    Next i
-    CapitalizeFully = Join(aryPTNRet, strSplit)
+Dim aryPTNRet() As String
+ReDim aryPTNRet(UBound(aryPTN))
+Dim i As Integer
+For i = 0 To UBound(aryPTN)
+    aryPTNRet(i) = UCase(aryPTN(i))
+Next i
+CapitalizeFully = Join(aryPTNRet, strSplit)
 End Function
 
 Public Function Capitalize(str As String, Optional strSplit As String = " ") As String
@@ -973,19 +1194,20 @@ Public Function Capitalize(str As String, Optional strSplit As String = " ") As 
 '''  *　@param {string} strSplit 返却時の結合区切り文字
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim aryPTN As Variant 'variant型で受ける
-    aryPTN = Split(Me.SqueezeSpace(Trim(LCase(str))), " ")
+Dim aryPTN As Variant 'variant型で受ける
+aryPTN = Split(Me.SqueezeSpace(Trim(LCase(str))), " ")
 '    Console.dump (aryPTN)
-    Dim aryPTNRet() As String
-    ReDim aryPTNRet(UBound(aryPTN))
-    Dim i As Integer
-    For i = 0 To UBound(aryPTN)
-        aryPTNRet(i) = UCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i))
-    Next i
-    Capitalize = Join(aryPTNRet, strSplit)
+Dim aryPTNRet() As String
+ReDim aryPTNRet(UBound(aryPTN))
+Dim i As Integer
+For i = 0 To UBound(aryPTN)
+    aryPTNRet(i) = UCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i), 1)
+Next i
+Capitalize = Join(aryPTNRet, strSplit)
 End Function
 
-Public Function Camelize(str As String, Optional strSplit As String = " ") As String
+Public Function Camelize(str As String, Optional strSplit As Variant = " ", _
+                        Optional blnJoinStr As Variant) As String
 ''' /********************************************************
 '''  * @function camelize
 '''  *</br>文字数の文で、空白の後は、大文字とする
@@ -994,20 +1216,119 @@ Public Function Camelize(str As String, Optional strSplit As String = " ") As St
 '''  *　@param {string} strSplit 返却時の結合区切り文字
 '''  *　@return {String}変換後の文字列
 '''  */
-    Dim aryPTN As Variant 'variant型で受ける
-    aryPTN = Split(Me.SqueezeSpace(Trim(LCase(str))), " ")
+Dim aryPTN As Variant 'variant型で受ける
+aryPTN = Split(Me.SqueezeSpace(Trim(LCase(str))), strSplit)
 '    Console.dump (aryPTN)
-    Dim aryPTNRet() As String
-    ReDim aryPTNRet(UBound(aryPTN))
-    Dim i As Integer
-    For i = 0 To UBound(aryPTN)
+Dim aryPTNRet() As String
+ReDim aryPTNRet(UBound(aryPTN))
+Dim i As Integer
+For i = 0 To UBound(aryPTN)
         If i = 0 Then
-            aryPTNRet(i) = LCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i))
+        aryPTNRet(i) = LCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i), 1)
         Else
-            aryPTNRet(i) = UCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i))
+        aryPTNRet(i) = UCase(Me.StartWith(aryPTN(i))) & Me.Chomp(aryPTN(i), 1)
         End If
-    Next i
-    Camelize = Join(aryPTNRet, strSplit)
+Next i
+If IsMissing(blnJoinStr) Then
+    Let strSplit = ""
+End If
+Camelize = Join(aryPTNRet, strSplit)
+End Function
+
+Public Function decamelize(str As String, Optional ByVal sep As Variant) As String
+''' /********************************************************
+'''  * @function decamelize
+'''  */
+If IsMissing(sep) Then
+    Let sep = " "
+End If
+Dim converted As String
+''
+objRegExp_.pattern = "([a-z\\d])([A-Z])"
+objRegExp_.Global = True
+Let converted = objRegExp_.Replace(str, "$1" & sep & "$2")
+objRegExp_.pattern = "([A-Z]+)([A-Z][a-z\\d]+)"
+objRegExp_.Global = True
+Let converted = objRegExp_.Replace(converted, "$1" & sep & "$2")
+''
+Let decamelize = VBA.LCase(converted)
+End Function
+
+
+
+Public Function SnakeUpperCase(str As String, Optional ByVal strSplit As Variant) As String
+''' /********************************************************
+'''  * @function SnakeUpperCase
+'''  */
+If IsMissing(strSplit) Then
+    Let strSplit = " "
+End If
+Dim converted As String
+Let converted = Me.CapitalizeFully(str, strSplit)
+Let SnakeUpperCase = Me.ReplaceString(converted, strSplit, "_")
+End Function
+
+Public Function SnakeLowerCase(str As String, Optional ByVal strSplit As Variant) As String
+''' /********************************************************
+'''  * @function SnakeUpperCase
+'''  */
+If IsMissing(strSplit) Then
+    Let strSplit = " "
+End If
+Dim converted As String
+Let converted = Me.SnakeUpperCase(str, strSplit)
+Let SnakeLowerCase = Me.ToLower(converted)
+End Function
+
+Public Function Substitute(ByVal str As String, _
+          ByVal orgStr As String, ByVal destStr As String, _
+          Optional num As Variant) As String
+''' /********************************************************
+'''  * @function Substitute
+'''  */
+If IsMissing(num) Then
+    Substitute = WorksheetFunction.Substitute(str, orgStr, destStr)
+Else
+    Substitute = WorksheetFunction.Substitute(str, orgStr, destStr, num)
+End If
+End Function
+
+Public Function Substitute4Template(ByVal str As String, _
+          ByVal orgStr As String, ByVal destStr As String, _
+          Optional num As Variant) As String
+''' /********************************************************
+'''  * @function Substitute
+'''  */
+Dim orgStrVar As String
+Let orgStrVar = "${" + orgStr + "}"
+If IsMissing(num) Then
+    Substitute4Template = WorksheetFunction.Substitute(str, orgStrVar, destStr)
+Else
+    Substitute4Template = WorksheetFunction.Substitute(str, orgStrVar, destStr, num)
+End If
+End Function
+
+Public Function Substitute4Mustache(ByVal str As String, _
+          ByVal orgStr As String, ByVal destStr As String, _
+          Optional num As Variant) As String
+''' /********************************************************
+'''  * @function Substitute
+'''  */
+Dim orgStrVar As String
+Let orgStrVar = "{{" + orgStr + "}}"
+If IsMissing(num) Then
+    Substitute4Mustache = WorksheetFunction.Substitute(str, orgStrVar, destStr)
+Else
+    Substitute4Mustache = WorksheetFunction.Substitute(str, orgStrVar, destStr, num)
+End If
+End Function
+
+
+Public Function encodeUrl(ByVal str As String) As String
+''' /********************************************************
+'''  * @function encodeUrl
+'''  */
+encodeUrl = WorksheetFunction.encodeUrl(str)
 End Function
 
 Public Function ReplaceString(ByVal str As String, _
@@ -1072,13 +1393,13 @@ End Function
 Public Function Concatenate(delimiter As String, ParamArray aryPTN()) As String
 ''' /********************************************************
 '''  * @function concatenate
-'''  *</br>文字列を、セパレータ(delimiter)で区切り、配列に格納する。
+'''  *</br>文字列を、セパレータ(delimiter)で区切り、文字列を生成する。
 '''  *</br>Split関数のラッパー
 '''  *　@param {String} delimiter 文字列
 '''  *　@param {String()} aryPTN 文字列（パラメータ配列型）
 '''  *　@return {String}結合した文字列
 '''  */
-    Concatenate = Join(aryPTN, delimiter)
+Concatenate = Join(aryPTN, delimiter)
 End Function
 
 Public Function Charactors(str) As Variant
@@ -1089,13 +1410,13 @@ Public Function Charactors(str) As Variant
 '''  *　@param {String()} aryPTN 文字列（パラメータ配列型）
 '''  *　@return {String}結合した文字列
 '''  */
-    Dim aryPTN() As Variant
-    ReDim aryPTN(Len(str) - 1)
-    Dim i As Long
-    For i = 1 To Len(str)
+Dim aryPTN() As Variant
+ReDim aryPTN(Len(str) - 1)
+Dim i As Long
+For i = 1 To Len(str)
         aryPTN(i - 1) = Mid(str, i, 1)
-    Next i
-    Charactors = aryPTN
+Next i
+Charactors = aryPTN
 End Function
 
 Public Function IndexOf(str As String _
@@ -1111,11 +1432,11 @@ Public Function IndexOf(str As String _
 '''  *　@param {Variant<Long>} compareMode vbBinaryPTNCompare | vbTextCompare
 '''  *　@return {Long} indexOf 先頭からの文字位置
 '''  */
-    If IsMissing(lngStartPos) Then
+If IsMissing(lngStartPos) Then
         IndexOf = InStr(str, strKey)
-    Else
+Else
         IndexOf = InStr(lngStartPos, str, strKey)
-    End If
+End If
 End Function
 
 Public Function SubStringBefore(str As String _
@@ -1131,17 +1452,17 @@ Public Function SubStringBefore(str As String _
 '''  *　@param {Variant<Long>} compareMode vbBinaryPTNCompare | vbTextCompare
 '''  *　@return {String} subStringBefore 先頭からの指定の文字までの文字列
 '''  */
-    Dim pos As Long
-    pos = IndexOf(str, strKey, lngStartPos)
-    If IsMissing(lngStartPos) Then
+Dim pos As Long
+pos = IndexOf(str, strKey, lngStartPos)
+If IsMissing(lngStartPos) Then
         SubStringBefore = Left(str, pos)
-    Else
+Else
         If pos = 0 Then
             SubStringBefore = ""
         Else
             SubStringBefore = Mid(str, lngStartPos, pos - lngStartPos + 1)
         End If
-    End If
+End If
 End Function
 
 Public Function SubStringAfter(str As String _
@@ -1158,15 +1479,15 @@ Public Function SubStringAfter(str As String _
 '''  *　@param {Variant<Long>} compareMode vbBinaryPTNCompare | vbTextCompare
 '''  *　@return {String} subStringAfter 最後尾からの指定の文字までの文字列
 '''  */
-    Dim pos As Long
-    If IsMissing(lngEndPos) Then
+Dim pos As Long
+If IsMissing(lngEndPos) Then
         pos = InStrRev(str, strKey, Len(str))
-    Else
+Else
         pos = InStrRev(str, strKey, lngEndPos)
-    End If
-    If IsMissing(lngEndPos) Then
+End If
+If IsMissing(lngEndPos) Then
         SubStringAfter = Right(str, Len(str) - pos)
-    Else
+Else
         If pos = 0 Then
             SubStringAfter = ""
         Else
@@ -1176,7 +1497,7 @@ Public Function SubStringAfter(str As String _
                 SubStringAfter = Mid(str, pos, lngEndPos - pos + 1)
             End If
         End If
-    End If
+End If
 End Function
 
 Public Function ConvertAster(strPattern As String) As String
@@ -1191,11 +1512,11 @@ Public Function ConvertAster(strPattern As String) As String
 '''  *　@return {String}変換後文字
 '''  *　FIXME□□RegExpの利用も含め、どう使うかを整理。
 '''  */
-    Dim s As String
-    objRegExp_.pattern = "\."
-    s = objRegExp_.Replace(strPattern, "\.")
-    objRegExp_.pattern = "\*"
-    ConvertAster = objRegExp_.Replace(s, ".*")
+Dim s As String
+objRegExp_.pattern = "\."
+s = objRegExp_.Replace(strPattern, "\.")
+objRegExp_.pattern = "\*"
+ConvertAster = objRegExp_.Replace(s, ".*")
 End Function
 
 Public Function DefaultString(vnt As Variant, Optional defaultStr As Variant = "N/A") As String
@@ -1236,31 +1557,30 @@ Public Function InnerString(ByVal str As String _
 '''  *　@param {String} rightString 右側文字列
 '''  *　@return {String} innerString
 '''  */
-    Dim lngLeftPos As Long
-    Dim lngRightPos As Long
-    Dim lng As Long
-    
-    '右側文字列の最初のヒット位置を取得
-    lngLeftPos = InStr(str, leftString)
-    If lngLeftPos = 0 Then
+Dim lngLeftPos As Long
+Dim lngRightPos As Long
+Dim lng As Long
+'右側文字列の最初のヒット位置を取得
+lngLeftPos = InStr(str, leftString)
+If lngLeftPos = 0 Then
         InnerString = ""
         Exit Function
-    End If
-    
+End If
     '左側文字列の最後のヒット位置を取得
-    lngRightPos = InStrRev(str, rightString)
-    If lngLeftPos = 0 Then
+lngRightPos = InStrRev(str, rightString)
+If lngLeftPos = 0 Then
         InnerString = ""
         Exit Function
-    End If
-    
-    If lngLeftPos > lngRightPos Then
+End If
+''
+If lngLeftPos > lngRightPos Then
         InnerString = ""
         Exit Function
-    End If
-    
-    '間にある文字列を取得
-    InnerString = Mid$(str, lngLeftPos + Len(leftString), lngRightPos - lngLeftPos - Len(leftString))
+End If
+''
+'間にある文字列を取得
+InnerString = Mid$(str, lngLeftPos + Len(leftString), lngRightPos - lngLeftPos - Len(leftString))
+''
 End Function
 
 Public Function IsVariableInTemplate(ByVal str As String) As Boolean
@@ -1272,36 +1592,89 @@ Public Function IsVariableInTemplate(ByVal str As String) As Boolean
 '''  *　@param {String} str 対象文字列
 '''  *　@return {Boolean} isVariableInTemplate
 '''  */
-    Dim aryPTNTemp As Variant
-    aryPTNTemp = Split(str, "$")
-    Dim aryPTN() As Variant
-    ReDim aryPTN(LBound(aryPTNTemp) To UBound(aryPTNTemp))
-    Dim i As Long
-    For i = LBound(aryPTNTemp) To UBound(aryPTNTemp)
+Dim aryPTNTemp As Variant
+aryPTNTemp = Split(str, "$")
+Dim aryPTN() As Variant
+ReDim aryPTN(LBound(aryPTNTemp) To UBound(aryPTNTemp))
+Dim i As Long
+For i = LBound(aryPTNTemp) To UBound(aryPTNTemp)
         aryPTN(i) = Me.InnerString(aryPTNTemp(i), "{", "}")
-    Next i
-    
-    For i = LBound(aryPTN) To UBound(aryPTN)
+Next i
+''
+For i = LBound(aryPTN) To UBound(aryPTN)
         If Not aryPTN(i) = "" Then
             IsVariableInTemplate = True
             Exit Function
         End If
-    Next i
-    IsVariableInTemplate = False
+Next i
+IsVariableInTemplate = False
+''
 End Function
 
-''//--------------------------------------------------------
-''// 試しに作製
-''//--------------------------------------------------------
-Public Function Is2Byte(chr As String) As Boolean
+Public Function GetVariablesInTemplate(ByVal str As String) As Variant
 ''' /********************************************************
-'''  *@function Is2Byte
-'''  *<pre>２バイト文字を含むか否かを判定
+'''  *@function isVariableInTemplate
+'''  *<pre>テンプレート文字列の中に、${xxx}のVariable設定が
+'''  *あるかを判定する。
 '''  *</pre>
-'''  *　@param {String} chr 対象文字
-'''  *　@return {Boolean} Is2Byte
+'''  *　@param {String} str 対象文字列
+'''  *　@return {Boolean} isVariableInTemplate
 '''  */
-    Is2Byte = Not (Len(chr) = Me.Length(chr))
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim aryPTNTemp As Variant
+aryPTNTemp = Split(str, "$")
+Dim aryPTN() As Variant
+ReDim aryPTN(LBound(aryPTNTemp) To UBound(aryPTNTemp))
+Dim i As Long
+For i = LBound(aryPTNTemp) To UBound(aryPTNTemp)
+    aryPTN(i) = Me.InnerString(aryPTNTemp(i), "{", "}")
+Next i
+''
+Call C_Array.DeleteEmptyElement(aryPTN)
+GetVariablesInTemplate = aryPTN
+''
+End Function
+
+
+Public Function RenderTemplate(ByVal templ As String, ByRef dict As Dictionary) As String
+''' /********************************************************
+'''  *@function RenderTemplate
+'''  */
+Dim aryVariables() As Variant
+Dim rtn As String
+Let rtn = templ
+''
+If Not Me.IsVariableInTemplate(rtn) Then
+    RenderTemplate = rtn
+    Exit Function
+End If
+''
+Let aryVariables = Me.GetVariablesInTemplate(templ)
+Dim elm As Variant
+Dim i As Long
+For i = LBound(aryVariables) To UBound(aryVariables)
+    Let elm = aryVariables(i)
+    If dict.Exists(elm) Then
+        Let rtn = Me.Substitute4Template(rtn, elm, dict.item(elm))
+    End If
+Next i
+Let RenderTemplate = rtn
+''
+End Function
+
+Public Function GetTemporaryStr() As String
+''' /********************************************************
+'''  *@function RenderTemplate
+'''  */
+''
+Dim rtn As String
+Dim objFSO As Object
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+Let rtn = objFSO.GetBaseName(objFSO.GetTempName)
+Let GetTemporaryStr = rtn
+Set objFSO = Nothing
+''
 End Function
 
 '/////////////////////////////////////////////////////////////
@@ -1312,7 +1685,8 @@ End Function
 ' debug entry
 '-------------------------------------------------------------
 Sub unittest()
-    Const CONS_MODULE_NAME As String = "C_String.unitTest"
+    Dim CONS_MODULE_NAME As String
+    Let CONS_MODULE_NAME = "C_String.unitTest"
     '//--------------------------------------
     '//変数宣言
     Dim blnRet As Boolean
@@ -1350,7 +1724,7 @@ EXCEPTION: 'Label
     GoSub FINALLY
     Console.info ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.info ("Err.Number = " & Err.Number)
-    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.Description)
+    Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     Console.info ("//-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-// Error End")
 End Sub
 

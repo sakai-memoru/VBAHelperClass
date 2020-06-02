@@ -16,6 +16,8 @@ Option Explicit
 '''  *</pre>
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  */
 '
 ''' /********************************************************
@@ -86,7 +88,7 @@ FINALLY:
 EXCEPTION:
     GoSub FINALLY
     Dim desc As String
-    desc = CONS_MODULE_NAME & vbCr & Err.Description
+    desc = CONS_MODULE_NAME & vbCr & Err.description
     Console.log ("Err.Number = " & Err.Number)
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Description = " & desc)
@@ -158,7 +160,7 @@ FINALLY:
 EXCEPTION:
     GoSub FINALLY
     Dim desc As String
-    desc = CONS_MODULE_NAME & vbCr & Err.Description
+    desc = CONS_MODULE_NAME & vbCr & Err.description
     Console.log ("Err.Number = " & Err.Number)
     Console.log ("Err.Source = " & Err.source & "." & CONS_MODULE_NAME)
     Console.log ("Err.Description = " & desc)
@@ -196,19 +198,23 @@ Public Function GetValue(strName As Variant, _
 '''  * @return {Variant} getValue 範囲を表す値
 '''  * 　セルが１つの場合は、Value。セルが２つ以上の場合は、Range。
 '''  */
+Dim C_String As C_String
+Set C_String = New C_String
 Dim vntRtn As Variant
 Dim strRef As Variant
 Dim rng As Range
 Dim strRngName As String
-Dim C_String As C_String
-Set C_String = New C_String
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
 End If
 If IsMissing(strSheetName) Then
         strRngName = strName
 Else
+    If C_String.IsAddress(strName) Then
         strRngName = strSheetName & "!" & strName
+    Else
+        strRngName = strName
+    End If
 End If
 ''
 strRef = wb.Names(strRngName).RefersTo
@@ -236,12 +242,12 @@ Public Function GetText(strName As Variant, _
 '''  * @return {Variant} getText 範囲を表す値
 '''  * 　セルが１つの場合は、Text。セルが２つ以上の場合は、Range。
 '''  */
+Dim C_String As C_String
+Set C_String = New C_String
 Dim vntRtn As Variant
 Dim strRef As Variant
 Dim rng As Range
 Dim strRngName As String
-Dim C_String As C_String
-Set C_String = New C_String
 ''
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
@@ -249,7 +255,11 @@ End If
 If IsMissing(strSheetName) Then
         strRngName = strName
 Else
+    If C_String.IsAddress(strName) Then
         strRngName = strSheetName & "!" & strName
+    Else
+        strRngName = strName
+    End If
 End If
 ''
 strRef = wb.Names(strRngName).RefersTo
@@ -278,6 +288,8 @@ Public Function GetAddress(strName As Variant, _
 '''  * @return {Variant} getAddress 範囲を表すアドレス
 '''  *
 '''  */
+Dim C_String As C_String
+Set C_String = New C_String
 Dim strRef As Variant
 Dim strRngName As String
 ''
@@ -287,7 +299,11 @@ End If
 If IsMissing(strSheetName) Then
         strRngName = strName
 Else
+    If C_String.IsAddress(strName) Then
         strRngName = strSheetName & "!" & strName
+    Else
+        strRngName = strName
+    End If
 End If
 ''
 strRef = wb.Names(strRngName).RefersTo
@@ -304,10 +320,12 @@ Public Function GetRange(strName As Variant, _
 '''  *@function getRange
 '''  *<br/>　対象の範囲名から参照範囲オブジェクト（Range）を取得する。
 '''  *<br/>
-'''  * @param {String} strName　対象範囲名
+'''  * @param {String} strName　対象範囲名 対象範囲がAddressの場合はシート名が必要
 '''  * @param {String} strSheetName　対象シート名
 '''  * @return {Variant} getRange　Range Object
 '''  */
+Dim C_String As C_String
+Set C_String = New C_String
 Dim strRngName As String
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
@@ -315,7 +333,11 @@ End If
 If IsMissing(strSheetName) Then
         strRngName = strName
 Else
+    If C_String.IsAddress(strName) Then
         strRngName = strSheetName & "!" & strName
+    Else
+        strRngName = strName
+    End If
 End If
 ''
 'Console.log "strRngName = " & strRngName
@@ -335,6 +357,8 @@ Public Function GetComment(strName As Variant, _
 '''  * @param {String} strSheetName　対象シート名
 '''  * @return {Variant} getComment　Commentに記述されている文字列
 '''  */
+Dim C_String As C_String
+Set C_String = New C_String
 Dim strRngName As String
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
@@ -342,7 +366,11 @@ End If
 If IsMissing(strSheetName) Then
         strRngName = strName
 Else
+    If C_String.IsAddress(strName) Then
         strRngName = strSheetName & "!" & strName
+    Else
+        strRngName = strName
+    End If
 End If
 GetComment = wb.Names(strRngName).Comment
 End Function
@@ -359,6 +387,8 @@ Public Function GetCategory(strName As Variant, _
 '''  * @param {String} strSheetName　対象シート名
 '''  * @return {Variant} getCategory　範囲名のカテゴリ文字列（ユーザ定義関数やマクロシートのコマンドマクロ）
 '''  */
+Dim C_String As C_String
+Set C_String = New C_String
 Dim strRngName As String
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
@@ -366,7 +396,11 @@ End If
 If IsMissing(strSheetName) Then
         strRngName = strName
 Else
+    If C_String.IsAddress(strName) Then
         strRngName = strSheetName & "!" & strName
+    Else
+        strRngName = strName
+    End If
 End If
 If wb.Names(strRngName).MacroType <> xlNone Then
     GetCategory = wb.Names(strRngName).Category
@@ -390,22 +424,22 @@ Public Function SetNameByKeyword(ByVal strSheetName As Variant _
 '''  * @return {Variant} setNameByKeyword　NameセットができたらTrue
 '''  *<br/>　検索がヒットする前提（最初にヒットしたセルを対象とする）
 '''  */
-    Dim rngFindResult As Range
-    Dim rngUsed As Range
-    Dim nm As name
-    Set rngUsed = ThisWorkbook.Worksheets(strSheetName).UsedRange
-    Set rngFindResult = rngUsed.Find(What:=strKeyString, Lookat:=xlWhole)
+Dim rngFindResult As Range
+Dim rngUsed As Range
+Dim nm As name
+Set rngUsed = ThisWorkbook.Worksheets(strSheetName).UsedRange
+Set rngFindResult = rngUsed.Find(What:=strKeyString, Lookat:=xlWhole)
     
-    If IsEmpty(Row) Or Row = "" Then
+If IsEmpty(Row) Or Row = "" Then
         Row = 0
-    End If
-    If IsEmpty(column) Or column = "" Then
+End If
+If IsEmpty(column) Or column = "" Then
         column = 0
-    End If
+End If
     
-    If rngFindResult Is Nothing Then
+If rngFindResult Is Nothing Then
         SetNameByKeyword = False
-    Else
+Else
         For Each nm In ThisWorkbook.Names
             If UCase(nm.name) = UCase(strName) Then
                 rngFindResult.Offset(Row, column).name.Delete
@@ -413,12 +447,15 @@ Public Function SetNameByKeyword(ByVal strSheetName As Variant _
         Next
         rngFindResult.Offset(Row, column).name = strSheetName & "!" & strName
         SetNameByKeyword = True
-    End If
+End If
     
 End Function
 
 Public Sub ChangeNamedRangeAddress(bk As Workbook, rangename As String, newRange As Range)
-    bk.Names(rangename).RefersTo = newRange
+''' ********************************************************
+''
+bk.Names(rangename).RefersTo = newRange
+''
 End Sub
 
 'Public Sub GlobalNamesToLocalNames(Optional Void As Variant)
@@ -471,16 +508,18 @@ End Sub
 'End Sub
 
 Public Sub ChangeGlobalNamedRangeAddress(bk As Workbook, rangename As String, newRange As Range)
-    'this sub only changes named range scoped to the workbook
-    'and ignores any ranges scoped to the worksheet with the same name.
-    Dim n As name
+''
+'this sub only changes named range scoped to the workbook
+'and ignores any ranges scoped to the worksheet with the same name.
+Dim n As name
     
-    For Each n In bk.Names
+For Each n In bk.Names
         If InStr(1, n.name, rangename) > 0 And InStr(1, n.NameLocal, "!") = 0 Then
             n.RefersTo = newRange
             Exit For
         End If
-    Next
+Next
+''
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -566,9 +605,9 @@ Public Sub unittest()
 '    Console.info "---------------------"
 
 ' getCategory
-    Console.Dump Me.GetCategory("seqId", "__FORMAT__")
-    Console.Dump Me.GetCategory("TEST_STRING")
-    Console.Dump Me.GetCategory("TEST_RANGE1")
+    Console.dump Me.GetCategory("seqId", "__FORMAT__")
+    Console.dump Me.GetCategory("TEST_STRING")
+    Console.dump Me.GetCategory("TEST_RANGE1")
 
    
    

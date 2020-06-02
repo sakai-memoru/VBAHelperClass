@@ -13,6 +13,8 @@ Option Explicit
 '''  *<br/>.NET StringBuilder Wrapper
 '''  * @version 1.00
 '''  * @since 2020/03/31
+'''  * @author sakai-memoru
+'''  * @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '''  *
 '''  * @require C_String,C_File,C_FileIO
 '''  *
@@ -52,12 +54,12 @@ End Sub
 '//--------------------------------------------------------
 '// setter/getter
 '//
-Property Get Chars(ByVal index As Integer) As String
-    Chars = ChrW(builder_.Chars(index))
+Property Get Chars(ByVal Index As Integer) As String
+    Chars = ChrW(builder_.Chars(Index))
 End Property
 
-Property Let Chars(ByVal index As Integer, ByVal value As String)
-    builder_.Chars(index) = AscW(value)
+Property Let Chars(ByVal Index As Integer, ByVal value As String)
+    builder_.Chars(Index) = AscW(value)
 'System.Text.StringBuilder Chars(int index)
 End Property
 
@@ -308,7 +310,7 @@ Public Function GetHashCode() As Long
     GetHashCode = builder_.GetHashCode
 End Function
 
-Public Function Insert(ByVal index As Integer, ByVal arg As Variant _
+Public Function Insert(ByVal Index As Integer, ByVal arg As Variant _
          , Optional ByVal count1 As Integer = 0 _
          , Optional ByVal count2 As Integer = 0)
 ''' /********************************************************
@@ -324,25 +326,25 @@ Public Function Insert(ByVal index As Integer, ByVal arg As Variant _
         If count2 > 0 Then
             Dim str As String
             str = Mid(arg, count1 + 1, count2)
-            builder_.Insert_2 index, str
+            builder_.Insert_2 Index, str
         Else
-            builder_.Insert index, arg, count1
+            builder_.Insert Index, arg, count1
         End If
     Else
         Select Case TypeName(arg)
-            Case "Byte": builder_.Insert_5 index, arg
-            Case "Integer": builder_.Insert_6 index, arg
-            Case "Long": builder_.Insert_10 index, arg
-            Case "Single": builder_.Insert_12 index, arg
-            Case "Double": builder_.Insert_13 index, arg
-            Case "Currency": builder_.Insert_14 index, arg
-            Case "String": builder_.Insert_2 index, arg
-            Case "Boolean": builder_.Insert_3 index, arg
+            Case "Byte": builder_.Insert_5 Index, arg
+            Case "Integer": builder_.Insert_6 Index, arg
+            Case "Long": builder_.Insert_10 Index, arg
+            Case "Single": builder_.Insert_12 Index, arg
+            Case "Double": builder_.Insert_13 Index, arg
+            Case "Currency": builder_.Insert_14 Index, arg
+            Case "String": builder_.Insert_2 Index, arg
+            Case "Boolean": builder_.Insert_3 Index, arg
             Case "Date", "Object"
-                builder_.Insert_18 index, arg
+                builder_.Insert_18 Index, arg
             Case "Error", "Empty", "Null", "Unknown", "Nothing"
             Case Else
-                builder_.Insert_18 index, arg
+                builder_.Insert_18 Index, arg
         End Select
     End If
 'System.Text.StringBuilder Insert(int index, string value, int count)
@@ -515,7 +517,7 @@ Public Sub unittest()
 ''AppendLine
     Me.AppendLine ("sak.mit")
     Me.AppendLine ("sakot.miss")
-    Console.Dump Me
+    Console.dump Me
 ''AppendLines
     Call Me.AppendLines("saki.gira", "sk.ao", "sai.iyi", "ski.osu")
 ''Capacity
@@ -533,7 +535,7 @@ Public Sub unittest()
     Call Me.AppendFormat("{0} is {1}", "sak", "mit")
 ''AppendsLine
     Call Me.AppendsLine("")
-    Console.Dump Me
+    Console.dump Me
 ''AppendFormatLine
     Call Me.AppendFormatLine("{0} is {1}", "sakot", "miss")
 ''flush
@@ -544,7 +546,7 @@ Public Sub unittest()
     Console.info Me.GetVerType
 ''Clear
     Call Me.Clear
-    Console.Dump Me
+    Console.dump Me
     
 End Sub
 

@@ -559,20 +559,20 @@ Public Function BlockExists(ByVal BlockName As String) As Boolean
 Public Sub GenerateOutputToFile(ByVal FileName As String)
    On Error Resume Next
       Kill FileName
-      Dim err_c, err_d: err_c = Err.Number: err_d = Err.Description
+      Dim err_c, err_d: err_c = Err.Number: err_d = Err.description
       On Error GoTo 0
    If err_c <> 0 And err_c <> 53 Then Err.Raise vbObjectError, , "Error while deleting old version of " & FileName & ". " & err_d
    OutputFileHandle = FreeFile
    On Error Resume Next
       Open FileName For Binary Access Write Lock Read Write As OutputFileHandle
-      err_c = Err.Number: err_d = Err.Description
+      err_c = Err.Number: err_d = Err.description
       On Error GoTo 0
    If err_c <> 0 Then Err.Raise vbObjectError, , "Unable to open file " & FileName & ". " & err_d
    OutputMode = 0
    On Error Resume Next
       GenerateOutput
       Close OutputFileHandle
-      err_c = Err.Number: err_d = Err.Description
+      err_c = Err.Number: err_d = Err.description
       On Error GoTo 0
    If err_c <> 0 Then Err.Raise err_c, , "Error while writing file " & FileName & ". " & err_d
    End Sub
@@ -713,19 +713,19 @@ Private Function ReadFileIntoString(ByVal FileName As String) As String
       ' First we have to check whether the file exists, because "Open For Binary" would
       ' create a file if it does not exist.
       GetAttr FileName
-      Dim ErrNo, ErrDescr: ErrNo = Err.Number: ErrDescr = Err.Description
+      Dim ErrNo, ErrDescr: ErrNo = Err.Number: ErrDescr = Err.description
       On Error GoTo 0
    If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & FileName & ". " & ErrDescr
    Dim fh: fh = FreeFile
    On Error Resume Next
       Open FileName For Binary Access Read Lock Write As fh
-      ErrNo = Err.Number: ErrDescr = Err.Description
+      ErrNo = Err.Number: ErrDescr = Err.description
       On Error GoTo 0
    If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & FileName & ". " & ErrDescr
    On Error Resume Next
       Dim s As String: s = Input$(LOF(fh), fh)
       Close fh
-      ErrNo = Err.Number: ErrDescr = Err.Description
+      ErrNo = Err.Number: ErrDescr = Err.description
       On Error GoTo 0
    If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & FileName & ". " & ErrDescr
    ReadFileIntoString = s
