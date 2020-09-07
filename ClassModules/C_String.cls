@@ -36,7 +36,7 @@ Private Enum RE_PTN
     ASCII = 3
     KANA = 4
     MAIL = 5
-    URL = 6
+    url = 6
     POSTNO = 7
     TEL = 8
     ASCII2 = 9
@@ -54,7 +54,7 @@ Private Sub Class_Initialize()
 '''  *<br/>Initialize 関数
 '''  *<br/>Class生成時に、実行される。
 '''  */
-Set objRegExp_ = CreateObject("VBScript.RegExp")
+Set objRegExp_ = createObject("VBScript.RegExp")
 Dim RE_PTN_DIGIT As String
 RE_PTN_DIGIT = "^[0-9]+$"
 Dim RE_PTN_NUMBER As String
@@ -118,7 +118,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = strSet
+objRegExp_.Pattern = strSet
 objRegExp_.ignorecase = ignorecase
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -141,14 +141,14 @@ Public Function ContainWord(ByVal strSentence As String, ByVal strWord As String
 '''  */
 Dim blnRet As Boolean
 blnRet = False
-objRegExp_.pattern = strWord
+objRegExp_.Pattern = strWord
 objRegExp_.ignorecase = ignorecase
 objRegExp_.Global = True
 ContainWord = objRegExp_.Test(strSentence)
 End Function
 
 Public Function ContainRegExp(ByVal strSentence As String _
-            , ByVal pattern As String _
+            , ByVal Pattern As String _
             , Optional ignorecase As Variant = False) As Boolean
 ''' /********************************************************
 '''  * @function containRegExp
@@ -160,25 +160,33 @@ Public Function ContainRegExp(ByVal strSentence As String _
 '''  */
 Dim blnRet As Boolean
 blnRet = False
-objRegExp_.pattern = pattern
+objRegExp_.Pattern = Pattern
 objRegExp_.ignorecase = ignorecase
 objRegExp_.Global = True
 ContainRegExp = objRegExp_.Test(strSentence)
 End Function
 
 Public Function Test(ByVal strSentence As String _
-            , ByVal pattern As String _
+            , ByVal Pattern As String _
             , Optional ignorecase As Variant = False) As Boolean
 ''' ********************************************************
-Test = ContainRegExp(strSentence, pattern, ignorecase)
+Test = ContainRegExp(strSentence, Pattern, ignorecase)
 End Function
 
-Public Function EqualIgnore(ByVal str1 As String, ByVal str2 As String) As Boolean
+Public Function EqualIgnore(ByVal str1 As String, ByVal str2 As String, Optional ignorecase As Variant = True) As Boolean
 '''' ********************************************************
-If VBA.UCase(str1) = VBA.UCase(str2) Then
+If ignorecase Then
+    If VBA.UCase(str1) = VBA.UCase(str2) Then
     EqualIgnore = True
+    Else
+        EqualIgnore = False
+    End If
 Else
+    If str1 = str2 Then
+        EqualIgnore = True
+    Else
     EqualIgnore = False
+    End If
 End If
 ''
 End Function
@@ -215,7 +223,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[a-zA-Z0-9]+$"
+objRegExp_.Pattern = "^[a-zA-Z0-9]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -247,7 +255,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[a-zA-Z0-9 ,\.]+$"
+objRegExp_.Pattern = "^[a-zA-Z0-9 ,\.]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -278,7 +286,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[a-zA-Z ,\.]+$"
+objRegExp_.Pattern = "^[a-zA-Z ,\.]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -307,7 +315,7 @@ Public Function IsUrl(ByVal vnt As Variant) As Boolean
 '''  * FIXME
 '''  */
 ''
-Let IsUrl = Me.Test(vnt, aryPATTERN(RE_PTN.URL))
+Let IsUrl = Me.Test(vnt, aryPATTERN(RE_PTN.url))
 End Function
 
 Public Function IsTel(ByVal vnt As Variant) As Boolean
@@ -410,7 +418,7 @@ End Function
 Public Function IsNumeric(ByVal str As String) As Boolean
 ''' /********************************************************
 '''  * @function isNumeric
-'''  *</br>対象がアルファベットもしくは数字で構成されているか
+'''  *</br>対象が数字で構成されているか
 '''  *</br>否かを判定する。
 '''  *　@param {string} str 判定したい文字列 複数の文字列にも対応する
 '''  *　@return {boolean}{ True : OK, False : NG }
@@ -424,7 +432,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[0123456789]+$"
+objRegExp_.Pattern = "^[0123456789]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -455,7 +463,7 @@ For i = 1 To Len(str)
     aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[-0123456789.]+$"
+objRegExp_.Pattern = "^[-0123456789.]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -486,7 +494,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[0123456789 ]+$"
+objRegExp_.Pattern = "^[0123456789 ]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -517,7 +525,7 @@ For i = 1 To Len(str)
         aryPTN(i - 1) = Mid$(str, i, 1)
 Next i
 '    Console.dump (aryPTN)
-objRegExp_.pattern = "^[a-zA-Z]+$"
+objRegExp_.Pattern = "^[a-zA-Z]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 For i = 1 To Len(str)
@@ -545,7 +553,7 @@ End If
 Let IsString = blnRtn
 End Function
 
-Public Function IsJsonObject(ByVal str As String) As Boolean
+Public Function IsJsonString(ByVal str As String) As Boolean
 ''' /********************************************************
 '''  *@function isJsonObject
 '''  *<pre>文字列が、JSONのObject形式かを判定する。
@@ -562,7 +570,7 @@ ElseIf Me.StartWith(Me.TrimSpace(str)) = "[" And Me.EndWith(Me.TrimSpace(str)) =
 Else
         blnRet = False
 End If
-IsJsonObject = blnRet
+IsJsonString = blnRet
 End Function
 
 Public Function SqueezeSpace(ByVal str As String) As String
@@ -574,12 +582,12 @@ Public Function SqueezeSpace(ByVal str As String) As String
 '''  *　@return {String} 変換後の文字列
 '''  */
 Dim strTemp As String
-objRegExp_.pattern = "[　\t]"
+objRegExp_.Pattern = "[　\t]"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 strTemp = objRegExp_.Replace(str, " ")
 
-objRegExp_.pattern = "\s{2,}"
+objRegExp_.Pattern = "\s{2,}"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 SqueezeSpace = objRegExp_.Replace(strTemp, " ")
@@ -594,7 +602,7 @@ Public Function DeleteSpace(ByVal str As String) As String
 '''  *　@param {string} str 変換したい文字列
 '''  *　@return {String} 変換後の文字列
 '''  */
-objRegExp_.pattern = "[ 　]"
+objRegExp_.Pattern = "[ 　]"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 DeleteSpace = objRegExp_.Replace(str, "")
@@ -610,11 +618,11 @@ Public Function DeleteWhiteSpace(ByVal str As String) As String
 '''  *　@return {String} 変換後の文字列
 '''  */
 Dim temp As String
-objRegExp_.pattern = "\s+"
+objRegExp_.Pattern = "\s+"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 temp = objRegExp_.Replace(str, "")
-objRegExp_.pattern = "　"
+objRegExp_.Pattern = "　"
 DeleteWhiteSpace = objRegExp_.Replace(temp, "")
 End Function
 
@@ -629,7 +637,7 @@ Public Function Strip(ByVal str As String, Optional strDel As String = vbLf) As 
 '''  */
 Dim strBuff As String
 strBuff = strDel & "+"
-objRegExp_.pattern = strBuff
+objRegExp_.Pattern = strBuff
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 Strip = objRegExp_.Replace(str, "")
@@ -645,7 +653,7 @@ Public Function StripEx(ByVal str As String, regpattern As String) As String
 '''  *　@return {String} 変換後の文字列
 '''  */
 Dim strBuff As String
-objRegExp_.pattern = regpattern
+objRegExp_.Pattern = regpattern
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 StripEx = objRegExp_.Replace(str, "")
@@ -709,6 +717,16 @@ Next i
 RandamString = strRet
 End Function
 
+Public Function MatchWith(ByVal str As String, ByVal match_str As String) As Boolean
+'''' ********************************************************
+''
+Dim start_str As String
+Let start_str = Me.StartWith(str, Len(match_str))
+Let MatchWith = Me.EqualIgnore(start_str, match_str, ignorecase:=False)
+''
+End Function
+
+
 Public Function StartWith(ByVal str As String, Optional lngNum As Long = 1) As String
 ''' /********************************************************
 '''  * @function startWith
@@ -718,7 +736,7 @@ Public Function StartWith(ByVal str As String, Optional lngNum As Long = 1) As S
 '''  *　@param {Long} lngNum 【Optional】文字数 Default = 1
 '''  *　@return {String} 最初の文字
 '''  */
-StartWith = Left(str, lngNum)
+StartWith = left(str, lngNum)
 End Function
 
 Public Function EndWith(ByVal str As String, Optional lngNum As Long = 1) As String
@@ -745,7 +763,7 @@ Public Function StartsWith(ByVal str As String, ByVal substr As String) As Boole
 '
 ''' *********************************************************
 Dim buff As String
-buff = VBA.Left(str, VBA.Len(substr))
+buff = VBA.left(str, VBA.Len(substr))
 If buff = substr Then
     StartsWith = True
 Else
@@ -800,7 +818,7 @@ Public Function TrimRightSpace(ByVal str As String) As String
 ''''  *　@return {String} 変換後の文字列
 ''''  */
 Dim temp As String
-objRegExp_.pattern = "[\s　]+$"
+objRegExp_.Pattern = "[\s　]+$"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 TrimRightSpace = objRegExp_.Replace(str, "")
@@ -816,10 +834,48 @@ Public Function TrimLeftSpace(ByVal str As String) As String
 ''''  *　@return {String} 変換後の文字列
 ''''  */
 Dim temp As String
-objRegExp_.pattern = "^[\s　]+"
+objRegExp_.Pattern = "^[\s　]+"
 objRegExp_.ignorecase = False
 objRegExp_.Global = True
 TrimLeftSpace = objRegExp_.Replace(str, "")
+''
+End Function
+
+Public Function GetLeftIndent(ByVal str As String) As String
+'''' /********************************************************
+''''  * @function GetLeftIndent
+''''  *　@param {string} str 文字列
+''''  *　@return {String} indent (spaces)
+''''  */
+objRegExp_.Pattern = "^([\s]+)"
+objRegExp_.ignorecase = False
+objRegExp_.Global = False
+Dim matches As MatchCollection
+Set matches = objRegExp_.Execute(str)
+If matches.Count = 0 Then
+    Let GetLeftIndent = ""
+Else
+    Let GetLeftIndent = matches.Item(0).Value
+End If
+''
+End Function
+
+Public Function GetIndentAndElement(ByVal str As String, Optional ByVal num As Variant) As Variant
+'''' ********************************************************
+'''' * @function GetIndentAndElement
+'''' *
+If VBA.IsMissing(num) Then
+    Let num = 4
+End If
+Dim ary As Variant
+Dim indent As String
+Dim level As Long
+Dim elm As String
+Let indent = Me.GetLeftIndent(str)
+Let level = VBA.Len(indent) / num
+Let elm = Me.TrimLeftSpace(str)
+Let ary = Array(level, indent, elm)
+Let GetIndentAndElement = ary
 ''
 End Function
 
@@ -955,7 +1011,7 @@ Public Function Quote(ByVal str As String, Optional strQuote As Variant = vbTab)
 '''  *　@param {Variant<string>} strQuate 引用符文字列
 '''  *　@return {String}変換後の文字列
 '''  */
-objRegExp_.pattern = "^"
+objRegExp_.Pattern = "^"
 Quote = objRegExp_.Replace(str, strQuote)
 End Function
 
@@ -972,7 +1028,7 @@ Public Function Quotes(ByVal str As String _
 '''  */
 Dim aryPTNTemp As Variant
 aryPTNTemp = Split(str, vbCrLf)
-objRegExp_.pattern = "^"
+objRegExp_.Pattern = "^"
 Dim r As Long
 For r = LBound(aryPTNTemp) To UBound(aryPTNTemp)
         aryPTNTemp(r) = objRegExp_.Replace(aryPTNTemp(r), strQuote)
@@ -1001,7 +1057,7 @@ End If
 IsQuoted = blnRtn
 End Function
 
-Public Function Indent(ByVal str As String _
+Public Function indent(ByVal str As String _
                     , Optional strIndent As Variant = vbTab _
                     , Optional lngNum As Variant = 1) As String
 ''' /********************************************************
@@ -1018,8 +1074,8 @@ Dim strTemp As String
 For i = 1 To lngNum
         strTemp = strTemp & strIndent
 Next i
-objRegExp_.pattern = "^"
-Indent = objRegExp_.Replace(str, strTemp)
+objRegExp_.Pattern = "^"
+indent = objRegExp_.Replace(str, strTemp)
 End Function
 
 Public Function Indents(ByVal str As String _
@@ -1044,7 +1100,7 @@ Next i
 Dim aryPTNTemp As Variant
 aryPTNTemp = Split(str, vbCrLf)
 
-objRegExp_.pattern = "^"
+objRegExp_.Pattern = "^"
 Dim r As Long
 For r = LBound(aryPTNTemp) To UBound(aryPTNTemp)
         aryPTNTemp(r) = objRegExp_.Replace(aryPTNTemp(r), strTemp)
@@ -1099,6 +1155,19 @@ Public Function FormatString(ByVal str As String, ByVal strFormat As String) As 
 '''  *　@return {String}変換後の文字列
 '''  */
 FormatString = format(str, strFormat)
+End Function
+
+Public Function ToCharArray(ByVal str As String) As Variant
+'''' ********************************************************
+''
+Dim ary() As Variant
+ReDim ary(1 To VBA.Len(str))
+Dim i As Long
+For i = LBound(ary) To UBound(ary)
+    Let ary(i) = VBA.Mid(str, i, 1)
+Next i
+Let ToCharArray = ary
+''
 End Function
 
 Public Function Repeat(ByVal str As String, lngNum As Long) As String
@@ -1235,7 +1304,7 @@ End If
 Camelize = Join(aryPTNRet, strSplit)
 End Function
 
-Public Function decamelize(str As String, Optional ByVal sep As Variant) As String
+Public Function Decamelize(str As String, Optional ByVal sep As Variant) As String
 ''' /********************************************************
 '''  * @function decamelize
 '''  */
@@ -1244,17 +1313,15 @@ If IsMissing(sep) Then
 End If
 Dim converted As String
 ''
-objRegExp_.pattern = "([a-z\\d])([A-Z])"
+objRegExp_.Pattern = "([a-z\\d])([A-Z])"
 objRegExp_.Global = True
 Let converted = objRegExp_.Replace(str, "$1" & sep & "$2")
-objRegExp_.pattern = "([A-Z]+)([A-Z][a-z\\d]+)"
+objRegExp_.Pattern = "([A-Z]+)([A-Z][a-z\\d]+)"
 objRegExp_.Global = True
 Let converted = objRegExp_.Replace(converted, "$1" & sep & "$2")
 ''
-Let decamelize = VBA.LCase(converted)
+Let Decamelize = VBA.LCase(converted)
 End Function
-
-
 
 Public Function SnakeUpperCase(str As String, Optional ByVal strSplit As Variant) As String
 ''' /********************************************************
@@ -1293,42 +1360,11 @@ Else
 End If
 End Function
 
-Public Function Substitute4Template(ByVal str As String, _
-          ByVal orgStr As String, ByVal destStr As String, _
-          Optional num As Variant) As String
-''' /********************************************************
-'''  * @function Substitute
-'''  */
-Dim orgStrVar As String
-Let orgStrVar = "${" + orgStr + "}"
-If IsMissing(num) Then
-    Substitute4Template = WorksheetFunction.Substitute(str, orgStrVar, destStr)
-Else
-    Substitute4Template = WorksheetFunction.Substitute(str, orgStrVar, destStr, num)
-End If
-End Function
-
-Public Function Substitute4Mustache(ByVal str As String, _
-          ByVal orgStr As String, ByVal destStr As String, _
-          Optional num As Variant) As String
-''' /********************************************************
-'''  * @function Substitute
-'''  */
-Dim orgStrVar As String
-Let orgStrVar = "{{" + orgStr + "}}"
-If IsMissing(num) Then
-    Substitute4Mustache = WorksheetFunction.Substitute(str, orgStrVar, destStr)
-Else
-    Substitute4Mustache = WorksheetFunction.Substitute(str, orgStrVar, destStr, num)
-End If
-End Function
-
-
-Public Function encodeUrl(ByVal str As String) As String
+Public Function EncodeUrl(ByVal str As String) As String
 ''' /********************************************************
 '''  * @function encodeUrl
 '''  */
-encodeUrl = WorksheetFunction.encodeUrl(str)
+EncodeUrl = WorksheetFunction.EncodeUrl(str)
 End Function
 
 Public Function ReplaceString(ByVal str As String, _
@@ -1358,7 +1394,7 @@ Public Function ReplaceString(ByVal str As String, _
     Else
         objRegExp_.ignorecase = True  '大小区別しない
     End If
-    objRegExp_.pattern = orgStr
+    objRegExp_.Pattern = orgStr
     ReplaceString = objRegExp_.Replace(str, destStr)
 End Function
 
@@ -1455,7 +1491,7 @@ Public Function SubStringBefore(str As String _
 Dim pos As Long
 pos = IndexOf(str, strKey, lngStartPos)
 If IsMissing(lngStartPos) Then
-        SubStringBefore = Left(str, pos)
+        SubStringBefore = left(str, pos)
 Else
         If pos = 0 Then
             SubStringBefore = ""
@@ -1513,9 +1549,9 @@ Public Function ConvertAster(strPattern As String) As String
 '''  *　FIXME□□RegExpの利用も含め、どう使うかを整理。
 '''  */
 Dim s As String
-objRegExp_.pattern = "\."
+objRegExp_.Pattern = "\."
 s = objRegExp_.Replace(strPattern, "\.")
-objRegExp_.pattern = "\*"
+objRegExp_.Pattern = "\*"
 ConvertAster = objRegExp_.Replace(s, ".*")
 End Function
 
@@ -1611,6 +1647,34 @@ IsVariableInTemplate = False
 ''
 End Function
 
+Public Function IsVariableInTemplateOfMustache(ByVal str As String) As Boolean
+''' /********************************************************
+'''  *@function IsVariableInTemplateOfMustache
+'''  *<pre>テンプレート文字列の中に、{{xxx}}のVariable設定が
+'''  *あるかを判定する。
+'''  *</pre>
+'''  *　@param {String} str 対象文字列
+'''  *　@return {Boolean} IsVariableInTemplateOfMustache
+'''  */
+Dim aryPTNTemp As Variant
+aryPTNTemp = Split(str, "{{")
+Dim aryPTN() As Variant
+ReDim aryPTN(LBound(aryPTNTemp) To UBound(aryPTNTemp))
+Dim i As Long
+For i = LBound(aryPTNTemp) To UBound(aryPTNTemp)
+    If Not aryPTNTemp(i) = "" Then
+        Let aryPTN(i) = VBA.Mid(aryPTNTemp(i), 1, VBA.InStr(aryPTNTemp(i), "}}") - 1)
+    End If
+Next i
+''
+If Not Join(aryPTN, "") = "" Then
+    Let IsVariableInTemplateOfMustache = True
+Else
+    Let IsVariableInTemplateOfMustache = False
+End If
+''
+End Function
+
 Public Function GetVariablesInTemplate(ByVal str As String) As Variant
 ''' /********************************************************
 '''  *@function isVariableInTemplate
@@ -1636,8 +1700,64 @@ GetVariablesInTemplate = aryPTN
 ''
 End Function
 
+Public Function GetVariablesInTemplateOfMustache(ByVal str As String) As Variant
+''' /********************************************************
+'''  *@function isVariableInTemplate
+'''  *<pre>テンプレート文字列の中に、${xxx}のVariable設定が
+'''  *あるかを判定する。
+'''  *</pre>
+'''  *　@param {String} str 対象文字列
+'''  *　@return {Boolean} isVariableInTemplate
+'''  */
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim aryPTNTemp As Variant
+aryPTNTemp = Split(str, "{{")
+Dim aryPTN() As Variant
+ReDim aryPTN(LBound(aryPTNTemp) To UBound(aryPTNTemp))
+Dim i As Long
+For i = LBound(aryPTNTemp) To UBound(aryPTNTemp)
+    If Not aryPTNTemp(i) = "" Then
+        Let aryPTN(i) = VBA.Mid(aryPTNTemp(i), 1, VBA.InStr(aryPTNTemp(i), "}}") - 1)
+    End If
+Next i
+''
+Call C_Array.DeleteEmptyElement(aryPTN)
+GetVariablesInTemplateOfMustache = aryPTN
+''
+End Function
 
-Public Function RenderTemplate(ByVal templ As String, ByRef dict As Dictionary) As String
+Public Function Substitute4Template(ByVal str As String, _
+          ByVal orgStr As String, ByVal destStr As String, _
+          Optional num As Variant) As String
+''' /********************************************************
+'''  * @function Substitute
+'''  */
+Dim orgStrVar As String
+Let orgStrVar = "${" + orgStr + "}"
+If IsMissing(num) Then
+    Substitute4Template = WorksheetFunction.Substitute(str, orgStrVar, destStr)
+Else
+    Substitute4Template = WorksheetFunction.Substitute(str, orgStrVar, destStr, num)
+End If
+End Function
+
+Public Function Substitute4Mustache(ByVal str As String, _
+          ByVal orgStr As String, ByVal destStr As String, _
+          Optional num As Variant) As String
+''' /********************************************************
+'''  * @function Substitute
+'''  */
+Dim orgStrVar As String
+Let orgStrVar = "{{" + orgStr + "}}"
+If IsMissing(num) Then
+    Substitute4Mustache = WorksheetFunction.Substitute(str, orgStrVar, destStr)
+Else
+    Substitute4Mustache = WorksheetFunction.Substitute(str, orgStrVar, destStr, num)
+End If
+End Function
+
+Public Function RenderTemplate(ByVal templ As String, ByRef dict As Dictionary, Optional ByVal style As Variant) As String
 ''' /********************************************************
 '''  *@function RenderTemplate
 '''  */
@@ -1645,18 +1765,38 @@ Dim aryVariables() As Variant
 Dim rtn As String
 Let rtn = templ
 ''
-If Not Me.IsVariableInTemplate(rtn) Then
+If VBA.IsMissing(style) Then
+    Let style = "${}"
+End If
+If style = "${}" Then
+    If Not Me.IsVariableInTemplate(rtn) Then
     RenderTemplate = rtn
     Exit Function
+    End If
+ElseIf style = "{{}}" Then
+    If Not Me.IsVariableInTemplateOfMustache(rtn) Then
+    RenderTemplate = rtn
+    Exit Function
+    End If
 End If
 ''
-Let aryVariables = Me.GetVariablesInTemplate(templ)
+If style = "${}" Then
+    Let aryVariables = Me.GetVariablesInTemplate(templ)
+ElseIf style = "{{}}" Then
+    Let aryVariables = Me.GetVariablesInTemplateOfMustache(templ)
+End If
+''
 Dim elm As Variant
 Dim i As Long
 For i = LBound(aryVariables) To UBound(aryVariables)
     Let elm = aryVariables(i)
     If dict.Exists(elm) Then
+        If style = "${}" Then
         Let rtn = Me.Substitute4Template(rtn, elm, dict.item(elm))
+        ElseIf style = "{{}}" Then
+            ''Console.log elm
+            Let rtn = Me.Substitute4Mustache(rtn, elm, dict.item(elm))
+        End If
     End If
 Next i
 Let RenderTemplate = rtn
@@ -1670,10 +1810,21 @@ Public Function GetTemporaryStr() As String
 ''
 Dim rtn As String
 Dim objFSO As Object
-Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set objFSO = createObject("Scripting.FileSystemObject")
 Let rtn = objFSO.GetBaseName(objFSO.GetTempName)
 Let GetTemporaryStr = rtn
 Set objFSO = Nothing
+''
+End Function
+
+Public Function DeleteEmptyRow(ByVal str As String) As String
+'''' ********************************************************
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim ary As Variant
+Let ary = Split(str, vbLf)
+Call C_Array.DeleteEmptyElement(ary)
+Let DeleteEmptyRow = Join(ary, vbCrLf)
 ''
 End Function
 
@@ -1684,7 +1835,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Sub unittest()
+Sub UnitTest()
     Dim CONS_MODULE_NAME As String
     Let CONS_MODULE_NAME = "C_String.unitTest"
     '//--------------------------------------
@@ -1748,93 +1899,93 @@ Public Function passwordDesp(str As String)
         aryPTN(i - 1) = Mid$(str, i, 1)
     Next i
 
-    Set objDict = CreateObject("Scripting.DictionaryPTN")
-    objDict.Add "a", "エイ"
-    objDict.Add "b", "ビィ"
-    objDict.Add "c", "シィ"
-    objDict.Add "d", "ディ"
-    objDict.Add "e", "イー"
-    objDict.Add "f", "エフ"
-    objDict.Add "g", "ジィ"
-    objDict.Add "h", "エッチ"
-    objDict.Add "i", "アイ"
-    objDict.Add "j", "ジェイ"
-    objDict.Add "k", "ケイ"
-    objDict.Add "l", "エル"
-    objDict.Add "m", "エム"
-    objDict.Add "n", "エヌ"
-    objDict.Add "o", "オー"
-    objDict.Add "p", "ピィ"
-    objDict.Add "q", "キュー"
-    objDict.Add "r", "アール"
-    objDict.Add "s", "エス"
-    objDict.Add "t", "ティ"
-    objDict.Add "u", "ユー"
-    objDict.Add "v", "ブィ"
-    objDict.Add "w", "ダブリュー"
-    objDict.Add "x", "エックス"
-    objDict.Add "y", "ワイ"
-    objDict.Add "z", "ゼット"
-    objDict.Add "A", "エイ（大文字）"
-    objDict.Add "B", "ビィ（大文字）"
-    objDict.Add "C", "シィ（大文字）"
-    objDict.Add "D", "ディ（大文字）"
-    objDict.Add "E", "イー（大文字）"
-    objDict.Add "F", "エフ（大文字）"
-    objDict.Add "G", "ジィ（大文字）"
-    objDict.Add "H", "エッチ（大文字）"
-    objDict.Add "I", "アイ（大文字）"
-    objDict.Add "J", "ジェイ（大文字）"
-    objDict.Add "K", "ケイ（大文字）"
-    objDict.Add "L", "エル（大文字）"
-    objDict.Add "M", "エム（大文字）"
-    objDict.Add "N", "エヌ（大文字）"
-    objDict.Add "O", "オー（大文字）"
-    objDict.Add "P", "ピィ（大文字）"
-    objDict.Add "Q", "キュー（大文字）"
-    objDict.Add "R", "アール（大文字）"
-    objDict.Add "S", "エス（大文字）"
-    objDict.Add "T", "ティ（大文字）"
-    objDict.Add "U", "ユー（大文字）"
-    objDict.Add "V", "ブィ（大文字）"
-    objDict.Add "W", "ダブリュー（大文字）"
-    objDict.Add "X", "エックス（大文字）"
-    objDict.Add "Y", "ワイ（大文字）"
-    objDict.Add "Z", "ゼット（大文字）"
-    objDict.Add "0", "０"
-    objDict.Add "1", "１"
-    objDict.Add "2", "２"
-    objDict.Add "3", "３"
-    objDict.Add "4", "４"
-    objDict.Add "5", "５"
-    objDict.Add "6", "６"
-    objDict.Add "7", "７"
-    objDict.Add "8", "８"
-    objDict.Add "9", "９"
-    objDict.Add "-", "ハイフン"
-    objDict.Add "^", "ハット"
-    objDict.Add "@", "アト"
-    objDict.Add "[", "大括弧左"
-    objDict.Add ";", "セミコロン"
-    objDict.Add "]", "大括弧右"
-    objDict.Add ",", "コロン"
-    objDict.Add "!", "アテンション"
-    objDict.Add "#", "シャープ"
-    objDict.Add "$", "ドル"
-    objDict.Add "%", "パーセント"
-    objDict.Add "&", "アンド"
-    objDict.Add "'", "シングルクォート"
-    objDict.Add "(", "丸括弧左"
-    objDict.Add ")", "丸括弧右"
-    objDict.Add "=", "イコール"
-    objDict.Add "~", "チルド"
-    objDict.Add "`", "グラーブアクセント"
-    objDict.Add "{", "波括弧左"
-    objDict.Add "+", "プラス"
-    objDict.Add "}", "波括弧右"
-    objDict.Add "<", "小なり"
-    objDict.Add ">", "大なり"
-    objDict.Add "_", "アンダーバー"
+    Set objDict = createObject("Scripting.DictionaryPTN")
+    objDict.add "a", "エイ"
+    objDict.add "b", "ビィ"
+    objDict.add "c", "シィ"
+    objDict.add "d", "ディ"
+    objDict.add "e", "イー"
+    objDict.add "f", "エフ"
+    objDict.add "g", "ジィ"
+    objDict.add "h", "エッチ"
+    objDict.add "i", "アイ"
+    objDict.add "j", "ジェイ"
+    objDict.add "k", "ケイ"
+    objDict.add "l", "エル"
+    objDict.add "m", "エム"
+    objDict.add "n", "エヌ"
+    objDict.add "o", "オー"
+    objDict.add "p", "ピィ"
+    objDict.add "q", "キュー"
+    objDict.add "r", "アール"
+    objDict.add "s", "エス"
+    objDict.add "t", "ティ"
+    objDict.add "u", "ユー"
+    objDict.add "v", "ブィ"
+    objDict.add "w", "ダブリュー"
+    objDict.add "x", "エックス"
+    objDict.add "y", "ワイ"
+    objDict.add "z", "ゼット"
+    objDict.add "A", "エイ（大文字）"
+    objDict.add "B", "ビィ（大文字）"
+    objDict.add "C", "シィ（大文字）"
+    objDict.add "D", "ディ（大文字）"
+    objDict.add "E", "イー（大文字）"
+    objDict.add "F", "エフ（大文字）"
+    objDict.add "G", "ジィ（大文字）"
+    objDict.add "H", "エッチ（大文字）"
+    objDict.add "I", "アイ（大文字）"
+    objDict.add "J", "ジェイ（大文字）"
+    objDict.add "K", "ケイ（大文字）"
+    objDict.add "L", "エル（大文字）"
+    objDict.add "M", "エム（大文字）"
+    objDict.add "N", "エヌ（大文字）"
+    objDict.add "O", "オー（大文字）"
+    objDict.add "P", "ピィ（大文字）"
+    objDict.add "Q", "キュー（大文字）"
+    objDict.add "R", "アール（大文字）"
+    objDict.add "S", "エス（大文字）"
+    objDict.add "T", "ティ（大文字）"
+    objDict.add "U", "ユー（大文字）"
+    objDict.add "V", "ブィ（大文字）"
+    objDict.add "W", "ダブリュー（大文字）"
+    objDict.add "X", "エックス（大文字）"
+    objDict.add "Y", "ワイ（大文字）"
+    objDict.add "Z", "ゼット（大文字）"
+    objDict.add "0", "０"
+    objDict.add "1", "１"
+    objDict.add "2", "２"
+    objDict.add "3", "３"
+    objDict.add "4", "４"
+    objDict.add "5", "５"
+    objDict.add "6", "６"
+    objDict.add "7", "７"
+    objDict.add "8", "８"
+    objDict.add "9", "９"
+    objDict.add "-", "ハイフン"
+    objDict.add "^", "ハット"
+    objDict.add "@", "アト"
+    objDict.add "[", "大括弧左"
+    objDict.add ";", "セミコロン"
+    objDict.add "]", "大括弧右"
+    objDict.add ",", "コロン"
+    objDict.add "!", "アテンション"
+    objDict.add "#", "シャープ"
+    objDict.add "$", "ドル"
+    objDict.add "%", "パーセント"
+    objDict.add "&", "アンド"
+    objDict.add "'", "シングルクォート"
+    objDict.add "(", "丸括弧左"
+    objDict.add ")", "丸括弧右"
+    objDict.add "=", "イコール"
+    objDict.add "~", "チルド"
+    objDict.add "`", "グラーブアクセント"
+    objDict.add "{", "波括弧左"
+    objDict.add "+", "プラス"
+    objDict.add "}", "波括弧右"
+    objDict.add "<", "小なり"
+    objDict.add ">", "大なり"
+    objDict.add "_", "アンダーバー"
     
     For i = 0 To Len(str) - 1
         aryPTNBuff(i) = objDict(aryPTN(i))

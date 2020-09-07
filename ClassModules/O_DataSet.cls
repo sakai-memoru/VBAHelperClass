@@ -60,7 +60,7 @@ Set key_ = Nothing
 ''
 End Sub
 
-Public Function ToString() As String
+Public Function toString() As String
 '''' /********************************************************
 ''''  *@function ToString
 ''''  *@return {String}
@@ -73,12 +73,12 @@ Dim strTempKey As String
 Dim i As Long
 For i = 1 To clt_.Count
     If C_String.IsNumeric(key_.item(i)) Then
-        str = str & C_Commons.ToString(clt_.item(i)) & ","
+        str = str & C_Commons.toString(clt_.item(i)) & ","
     Else
-        str = str & C_Commons.ToString(key_.item(i)) & ":" & C_Commons.ToString(clt_.item(i)) & ","
+        str = str & C_Commons.toString(key_.item(i)) & ":" & C_Commons.toString(clt_.item(i)) & ","
     End If
 Next i
-ToString = Left(str, Len(str) - 1)
+toString = left(str, Len(str) - 1)
 Set C_String = Nothing
 ''
 End Function
@@ -90,7 +90,7 @@ Public Function ToSource() As String
 ''''  */
 Dim i As Long
 Dim str As String
-str = Me.ToString()
+str = Me.toString()
 ToSource = "O_DataSet Count= " & clt_.Count & " [" & str & "]"
 ''
 End Function
@@ -161,7 +161,7 @@ Dim dict As Dictionary
 Set dict = New Dictionary
 Dim ky As Variant
 For Each ky In key_
-    Call dict.Add(key_(ky), clt_(ky))
+    Call dict.add(key_(ky), clt_(ky))
 Next ky
 Set ToDictionary = dict
 Set dict = Nothing
@@ -181,9 +181,9 @@ Set dict = New Dictionary
 Dim i As Long
 For i = LBound(aryHeader) To UBound(aryHeader)
     If Me.Exists(aryHeader(i)) Then
-        Call dict.Add(aryHeader(i), clt_.item(aryHeader(i)))
+        Call dict.add(aryHeader(i), clt_.item(aryHeader(i)))
     Else
-        Call dict.Add(aryHeader(i), "")
+        Call dict.add(aryHeader(i), "")
     End If
 Next i
 Set Extract = dict
@@ -219,12 +219,12 @@ If IsMissing(key) Then
     key = CStr(clt_.Count + 1)
 End If
 If C_Collection.Exists(clt_, key) Then
-    Call clt_.Remove(key)
-    Call key_.Remove(key)
+    Call clt_.remove(key)
+    Call key_.remove(key)
 End If
 
-Call clt_.Add(value, key)
-Call key_.Add(key, key)
+Call clt_.add(value, key)
+Call key_.add(key, key)
 Set PutValue = Me
 ''
 End Function
@@ -232,8 +232,10 @@ End Function
 Public Function PutByKeyword(ByVal sheetName As Variant _
                     , ByVal searchWord As Variant _
                     , Optional ByVal key As Variant _
-                    , Optional Row As Long = 0 _
-                    , Optional column As Long = 1) As O_DataSet
+                    , Optional Row As Variant = 0 _
+                    , Optional column As Variant = 1 _
+                    , Optional wbName As Variant _
+                    ) As O_DataSet
 '''' /********************************************************
 ''''  *@function putByKeyword
 ''''  *@param sheetname
@@ -245,16 +247,23 @@ Public Function PutByKeyword(ByVal sheetName As Variant _
 ''''  */
 Dim C_String As C_String
 Set C_String = New C_String
+''
+If IsMissing(wbName) Then
+    Let wbName = ThisWorkbook.Name
+End If
+Dim wb As Workbook
+Set wb = Workbooks(wbName)
+''
 Dim rngFindResult As Range
 Dim rngFindFirst  As Range
 Dim rngUsed As Range
-Set rngUsed = ThisWorkbook.Worksheets(sheetName).UsedRange
-Set rngFindResult = rngUsed.Find(What:=searchWord, Lookat:=xlWhole)
+Set rngUsed = wb.Worksheets(sheetName).UsedRange
+Set rngFindResult = rngUsed.find(what:=searchWord, Lookat:=xlWhole)
 Set rngFindFirst = rngFindResult
 Dim strTemp As String
 Dim ary() As Variant
 Dim i As Long
-i = -1
+Let i = -1
 
 If IsMissing(key) Then
     key = CStr(clt_.Count + 1)
@@ -289,10 +298,12 @@ Set PutByKeyword = Me
 End Function
 
 Public Function PutByName(ByVal sheetName As Variant _
-                    , ByVal name As Variant _
+                    , ByVal Name As Variant _
                     , Optional ByVal key As Variant _
                     , Optional Row As Long = 0 _
-                    , Optional column As Long = 0) As O_DataSet
+                    , Optional column As Long = 0 _
+                    , Optional wbName As Variant _
+                    ) As O_DataSet
 '''' /********************************************************
 ''''  *@function putByName
 ''''  *@param sheetname
@@ -304,22 +315,65 @@ Public Function PutByName(ByVal sheetName As Variant _
 ''''  */
 Dim C_Range As C_Range
 Set C_Range = New C_Range
+Dim C_String As C_String
+Set C_String = New C_String
+''
+If IsMissing(wbName) Then
+    Let wbName = ThisWorkbook.Name
+End If
+Dim wb As Workbook
+Set wb = Workbooks(wbName)
+''
 If IsMissing(key) Then
-    key = name
+    key = Name
 End If
 Dim vnt As Variant
 Dim rng As Range
-Set rng = ThisWorkbook.Names(name).RefersToRange.Offset(Row, column)
-    
-If IsObject(C_Range.ToJsonObject(rng)) Then
-    Set vnt = C_Range.ToJsonObject(rng)
+Set rng = wb.Names(Name).RefersToRange.Offset(Row, column)
+Dim val As String
+Let val = rng.value
+''
+If C_String.IsJsonString(val) Then
+    Set vnt = JsonConverter.ParseJson(val)
 Else
-    Let vnt = C_Range.ToJsonObject(rng)
+    Let vnt = val
 End If
-
+''
 Call Me.PutValue(vnt, key)
 Set PutByName = Me
 ''
+End Function
+
+Public Function PutByCurrentTable( _
+                      ByVal sheetName As Variant _
+                    , ByVal searchWord As Variant _
+                    , Optional ByVal key As Variant _
+                    , Optional Row As Long = 0 _
+                    , Optional column As Long = 1 _
+                    , Optional wbName As Variant _
+                    ) As O_DataSet
+'''' ********************************************************
+Dim C_Range As C_Range
+Set C_Range = New C_Range
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+''
+If IsMissing(wbName) Then
+    Let wbName = ThisWorkbook.Name
+End If
+''
+If IsMissing(key) Then
+    key = CStr(clt_.Count + 1)
+End If
+Dim rng As Range
+Dim ary() As Variant
+Set rng = C_Range.GetCurrentRegionByKeyword(searchWord, sheetName, Row, column, bookName:=wbName)
+Dim aryary() As Variant
+Let aryary = C_Array.FilterRowForArrayArray(rng.value, 1, 2)
+Let ary = C_Array.ArrayArrayToArrayDictionary(aryary)
+
+Call Me.PutValue(ary, key)
+Set PutByCurrentTable = Me
 End Function
 
 Public Function PutByRange(ByRef rng As Range _
@@ -344,33 +398,6 @@ Call Me.PutValue(C_Range.ToJsonObject(rng.Offset(Row, column)), key)
 Set PutByRange = Me
 ''
 End Function
-
-
-Public Function PutByCurrentTable( _
-                      ByVal sheetName As Variant _
-                    , ByVal searchWord As Variant _
-                    , Optional ByVal key As Variant _
-                    , Optional Row As Long = 0 _
-                    , Optional column As Long = 1) As O_DataSet
-'''' ********************************************************
-Dim C_Range As C_Range
-Set C_Range = New C_Range
-Dim C_Array As C_Array
-Set C_Array = New C_Array
-If IsMissing(key) Then
-    key = CStr(clt_.Count + 1)
-End If
-Dim rng As Range
-Dim ary() As Variant
-Set rng = C_Range.GetCurrentRegionByKeyword(searchWord, sheetName, Row, column)
-Dim aryary() As Variant
-Let aryary = C_Array.FilterRowForArrayArray(rng.value, 1, 2)
-Let ary = C_Array.ArrayArrayToArrayDictionary(aryary)
-
-Call Me.PutValue(ary, key)
-Set PutByCurrentTable = Me
-End Function
-
 
 'Public Function appendArray(Optional ByVal key As Variant _
 '                        , Optional cnt As Variant) As Variant
@@ -452,14 +479,14 @@ IsArrayEx = IsArray(clt_.item(key_or_idx))
 ''
 End Function
 
-Public Function Keys() As Variant
+Public Function keys() As Variant
 '''' /********************************************************
 ''''  *@function Keys
 ''''  *@return {Variant<String>(i)} Keys
 ''''  */
 Dim C_Collection As C_Collection
 Set C_Collection = New C_Collection
-Keys = C_Collection.ToArray(key_)
+keys = C_Collection.ToArray(key_)
 Set C_Collection = Nothing
 ''
 End Function
@@ -483,7 +510,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
     Dim dict As Dictionary
     Set dict = New Dictionary
     Dim ary As Variant

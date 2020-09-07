@@ -40,7 +40,7 @@ Private Sub Class_Initialize()
 '''  * @event Class_Initialize
 '''  */
 'Constructor
-    Set builder_ = CreateObject("System.Text.StringBuilder")
+    Set builder_ = createObject("System.Text.StringBuilder")
 End Sub
 
 Private Sub Class_Terminated()
@@ -79,7 +79,7 @@ End Property
 Property Get LengthW() As Integer
     Dim C_String As C_String
     Set C_String = New C_String
-    LengthW = C_String.Length(builder_.ToString)
+    LengthW = C_String.Length(builder_.toString)
     Set C_String = Nothing
 End Property
 
@@ -96,7 +96,7 @@ End Property
 '//--------------------------------------------------------
 '// Class Method (Function)
 '//
-Public Function Append(ByVal val_or_char As Variant _
+Public Function append(ByVal val_or_char As Variant _
          , Optional ByVal repeat_or_startIndex As Integer = 0 _
          , Optional ByVal Count As Integer = 0)
 ''' /********************************************************
@@ -112,7 +112,7 @@ Public Function Append(ByVal val_or_char As Variant _
         If Count > 0 Then
             Call builder_.Append_4(val_or_char, repeat_or_startIndex, Count)
         Else
-            Call builder_.Append(val_or_char, repeat_or_startIndex)
+            Call builder_.append(val_or_char, repeat_or_startIndex)
         End If
     Else
         ' if paramter's count is one
@@ -130,13 +130,13 @@ Public Function Append(ByVal val_or_char As Variant _
             Case "Error", "Empty", "Null", "Unknown", "Nothing"
             Case Else
                 If IsArray(val_or_char) Then
-                    builder_.Append_3 (C_Commons.ToString(val_or_char))
+                    builder_.Append_3 (C_Commons.toString(val_or_char))
                 Else
                     builder_.Append_18 (val_or_char)
                 End If
         End Select
     End If
-    Set Append = Me
+    Set append = Me
 'System.Text.StringBuilder Append(char value, int repeatCount),
 'System.Text.StringBuilder Append_2(char[] value, int startIndex, int charCount),
 'System.Text.StringBuilder Append_3(string value),
@@ -167,7 +167,7 @@ Public Function Appends(ParamArray pAry())
 '''  */
     Dim i As Long
     For i = LBound(pAry) To UBound(pAry)
-        Call Me.Append(pAry(i))
+        Call Me.append(pAry(i))
     Next i
     Set Appends = Me
 End Function
@@ -228,9 +228,9 @@ Public Function AppendLine(Optional ByVal str As String = "")
 '''  *　@param {String} str
 '''  */
     If Len(str) > 0 Then
-        Me.Append (str)
+        Me.append (str)
     End If
-    Me.Append (vbCrLf)
+    Me.append (vbCrLf)
     Set AppendLine = Me
 End Function
 
@@ -243,9 +243,9 @@ Public Function AppendsLine(ParamArray ary() As Variant)
 '''  */
     Dim i As Long
     For i = LBound(ary) To UBound(ary)
-        Me.Append (ary(i))
+        Me.append (ary(i))
     Next i
-    Me.Append (vbCrLf)
+    Me.append (vbCrLf)
     Set AppendsLine = Me
 End Function
 
@@ -261,10 +261,10 @@ Public Function AppendLines(ParamArray ary() As Variant)
         If TypeName(ary(i)) = "String" Then
             Me.AppendLine (ary(i))
         Else
-            Me.AppendLine (C_Commons.ToString(ary(i)))
+            Me.AppendLine (C_Commons.toString(ary(i)))
         End If
     Next i
-    Append (vbCrLf)
+    append (vbCrLf)
     Set AppendLines = Me
 End Function
 
@@ -310,7 +310,7 @@ Public Function GetHashCode() As Long
     GetHashCode = builder_.GetHashCode
 End Function
 
-Public Function Insert(ByVal Index As Integer, ByVal arg As Variant _
+Public Function insert(ByVal Index As Integer, ByVal arg As Variant _
          , Optional ByVal count1 As Integer = 0 _
          , Optional ByVal count2 As Integer = 0)
 ''' /********************************************************
@@ -328,7 +328,7 @@ Public Function Insert(ByVal Index As Integer, ByVal arg As Variant _
             str = Mid(arg, count1 + 1, count2)
             builder_.Insert_2 Index, str
         Else
-            builder_.Insert Index, arg, count1
+            builder_.insert Index, arg, count1
         End If
     Else
         Select Case TypeName(arg)
@@ -367,7 +367,7 @@ Public Function Insert(ByVal Index As Integer, ByVal arg As Variant _
 'System.Text.StringBuilder Insert_18(int index, System.Object value)
 End Function
 
-Public Function Remove(ByVal startIndex As Integer, ByVal Length As Integer)
+Public Function remove(ByVal startIndex As Integer, ByVal Length As Integer)
 ''' /********************************************************
 '''  * @function Remove
 '''  *</br>[System.Text.StringBuilder]::Remove wrapper
@@ -375,7 +375,7 @@ Public Function Remove(ByVal startIndex As Integer, ByVal Length As Integer)
 '''  *　@param {Integer} startIndex :start position
 '''  *　@param {Integer} Length :string length to delete
 '''  */
-    builder_.Remove startIndex, Length
+    builder_.remove startIndex, Length
 'System.Text.StringBuilder Remove(int startIndex, int length)
 End Function
 
@@ -403,16 +403,16 @@ Public Function Replace(ByVal oldstr As String _
 'System.Text.StringBuilder Replace_4(char oldChar, char newChar, int startIndex, int count)
 End Function
 
-Public Function Clear()
+Public Function clear()
 ''' /********************************************************
 '''  * @function Clear
 '''  *</br> clear stringbuilder object
 '''  */
     Set builder_ = Nothing
-    Set builder_ = CreateObject("System.Text.StringBuilder")
+    Set builder_ = createObject("System.Text.StringBuilder")
 End Function
 
-Public Function Flush(Optional ByVal FileName As Variant _
+Public Function Flush(Optional ByVal fileName As Variant _
                 , Optional ByVal folderPath As Variant)
 ''' /********************************************************
 '''  * @function flush
@@ -437,22 +437,22 @@ Public Function Flush(Optional ByVal FileName As Variant _
     If IsMissing(folderPath) Then
         folderPath = C_File.GetSpecialFolder()
     End If
-    If IsMissing(FileName) Then
+    If IsMissing(fileName) Then
         strFilename = C_File.GetBaseName(strBookPath) & "_" & strDtm & ".log"
     Else
-        strFilename = FileName
+        strFilename = fileName
     End If
     
     strFilePath = C_File.BuildPath(folderPath, strFilename)
         
-    Call C_FileIO.WriteTextAllAsUTF8(strFilePath, Me.ToString())
+    Call C_FileIO.WriteTextAllAsUTF8(strFilePath, Me.toString())
         
     Set C_File = Nothing
     Set C_FileIO = Nothing
 
 End Function
 
-Public Function ToString(Optional ByVal startIndex As Integer = -1 _
+Public Function toString(Optional ByVal startIndex As Integer = -1 _
                 , Optional ByVal Length As Integer = 0) As String
 ''' /********************************************************
 '''  * @function ToString
@@ -463,9 +463,9 @@ Public Function ToString(Optional ByVal startIndex As Integer = -1 _
 '''  *　@return {String}
 '''  */
     If startIndex > -1 And Length > 0 Then
-        ToString = builder_.ToString_2(startIndex, Length)
+        toString = builder_.ToString_2(startIndex, Length)
     Else
-        ToString = builder_.ToString
+        toString = builder_.toString
     End If
 'System.Text.StringBuilder ToString()
 'System.Text.StringBuilder ToString_2(int startIndex, int length)
@@ -477,7 +477,7 @@ Public Function ToSource() As String
 ''' *<br/> stringify object
 ''' * @return {String}
 ''' */
-    ToSource = "Object<O_StringBuilder> " & """" & ToString() & """"
+    ToSource = "Object<O_StringBuilder> " & """" & toString() & """"
     
 End Function
 
@@ -497,12 +497,12 @@ Public Function GetVerType() As Long
     GetVerType = VarType(builder_)
 End Function
 
-Public Function GetObject() As Variant
+Public Function getObject() As Variant
 ''' /********************************************************
 '''  *@function GetObject
 '''  *<br/> get builder object
 '''  */
-    Set GetObject = builder_
+    Set getObject = builder_
 End Function
 
 '/////////////////////////////////////////////////////////////
@@ -512,12 +512,12 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
     Dim obj As Object
 ''AppendLine
     Me.AppendLine ("sak.mit")
     Me.AppendLine ("sakot.miss")
-    Console.dump Me
+    Console.Dump Me
 ''AppendLines
     Call Me.AppendLines("saki.gira", "sk.ao", "sai.iyi", "ski.osu")
 ''Capacity
@@ -529,24 +529,24 @@ Public Sub unittest()
 ''ToSource
     Console.info Me.ToSource
 ''ToString
-    Console.info Me.ToString
+    Console.info Me.toString
 ''AppendFormat
     Call Me.AppendFormat("{0} is {1}", "sak", "mit")
     Call Me.AppendFormat("{0} is {1}", "sak", "mit")
 ''AppendsLine
     Call Me.AppendsLine("")
-    Console.dump Me
+    Console.Dump Me
 ''AppendFormatLine
     Call Me.AppendFormatLine("{0} is {1}", "sakot", "miss")
 ''flush
     Call Me.Flush
 ''Object
     Console.info Me.AppendLine("sak").GetTypeName
-    Console.info Me.AppendLine("mit").ToString
+    Console.info Me.AppendLine("mit").toString
     Console.info Me.GetVerType
 ''Clear
-    Call Me.Clear
-    Console.dump Me
+    Call Me.clear
+    Console.Dump Me
     
 End Sub
 

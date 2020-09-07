@@ -47,7 +47,7 @@ Public Function GetNames(Optional ByRef wb As Variant) As Object
     
     ' •Ô‹p—p
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
+    Set dict = createObject("Scripting.Dictionary")
     
 On Error GoTo EXCEPTION
     '------------------------------
@@ -68,7 +68,7 @@ On Error GoTo EXCEPTION
             '
             'Console.log CONS_MODULE_NAME & ":" & nms(i).name & " " & nms(i).RefersTo
         Else
-            dict.Add nms(i).name, wb.Names(nms(i).name).RefersToRange.value ''FIXME
+            dict.add nms(i).Name, wb.Names(nms(i).Name).RefersToRange.value ''FIXME
             'Console.log "key = " & rngNames(i).Name & " , value = " & Range(rngNames(i).RefersTo).value
         End If
     Next
@@ -96,9 +96,104 @@ EXCEPTION:
     Exit Function
 End Function
 
+Public Function GetNameStatement( _
+            ByVal shtName As String, _
+            ByVal nmStr As String, _
+            Optional ByRef wb As Variant _
+) As String
+'''' ********************************************************
+''
+Dim CONS_IN_SHEET As String
+Let CONS_IN_SHEET = "WORKSHEET"
+Dim CONS_IN_BOOK As String
+Let CONS_IN_BOOK = "WORKBOOK"
+Dim CONS_NO_EXISTS As String
+Let CONS_NO_EXISTS = "NOTEXISTS"
+Dim nameScope As String
+If VBA.IsMissing(wb) Then
+    Let nameScope = Me.GetNamedRangeScope(shtName, nmStr)
+Else
+    Let nameScope = Me.GetNamedRangeScope(shtName, nmStr, wb)
+End If
+''
+Dim nmStatement
+If nameScope = CONS_IN_BOOK Then
+    Let nmStatement = nmStr
+ElseIf nameScope = CONS_IN_SHEET Then
+    Let nmStatement = Me.GetNameLocal(shtName, nmStr)
+Else
+    Console.info "Named range with " & nmStr & " is " & nameScope
+    Let nmStatement = ""
+End If
+Let GetNameStatement = nmStatement
+''
+End Function
+
+Public Function GetNamedRangeScope( _
+            ByVal shtName As String, _
+            ByVal paramNm As String, _
+            Optional ByRef wb As Variant _
+) As String
+'''' ********************************************************
+''
+Dim strRtn As String
+''
+Dim CONS_IN_SHEET As String
+Let CONS_IN_SHEET = "WORKSHEET"
+Dim CONS_IN_BOOK As String
+Let CONS_IN_BOOK = "WORKBOOK"
+Dim CONS_NO_EXISTS As String
+Let CONS_NO_EXISTS = "NOTEXISTS"
+Dim C_Collection As C_Collection
+Set C_Collection = New C_Collection
+''
+If VBA.IsMissing(wb) Then
+    Set wb = ThisWorkbook
+End If
+Dim sht As Worksheet
+Set sht = wb.Worksheets(shtName)
+''
+Dim nmExp As String
+Let nmExp = Me.GetNameLocal(shtName, paramNm)
+''
+Dim cltWbNames As Names
+Set cltWbNames = wb.Names
+Dim cltShtNames As Names
+Set cltShtNames = sht.Names
+''
+If C_Collection.ExistsNameOfObject(cltShtNames, nmExp, True) Then
+    Let strRtn = CONS_IN_SHEET
+ElseIf C_Collection.ExistsNameOfObject(cltWbNames, paramNm, True) Then
+    Let strRtn = CONS_IN_BOOK
+Else
+    Let strRtn = CONS_NO_EXISTS
+End If
+''
+Let GetNamedRangeScope = strRtn
+''
+End Function
+
+Public Function GetNameLocal( _
+            ByVal shtName As String, _
+            ByVal paramNm As String _
+) As String
+'''' ********************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+''
+If C_String.Contain(paramNm, "!") Then
+    Let GetNameLocal = paramNm
+Else
+    Let GetNameLocal = shtName & "!" & paramNm
+End If
+End Function
+
+
 Public Function GetNamesWithSheet(ByVal strSheetName As String, _
-            Optional ByVal exculedingPrintArea As Boolean = True, _
-            Optional ByRef wb As Variant) As Object
+            Optional ByVal excludingPrintArea As Variant = True, _
+            Optional ByRef wb As Variant, _
+            Optional ByVal excludingPrefix As Variant = True) As Object
 ''' /********************************************************
 '''  *@function getNamesWithSheet
 '''  *<br/>
@@ -117,7 +212,7 @@ Public Function GetNamesWithSheet(ByVal strSheetName As String, _
     Dim i As Long
     Dim C_String As New C_String
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
+    Set dict = createObject("Scripting.Dictionary")
     '
 On Error GoTo EXCEPTION
     If IsMissing(wb) Then
@@ -126,19 +221,27 @@ On Error GoTo EXCEPTION
     Dim sht As Worksheet
     Set sht = wb.Worksheets(strSheetName)
     Set nms = wb.Names
+    Dim strName As String
     For i = 1 To nms.Count
         If C_String.ContainWord(nms(i).RefersTo, "#REF") Then
             '
             'Console.log CONS_MODULE_NAME & ":" & nms(i).name & " " & nms(i).RefersTo
         Else
             If C_String.StartsWith(nms(i).RefersTo, "=" & strSheetName) Then
-                If exculedingPrintArea Then
+                If excludingPrintArea Then
                     'Console.log "key = " & nms(i).Name
-                    If Not CheckPrintArea(nms(i).name) Then  ''FIXME
-                        dict.Add nms(i).name, sht.Range(nms(i).RefersTo).value
+                    Let strName = nms(i).Name
+                    If Not CheckPrintArea(strName) Then  ''FIXME
+                        If excludingPrefix Then
+                            If Not C_String.StartsWith(strName, "_") Then
+                        dict.add nms(i).Name, sht.Range(nms(i).RefersTo).value
                     End If
                 Else
-                    dict.Add nms(i).name, sht.Range(nms(i).RefersTo).value
+                    dict.add nms(i).Name, sht.Range(nms(i).RefersTo).value
+                End If
+                    End If
+                Else
+                    dict.add nms(i).Name, sht.Range(nms(i).RefersTo).value
                 End If
             End If
         End If
@@ -174,11 +277,13 @@ Private Function CheckPrintArea(ByVal strName As String) As Boolean
 ' const
 Dim CONS_PRINT_AREA_NAME As String
 CONS_PRINT_AREA_NAME = "Print_Area"
+Dim CONS_PRINT_TITLE_NAME As String
+CONS_PRINT_TITLE_NAME = "Print_Titles"
 ' variables
 Dim C_String As C_String
 Set C_String = New C_String
 ' release and return
-CheckPrintArea = C_String.ContainWord(strName, CONS_PRINT_AREA_NAME)
+CheckPrintArea = C_String.ContainWord(strName, CONS_PRINT_AREA_NAME) Or C_String.ContainWord(strName, CONS_PRINT_TITLE_NAME)
 'Console.log "checkPrintArea : " & checkPrintArea
 Set C_String = Nothing
 '
@@ -268,7 +373,7 @@ If C_String.Contain(strRef, ":") Then
         Set vntRtn = ThisWorkbook.Names(strRngName).RefersToRange '''Cell‚ª2‚ÂˆÈã‚Ì”ÍˆÍ‚Ìê‡‚ÍARange‚ð•Ô‹p
 Else
         Set rng = ThisWorkbook.Names(strRngName).RefersToRange
-        vntRtn = rng.Text
+        vntRtn = rng.text
 End If
 GetText = vntRtn
 ''
@@ -372,7 +477,7 @@ Else
         strRngName = strName
     End If
 End If
-GetComment = wb.Names(strRngName).Comment
+GetComment = wb.Names(strRngName).comment
 End Function
 
 Public Function GetCategory(strName As Variant, _
@@ -426,9 +531,9 @@ Public Function SetNameByKeyword(ByVal strSheetName As Variant _
 '''  */
 Dim rngFindResult As Range
 Dim rngUsed As Range
-Dim nm As name
+Dim nm As Name
 Set rngUsed = ThisWorkbook.Worksheets(strSheetName).UsedRange
-Set rngFindResult = rngUsed.Find(What:=strKeyString, Lookat:=xlWhole)
+Set rngFindResult = rngUsed.find(what:=strKeyString, Lookat:=xlWhole)
     
 If IsEmpty(Row) Or Row = "" Then
         Row = 0
@@ -441,11 +546,11 @@ If rngFindResult Is Nothing Then
         SetNameByKeyword = False
 Else
         For Each nm In ThisWorkbook.Names
-            If UCase(nm.name) = UCase(strName) Then
-                rngFindResult.Offset(Row, column).name.Delete
+            If UCase(nm.Name) = UCase(strName) Then
+                rngFindResult.Offset(Row, column).Name.Delete
             End If
         Next
-        rngFindResult.Offset(Row, column).name = strSheetName & "!" & strName
+        rngFindResult.Offset(Row, column).Name = strSheetName & "!" & strName
         SetNameByKeyword = True
 End If
     
@@ -457,6 +562,19 @@ Public Sub ChangeNamedRangeAddress(bk As Workbook, rangename As String, newRange
 bk.Names(rangename).RefersTo = newRange
 ''
 End Sub
+
+Sub ChangeLocalNameAndOrScope()
+'Programmatically change a sheet-level range name and/or scope to a new name and/or scope
+Dim nm As Name, Ans As Integer, newNm As String
+For Each nm In ActiveWorkbook.Names
+    If nm.Name Like "*!*" Then 'It is sheet level
+        newNm = Replace(nm.Name, "*!", "")
+        Range(nm.RefersTo).Name = newNm
+        nm.Delete
+    End If
+Next nm
+End Sub
+
 
 'Public Sub GlobalNamesToLocalNames(Optional Void As Variant)
 '   Dim list() As GlobalNamesToLocalNames_Type
@@ -511,10 +629,10 @@ Public Sub ChangeGlobalNamedRangeAddress(bk As Workbook, rangename As String, ne
 ''
 'this sub only changes named range scoped to the workbook
 'and ignores any ranges scoped to the worksheet with the same name.
-Dim n As name
+Dim n As Name
     
 For Each n In bk.Names
-        If InStr(1, n.name, rangename) > 0 And InStr(1, n.NameLocal, "!") = 0 Then
+        If InStr(1, n.Name, rangename) > 0 And InStr(1, n.NameLocal, "!") = 0 Then
             n.RefersTo = newRange
             Exit For
         End If
@@ -532,7 +650,7 @@ End Sub
 Public Sub RescopeNamedRangesToWorksheet()
 Dim wb As Workbook
 Dim ws As Worksheet
-Dim objName As name
+Dim objName As Name
 Dim sWsName As String
 Dim sWbName As String
 Dim sRefersTo As String
@@ -540,8 +658,8 @@ Dim sObjName As String
 
 Set wb = ActiveWorkbook
 Set ws = ActiveSheet
-sWsName = ws.name
-sWbName = wb.name
+sWsName = ws.Name
+sWbName = wb.Name
 
 'Loop through names in worksheet.
 For Each objName In wb.Names
@@ -550,13 +668,13 @@ For Each objName In wb.Names
         'Check name refers to a range on the active sheet.
         If InStr(1, objName.RefersTo, sWsName, vbTextCompare) Then
             sRefersTo = objName.RefersTo
-            sObjName = objName.name
+            sObjName = objName.Name
             'Check name is scoped to the workbook.
-            If objName.Parent.name = sWbName Then
+            If objName.parent.Name = sWbName Then
             'Delete the current name scoped to workbook replacing with worksheet
             'scoped name.
                 objName.Delete
-                ws.Names.Add name:=sObjName, RefersTo:=sRefersTo
+                ws.Names.add Name:=sObjName, RefersTo:=sRefersTo
             End If
         End If
     End If
@@ -571,7 +689,7 @@ End Sub
 '-----------------------------------------------------------
 ' debug entry
 '-----------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 ' Collection‚ÌŠm”F
 '    Console.dump ThisWorkbook.Names
 '    Dim cltNames As Names
@@ -605,9 +723,9 @@ Public Sub unittest()
 '    Console.info "---------------------"
 
 ' getCategory
-    Console.dump Me.GetCategory("seqId", "__FORMAT__")
-    Console.dump Me.GetCategory("TEST_STRING")
-    Console.dump Me.GetCategory("TEST_RANGE1")
+    Console.Dump Me.GetCategory("seqId", "__FORMAT__")
+    Console.Dump Me.GetCategory("TEST_STRING")
+    Console.Dump Me.GetCategory("TEST_RANGE1")
 
    
    

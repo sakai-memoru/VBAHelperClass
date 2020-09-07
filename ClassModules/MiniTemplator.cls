@@ -150,8 +150,8 @@ Public SubtemplateBasePath     As String
 '--- template string handling ------------------------------------------------------------------------------------------
 
 ' Reads the template from a file.
-Public Sub ReadTemplateFromFile(ByVal FileName As String)
-   TemplateString = ReadFileIntoString(FileName)
+Public Sub ReadTemplateFromFile(ByVal fileName As String)
+   TemplateString = ReadFileIntoString(fileName)
    End Sub
 
 ' Assigns a new template string.
@@ -250,7 +250,7 @@ Private Sub ProcessTemplateCommand(ByVal cmdl As String, ByVal CmdTPosBegin As L
       Case "$EndBlock":   ProcessEndBlockCmd parms, CmdTPosBegin, CmdTPosEnd
       Case "$Include":    ProcessincludeCmd parms, CmdTPosBegin, CmdTPosEnd: ResumeFromStart = True
       Case Else
-         If Left$(cmd, 1) = "$" And Left$(cmd, 2) <> "${" Then _
+         If left$(cmd, 1) = "$" And left$(cmd, 2) <> "${" Then _
             Err.Raise vbObjectError, , "Unknown command """ & cmd & """ in template at offset " & CmdTPosBegin - 1 & "."
       End Select
    End Sub
@@ -308,8 +308,8 @@ Private Sub RegisterBlock(ByVal BlockName As String, BlockNo As Integer)
       .FirstVarRefNo = -1
       ReDim .BlockVarNoToVarNoMap(0 To 31)
       End With
-   If BlockWithSameName <> -1 Then BlockNameToNoMap.Remove BlockName
-   BlockNameToNoMap.Add BlockNo, BlockName
+   If BlockWithSameName <> -1 Then BlockNameToNoMap.remove BlockName
+   BlockNameToNoMap.add BlockNo, BlockName
    BlockTabCnt = BlockTabCnt + 1
    End Sub
 
@@ -342,7 +342,7 @@ Private Sub InsertSubtemplate(ByVal SubtemplateName As String, ByVal TPos1 As Lo
    'Subtemplate = LoadSubtemplaÅ@te(SubtemplateName) ''FIXME
    ' (Copying the template to insert a subtemplate is a bit slow. In a future implementation of MiniTemplator,
    ' a table could be used that contains references to the string fragments.)
-   template = Left$(template, TPos1 - 1) & Subtemplate & Mid$(template, TPos2)
+   template = left$(template, TPos1 - 1) & Subtemplate & Mid$(template, TPos2)
    End Sub
 
 ' Parses variable references within the template in the format "${VarName}" .
@@ -384,7 +384,7 @@ Private Sub RegisterVariable(ByVal VarName As String, VarNo As Integer)
       .VarName = VarName
       .VarValue = vbNullString
       End With
-   VarNameToNoMap.Add VarNo, VarName
+   VarNameToNoMap.add VarNo, VarName
    VarTabCnt = VarTabCnt + 1
    End Sub
 
@@ -556,25 +556,25 @@ Public Function BlockExists(ByVal BlockName As String) As Boolean
 '--- output generation -------------------------------------------------------------------------------------------------
 
 ' Generates the HTML page and writes it into a file.
-Public Sub GenerateOutputToFile(ByVal FileName As String)
+Public Sub GenerateOutputToFile(ByVal fileName As String)
    On Error Resume Next
-      Kill FileName
+      Kill fileName
       Dim err_c, err_d: err_c = Err.Number: err_d = Err.description
       On Error GoTo 0
-   If err_c <> 0 And err_c <> 53 Then Err.Raise vbObjectError, , "Error while deleting old version of " & FileName & ". " & err_d
+   If err_c <> 0 And err_c <> 53 Then Err.Raise vbObjectError, , "Error while deleting old version of " & fileName & ". " & err_d
    OutputFileHandle = FreeFile
    On Error Resume Next
-      Open FileName For Binary Access Write Lock Read Write As OutputFileHandle
+      Open fileName For Binary Access Write Lock Read Write As OutputFileHandle
       err_c = Err.Number: err_d = Err.description
       On Error GoTo 0
-   If err_c <> 0 Then Err.Raise vbObjectError, , "Unable to open file " & FileName & ". " & err_d
+   If err_c <> 0 Then Err.Raise vbObjectError, , "Unable to open file " & fileName & ". " & err_d
    OutputMode = 0
    On Error Resume Next
       GenerateOutput
       Close OutputFileHandle
       err_c = Err.Number: err_d = Err.description
       On Error GoTo 0
-   If err_c <> 0 Then Err.Raise err_c, , "Error while writing file " & FileName & ". " & err_d
+   If err_c <> 0 Then Err.Raise err_c, , "Error while writing file " & fileName & ". " & err_d
    End Sub
 
 ' Generates the HTML page and returns it as a string.
@@ -708,26 +708,26 @@ Private Function LookupBlockName(ByVal BlockName As String, BlockNo As Integer) 
 
 ' Reads a file into a string.
 ' Returns the string with the file content.
-Private Function ReadFileIntoString(ByVal FileName As String) As String
+Private Function ReadFileIntoString(ByVal fileName As String) As String
    On Error Resume Next
       ' First we have to check whether the file exists, because "Open For Binary" would
       ' create a file if it does not exist.
-      GetAttr FileName
+      GetAttr fileName
       Dim ErrNo, ErrDescr: ErrNo = Err.Number: ErrDescr = Err.description
       On Error GoTo 0
-   If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & FileName & ". " & ErrDescr
+   If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & fileName & ". " & ErrDescr
    Dim fh: fh = FreeFile
    On Error Resume Next
-      Open FileName For Binary Access Read Lock Write As fh
+      Open fileName For Binary Access Read Lock Write As fh
       ErrNo = Err.Number: ErrDescr = Err.description
       On Error GoTo 0
-   If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & FileName & ". " & ErrDescr
+   If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & fileName & ". " & ErrDescr
    On Error Resume Next
       Dim s As String: s = Input$(LOF(fh), fh)
       Close fh
       ErrNo = Err.Number: ErrDescr = Err.description
       On Error GoTo 0
-   If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & FileName & ". " & ErrDescr
+   If ErrNo <> 0 Then Err.Raise vbObjectError, , "Error while reading " & fileName & ". " & ErrDescr
    ReadFileIntoString = s
    End Function
 
@@ -816,7 +816,7 @@ Public Function EscapeHtml(ByVal s As String) As String
 ' Combines two file system path names.
 Private Function CombineFileSystemPath(ByVal Path1, ByVal Path2)
    If Path1 = "" Or Path2 = "" Then CombineFileSystemPath = Path2: Exit Function
-   If Left(Path2, 1) = "\" Then Path2 = Mid(Path2, 2)
+   If left(Path2, 1) = "\" Then Path2 = Mid(Path2, 2)
    If Right(Path1, 1) = "\" Or Right(Path1, 1) = ":" Then
       CombineFileSystemPath = Path1 & Path2
     Else

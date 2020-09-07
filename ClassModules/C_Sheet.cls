@@ -72,7 +72,7 @@ Public Function ExistsSheet(ByVal bookName As String, ByVal sheetName As String)
 Dim sht As Object
 ExistsSheet = False
 For Each sht In Workbooks(bookName).Worksheets
-        If sht.name = sheetName Then
+        If sht.Name = sheetName Then
             ExistsSheet = True
             Exit For
         End If
@@ -127,8 +127,8 @@ Dim bk As Workbook
 Set bk = Workbooks(bookName)
 Application.DisplayAlerts = False
 ''
-If Me.ExistsSheet(bookName, sht.name) Then
-        bk.Worksheets(sht.name).Delete
+If Me.ExistsSheet(bookName, sht.Name) Then
+        bk.Worksheets(sht.Name).Delete
         sht.Copy After:=bk.Worksheets(bk.Worksheets.Count)
 Else
         sht.Copy After:=bk.Worksheets(bk.Worksheets.Count)
@@ -157,7 +157,7 @@ Dim sh As Worksheet
 str = Me.GetRenameSheetName(bookName, tempsheetname)
 ''
 sht.Copy After:=bk.Worksheets(bk.Worksheets.Count)
-ActiveSheet.name = str
+ActiveSheet.Name = str
 ''
 End Function
 
@@ -172,13 +172,13 @@ Public Sub Sort(ByVal bookName As String)
 Dim i As Long
     Dim j As Long
 Dim aryList As Object
-Set aryList = CreateObject("system.Collections.ArrayList")
+Set aryList = createObject("system.Collections.ArrayList")
 Dim cnt As Long
 cnt = Workbooks(bookName).Worksheets.Count
 
 'ワークシート名をArrayListオブジェクトに追加
 For i = 1 To cnt
-    aryList.Add Workbooks(bookName).Worksheets(i).name
+    aryList.add Workbooks(bookName).Worksheets(i).Name
 Next i
 
 '配列の要素をソートする

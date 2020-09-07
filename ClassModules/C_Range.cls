@@ -34,6 +34,133 @@ Private Enum RANGE_TYPE
     RECORDROW = 5
     TABLEDATA = 6
 End Enum
+
+Private Enum enumBorderWeight
+'''' ********************************************************
+''
+Hairline = xlHairline
+Medium = xlMedium
+Thick = xlThick
+Thin = xlThin
+''
+End Enum
+
+Private Enum enumBorderLineStyle
+'''' ********************************************************
+''
+Continuous = xlContinuous
+Dash = xlDash
+DashDot = xlDashDot
+DashDotDot = xlDashDotDot
+Dot = xlDot
+SlantDashDot = xlSlantDashDot
+DDouble = xlDouble
+LineStyleNone = xlLineStyleNone
+''
+End Enum
+
+Private Enum enumVAlign
+'''' ********************************************************
+''
+top = XlVAlign.xlVAlignTop
+Bottom = XlVAlign.xlVAlignBottom
+Center = XlVAlign.xlVAlignCenter
+Distributed = XlVAlign.xlVAlignDistributed
+Justify = XlVAlign.xlVAlignJustify
+''
+End Enum
+
+Private Enum enumHAlign
+'''' ********************************************************
+''
+left = XlHAlign.xlHAlignLeft
+Center = XlHAlign.xlHAlignCenter
+Right = XlHAlign.xlHAlignRight
+CenterAcrossSelection = XlHAlign.xlHAlignCenterAcrossSelection
+Distributed = XlHAlign.xlHAlignDistributed
+Fill = XlHAlign.xlHAlignFill
+General = XlHAlign.xlHAlignGeneral
+Justify = XlHAlign.xlHAlignJustify
+''
+End Enum
+
+Public Function GetBorderWeight(value) As String
+'''' ********************************************************
+''
+Dim C_Dictionary As C_Dictionary
+Set C_Dictionary = New C_Dictionary
+Dim dict As Dictionary
+Set dict = New Dictionary
+''
+Call dict.add("Hairline", enumBorderWeight.Hairline)
+Call dict.add("Medium", enumBorderWeight.Medium)
+Call dict.add("Thick", enumBorderWeight.Thick)
+Call dict.add("Thin", enumBorderWeight.Thin)
+''
+Let GetBorderWeight = C_Dictionary.GetKeyByItem(dict, value)
+''
+End Function
+
+Public Function GetBorderLineStyle(value) As String
+'''' ********************************************************
+''
+Dim C_Dictionary As C_Dictionary
+Set C_Dictionary = New C_Dictionary
+Dim dict As Dictionary
+Set dict = New Dictionary
+''
+Call dict.add("Continuous", enumBorderLineStyle.Continuous)
+Call dict.add("Dash", enumBorderLineStyle.Dash)
+Call dict.add("DashDot", enumBorderLineStyle.DashDot)
+Call dict.add("DashDotDot", enumBorderLineStyle.DashDotDot)
+Call dict.add("Dot", enumBorderLineStyle.Dot)
+Call dict.add("SlantDashDot", enumBorderLineStyle.SlantDashDot)
+Call dict.add("DDouble", enumBorderLineStyle.DDouble)
+Call dict.add("LineStyleNone", enumBorderLineStyle.LineStyleNone)
+''
+Let GetBorderLineStyle = C_Dictionary.GetKeyByItem(dict, value)
+''
+End Function
+
+Public Function GetVAlign(value) As String
+'''' ********************************************************
+''
+Dim C_Dictionary As C_Dictionary
+Set C_Dictionary = New C_Dictionary
+Dim dict As Dictionary
+Set dict = New Dictionary
+''
+Call dict.add("Top", enumVAlign.top)
+Call dict.add("Bottom", enumVAlign.Bottom)
+Call dict.add("Center", enumVAlign.Center)
+Call dict.add("Distributed", enumVAlign.Distributed)
+Call dict.add("Justify", enumVAlign.Justify)
+''
+Let GetVAlign = C_Dictionary.GetKeyByItem(dict, value)
+''
+End Function
+
+Public Function GetHAlign(value) As String
+'''' ********************************************************
+''
+Dim C_Dictionary As C_Dictionary
+Set C_Dictionary = New C_Dictionary
+Dim dict As Dictionary
+Set dict = New Dictionary
+''
+Call dict.add("Left", enumHAlign.left)
+Call dict.add("Center", enumHAlign.Center)
+Call dict.add("Right", enumHAlign.Right)
+Call dict.add("CenterAcrossSelection", enumHAlign.CenterAcrossSelection)
+Call dict.add("Distributed", enumHAlign.Distributed)
+Call dict.add("Fill", enumHAlign.Fill)
+Call dict.add("General", enumHAlign.General)
+Call dict.add("Justify", enumHAlign.Justify)
+''
+Let GetHAlign = C_Dictionary.GetKeyByItem(dict, value)
+''
+End Function
+
 ''//--------------------------------------------------------
 ''// Class Event
 ''//
@@ -74,7 +201,7 @@ Dim i As Long
 Let i = 0
 ''
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 Set sht = Workbooks(bookName).Worksheets(sheetName)
 Set rng = sht.Range(rangeparam)
@@ -176,7 +303,7 @@ Dim i As Long
 i = 0
 ''
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 ''
 Set sht = Workbooks(bookName).Worksheets(sheetName)
@@ -216,7 +343,7 @@ Public Function ToArrayArray(ByVal sheetName As String _
 Dim sht As Worksheet
 Dim rng As Range
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 ''
 Set sht = Workbooks(bookName).Worksheets(sheetName)
@@ -254,7 +381,7 @@ Dim C_Array As C_Array
 Set C_Array = New C_Array
 ''
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 Set sht = Workbooks(bookName).Worksheets(sheetName)
 If isCurrent Then
@@ -265,7 +392,7 @@ End If
 rCnt = rng.Rows.Count
 Dim i As Long
 For i = 1 To rCnt
-    Call C_Array.Add(ary, Me.RangeToArray(rng.Rows(i)))
+    Call C_Array.add(ary, Me.RangeToArray(rng.Rows(i)))
 Next i
 ToJagArray = ary
 Set C_Array = Nothing
@@ -406,7 +533,7 @@ Public Function RangeToArrayForAreas(ByRef rng As Range) As Variant
     Set C_Array = New C_Array
     '
     For Each rngArea In rng.Areas
-        Call C_Array.AddArray(ary, Me.RangeToArray(rngArea)) ''FIXME
+        Call C_Array.addArray(ary, Me.RangeToArray(rngArea)) ''FIXME
     Next rngArea
     RangeToArrayForAreas = ary
     Set C_Array = Nothing
@@ -424,16 +551,15 @@ Public Function UnionEx(ParamArray pAry()) As Range
 '''  * FIXME not complete unittest
 '''  */
 '
-    Dim rngRtn As Range
-    Dim i As Long
-    Set rngRtn = Range(pAry(0))
-    '
-    For i = 1 To UBound(pAry)
+Dim rngRtn As Range
+Dim i As Long
+Set rngRtn = Range(pAry(0))
+'
+For i = 1 To UBound(pAry)
         Set rngRtn = Union(rngRtn, Range(pAry(i)))
-    Next i
-    Set UnionEx = rngRtn
-    Set rngRtn = Nothing
-    '
+Next i
+Set UnionEx = rngRtn
+'
 End Function
 
 Public Function RangeToDictonary(ByRef rng As Range, ByRef aryHeader As Variant) As Dictionary
@@ -459,7 +585,7 @@ Public Function RangeToDictonary(ByRef rng As Range, ByRef aryHeader As Variant)
     Dim dict As Dictionary
     Set dict = New Dictionary
     For Each itm In Range(rng.Cells(1, 1), rng.Cells(rCnt, cCnt))
-        Call dict.Add(aryHeader(i), itm)
+        Call dict.add(aryHeader(i), itm)
         i = i + 1
         If i > UBound(aryHeader) Then
             Exit For
@@ -468,7 +594,7 @@ Public Function RangeToDictonary(ByRef rng As Range, ByRef aryHeader As Variant)
     Dim j As Long
     If i <= UBound(aryHeader) Then
         For j = i To UBound(aryHeader)
-            Call dict.Add(aryHeader(j), "")
+            Call dict.add(aryHeader(j), "")
         Next j
     End If
     Set RangeToDictonary = dict
@@ -494,7 +620,7 @@ Let rngPattern = Me.TypeRangePattern(rng)
 If rngPattern = "HASHTABLE" Then
     Dim r As Long
     For r = 1 To rng.Rows.Count
-        C_Array.Add aryRtn, rng.Cells(r, 1).value
+        C_Array.add aryRtn, rng.Cells(r, 1).value
     Next r
 ElseIf rngPattern = "RECORD" Then
     aryRtn = Me.RangeToJagArray(rng)(1)
@@ -530,16 +656,16 @@ Dim c As Long
 ''
 If rngPattern = "HASHTABLE" Then
     For r = 1 To rng.Rows.Count
-        C_Array.Add ary, rng.Cells(r, 2).value
+        C_Array.add ary, rng.Cells(r, 2).value
     Next r
-    C_Array.Add aryRtn, ary
+    C_Array.add aryRtn, ary
 ElseIf rngPattern = "RECORD" Then
     ary = Me.RangeToJagArray(rng)(2)
-    C_Array.Add aryRtn, ary
+    C_Array.add aryRtn, ary
 ElseIf rngPattern = "TABLE" Then
     ary = Me.RangeToJagArray(rng)
     For r = 2 To UBound(ary)
-        C_Array.Add aryRtn, ary(r)
+        C_Array.add aryRtn, ary(r)
     Next r
 Else
     '' no process
@@ -599,7 +725,7 @@ Select Case True
     Case Application.IsLogical(rng.value): TypeValueOfCell = "Boolean"
     Case Application.IsErr(rng.value): TypeValueOfCell = "Error"
     Case VBA.IsDate(rng.value): TypeValueOfCell = "Date"
-    Case VBA.InStr(1, rng.Text, ":") <> 0: TypeValueOfCell = "Time"
+    Case VBA.InStr(1, rng.text, ":") <> 0: TypeValueOfCell = "Time"
     Case VBA.IsNumeric(rng.value): TypeValueOfCell = "Number"
     Case VBA.IsEmpty(rng.value): TypeValueOfCell = "Empty"
 End Select
@@ -619,8 +745,8 @@ Public Function IsInRange(inRng As Range, exRng As Range) As Boolean
 ''''  */
 ''
 IsInRange = False
-If inRng.Parent.Parent.name = exRng.Parent.Parent.name Then
-    If inRng.Parent.name = exRng.Parent.name Then
+If inRng.parent.parent.Name = exRng.parent.parent.Name Then
+    If inRng.parent.Name = exRng.parent.Name Then
         If Union(inRng, exRng).Address = exRng.Address Then
             IsInRange = True
         End If
@@ -629,7 +755,147 @@ End If
 ''
 End Function
 
-Public Function GetRangeDetail(ByRef rng As Range) As Object
+Public Function ToR1C1(rng As Range) As Variant
+'''' /**************************************************
+''''  *@function ToR1C1
+''''  *@param {Range} rng
+''''  */
+''
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim rTop As Long
+Dim rBottom As Long
+Dim cLeft As Long
+Dim cRight As Long
+Dim topLeftAddress As String
+Dim bottomRightAddress As String
+Dim jagary() As Variant
+Dim aryTemp As Variant
+Dim rngTemp As Range
+Dim rngPattern As String
+Let rngPattern = Me.TypeRangePattern(rng)
+If rngPattern = CONS_RANGE_TYPE(RANGE_TYPE.cell) Then
+    Let rTop = rng.Row
+    Let cLeft = rng.column
+    Call C_Array.add(jagary, Array(rTop, cLeft))
+Else
+    Let aryTemp = Split(rng.Address, ":")
+    Let topLeftAddress = aryTemp(LBound(aryTemp))
+    Let bottomRightAddress = aryTemp(UBound(aryTemp))
+    Set rngTemp = Range(topLeftAddress)
+    Let rTop = rngTemp.Row
+    Let cLeft = rngTemp.column
+    Set rngTemp = Range(bottomRightAddress)
+    Let rBottom = rngTemp.Row
+    Let cRight = rngTemp.column
+    Call C_Array.add(jagary, Array(rTop, cLeft))
+    Call C_Array.add(jagary, Array(rBottom, cRight))
+End If
+Let ToR1C1 = jagary
+''Let ToR1C1 = C_Array.JagArrayToArrayArray(jagary)
+''
+End Function
+
+Public Function IsTopLeftBordered(rng As Range) As Boolean
+'''' /**************************************************
+''''  *@function IsTopLeftBordered
+''''  *@param {Range} rng
+''''  */
+''
+Dim isTop As Boolean
+Dim isLeft As Boolean
+''
+Let isTop = Not (rng.Borders(xlEdgeTop).LineStyle = xlLineStyleNone)
+Let isLeft = Not (rng.Borders(xlEdgeLeft).LineStyle = xlLineStyleNone)
+'Console.info isTop
+'Console.info isLeft
+''
+Let IsTopLeftBordered = (isTop And isLeft)
+''
+End Function
+
+Public Function IsTopRightBordered(rng As Range) As Boolean
+'''' /**************************************************
+''''  *@function IsTopRightBordered
+''''  *@param {Range} rng
+''''  */
+''
+Dim isTop As Boolean
+Dim isRight As Boolean
+''
+Let isTop = Not (rng.Borders(xlEdgeTop).LineStyle = xlLineStyleNone)
+Let isRight = Not (rng.Borders(xlEdgeRight).LineStyle = xlLineStyleNone)
+'Console.info isTop
+'Console.info isRight
+''
+Let IsTopRightBordered = (isTop And isRight)
+''
+End Function
+
+Public Function IsBottomRightBordered(rng As Range) As Boolean
+'''' /**************************************************
+''''  *@function IsBottomRightBordered
+''''  *@param {Range} rng
+''''  */
+''
+Dim isBottom As Boolean
+Dim isRight As Boolean
+''
+Let isBottom = Not (rng.Borders(xlEdgeBottom).LineStyle = xlLineStyleNone)
+Let isRight = Not (rng.Borders(xlEdgeRight).LineStyle = xlLineStyleNone)
+'Console.info isTop
+'Console.info isRight
+''
+Let IsBottomRightBordered = (isBottom And isRight)
+''
+End Function
+
+Public Function IsBottomLeftBordered(rng As Range) As Boolean
+'''' /**************************************************
+''''  *@function IsBottomLeftBordered
+''''  *@param {Range} rng
+''''  */
+''
+Dim isBottom As Boolean
+Dim isLeft As Boolean
+''
+Let isBottom = Not (rng.Borders(xlEdgeBottom).LineStyle = xlLineStyleNone)
+Let isLeft = Not (rng.Borders(xlEdgeLeft).LineStyle = xlLineStyleNone)
+'Console.info isTop
+'Console.info isRight
+''
+Let IsBottomLeftBordered = (isBottom And isLeft)
+''
+End Function
+
+Public Function IsBordered(rng As Range) As Boolean
+'''' /**************************************************
+''''  *@function IsBottomLeftBordered
+''''  *@param {Range} rng
+''''  */
+''
+Dim isTopLeft As Boolean
+Dim isBottomRight As Boolean
+''
+Let isTopLeft = Me.IsTopLeftBordered(rng)
+Let isBottomRight = Me.IsBottomRightBordered(rng)
+'Console.info isTopLeft
+'Console.info isBottomRight
+''
+Let IsBordered = (isTopLeft And isBottomRight)
+''
+End Function
+
+'Public Function IsNoBordered(rng As Range) As Boolean
+'''' /**************************************************
+''''  *@function IsBottomLeftBordered
+''''  *@param {Range} rng
+''''  */
+''FIXME
+'Let IsNoBordered = Not Me.IsBordered(rng)
+'End Function
+
+Public Function GetRangeDetail(ByRef rng As Range) As Dictionary
 ''' /**************************************************
 '''  *@function ShowRangeDetail
 '''  *@param {Range} rng
@@ -637,7 +903,7 @@ Public Function GetRangeDetail(ByRef rng As Range) As Object
 '''  */
 '
 Dim dict As Object
-Set dict = CreateObject("Scripting.Dictionary")
+Set dict = createObject("Scripting.Dictionary")
 Dim sht As Worksheet
 Set sht = rng.Worksheet
 
@@ -666,45 +932,45 @@ Dim i As Long
 Let i = 0
 Dim field_type As String
 If size = 1 Then
-    field_type = "cell"
+    Let field_type = "cell"
 Else
-    field_type = "other"
-    ary = Split(addr, ":")
-    topLeftAddress = ary(LBound(ary))
-    bottomRightAddress = ary(UBound(ary))
-    'topRowNo = Split(topLeftAddress, "$")(2)
-    topRowNo = rng.Row
-    bottomRowNo = Split(bottomRightAddress, "$")(2)
-    leftColumnNo = Range(topLeftAddress).column
-    rightColumnNo = Range(bottomRightAddress).column
-    rowCnt = rng.Rows.Count
-    columnCnt = rng.Columns.Count
-    If Me.TypeRangeNamePattern(sht.name, rng.Address, sht.Parent.name) = "Table" Then
+    Let field_type = "other"
+    Let ary = Split(addr, ":")
+    Let topLeftAddress = ary(LBound(ary))
+    Let bottomRightAddress = ary(UBound(ary))
+    'Let topRowNo = Split(topLeftAddress, "$")(2)
+    Let topRowNo = rng.Row
+    Let bottomRowNo = Split(bottomRightAddress, "$")(2)
+    Let leftColumnNo = Range(topLeftAddress).column
+    Let rightColumnNo = Range(bottomRightAddress).column
+    Let rowCnt = rng.Rows.Count
+    Let columnCnt = rng.Columns.Count
+    If Me.TypeRangeNamePattern(sht.Name, rng.Address, sht.parent.Name) = "TABLE" Then
         Set headerRng = rng.Rows(1)
         Set bodyRng = sht.Range(topLeftAddress).Offset(1, 0).Resize(rowCnt - 1, columnCnt)
         Let bodyRngAddr = bodyRng.Address
     End If
 End If
 '
-dict.Add "address", addr
-dict.Add "value", rng.value
+dict.add "address", addr
+dict.add "value", rng.value
 ''
-dict.Add "topLeft", topLeftAddress
-dict.Add "bottomRight", bottomRightAddress
+dict.add "topLeft", topLeftAddress
+dict.add "bottomRight", bottomRightAddress
 ''
-dict.Add "size", rng.Count
-dict.Add "columnCnt", columnCnt
-dict.Add "rowCnt", rowCnt
-dict.Add "topRowPos", topRowNo
-dict.Add "bottomRowPos", bottomRowNo
-dict.Add "leftColumnPos", leftColumnNo
-dict.Add "rightColumnPos", rightColumnNo
+dict.add "size", rng.Count
+dict.add "columnCnt", columnCnt
+dict.add "rowCnt", rowCnt
+dict.add "topRowPos", topRowNo
+dict.add "bottomRowPos", bottomRowNo
+dict.add "leftColumnPos", leftColumnNo
+dict.add "rightColumnPos", rightColumnNo
 ''
-dict.Add "sheetName", rng.Worksheet.name
-dict.Add "bookName", rng.Worksheet.Parent.name
-dict.Add "headerRange", headerRng
-dict.Add "bodyRange", bodyRng
-dict.Add "bodyAddress", bodyRngAddr
+dict.add "sheetName", rng.Worksheet.Name
+dict.add "bookName", rng.Worksheet.parent.Name
+dict.add "headerRange", headerRng
+dict.add "bodyRange", bodyRng
+dict.add "bodyAddress", bodyRngAddr
 
 ' return and release
 Set GetRangeDetail = dict
@@ -727,32 +993,290 @@ If rng.Count > 2 Then ' Case : range size is 1 only.
 End If
 ''
 If IsMissing(sheetName) Then
-    sheetName = rng.Worksheet.name
+    sheetName = rng.Worksheet.Name
 Else
     Set rng = Worksheets(sheetName).Range(rng.Address)
 End If
 ''
 Dim dict As Object
-Set dict = CreateObject("Scripting.Dictionary")
+Set dict = createObject("Scripting.Dictionary")
+Dim aryRngBlockSize() As Variant
+Let aryRngBlockSize = Me.GetRangeBlock(rng)
+Dim rowCnt As Long
+Let rowCnt = aryRngBlockSize(LBound(aryRngBlockSize))
+Dim colCnt As Long
+Let colCnt = aryRngBlockSize(UBound(aryRngBlockSize))
 ''
 'dict.add "name", rng.Name '' FIXME:If not set a name
-dict.Add "sheetName", rng.Worksheet.name
-dict.Add "address", rng.Address
-dict.Add "notetext", rng.NoteText
-dict.Add "value", rng.value
-dict.Add "numberformat", rng.NumberFormatLocal
-dict.Add "formula", rng.Formula
+dict.add "sheetName", rng.Worksheet.Name
+dict.add "address", rng.Address
+dict.add "notetext", rng.NoteText
+dict.add "value", rng.value
+dict.add "valueType", Me.TypeValueOfCell(rng)
+dict.add "numberformat", rng.NumberFormatLocal
+If rng.HasFormula Then
+  dict.add "formula", rng.Formula
+End If
+dict.add "rowPos", rng.Cells.Row
+dict.add "colPos", rng.Cells.column
+dict.add "rowCnt", rowCnt
+dict.add "colCnt", colCnt
 'dict.add "presedent", rng.Precedents '' FIXME:If not set a formula
-dict.Add "color", C_Commons.RGBToHexStr(rng.Font.Color)
-dict.Add "backgroundcolor", C_Commons.RGBToHexStr(rng.Interior.Color)
-dict.Add "colNo", rng.Cells.column
-dict.Add "rowNo", rng.Cells.Row
+dict.add "font-color", C_Commons.RGBToHexStr(rng.Font.Color)
+dict.add "font-size", rng.Font.size
+dict.add "font-weight", Me.GetBold(rng)
+dict.add "background-color", C_Commons.RGBToHexStr(rng.Interior.Color)
+''
+dict.add "border-color", Me.GetBorderColorStatement(rng, rowCnt, colCnt)
+dict.add "border-lineStyle", Me.GetBorderLineStyleStatement(rng, rowCnt, colCnt)
+dict.add "border-weight", Me.GetBorderWeightStatement(rng, rowCnt, colCnt)
+''
+dict.add "columnWidth", rng.ColumnWidth
+dict.add "rowHeight", rng.RowHeight
+dict.add "text-align", Me.GetHAlign(rng.HorizontalAlignment)
+dict.add "vertical-align", Me.GetVAlign(rng.VerticalAlignment)
+If rng.wrapText Then
+    dict.add "wrapText", VBA.Replace(rng.value, vbLf, "<br>")
+End If
 '' return
 Set GetCellDetail = dict
 ''
 End Function
 
-Public Function Find( _
+Public Function GetBold(rng As Range) As String
+'''' **************************************************
+Dim strRtn As String
+If rng.Font.Bold Then
+    Let strRtn = "bold"
+Else
+    Let strRtn = "normal"
+End If
+Let GetBold = strRtn
+End Function
+
+Public Function GetBorderColorStatement(rng As Range, Optional ByVal rowCnt As Variant, Optional ByVal colCnt As Variant) As String
+'''' **************************************************
+''
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+''
+Dim topBorder As Border
+Dim rightBorder As Border
+Dim bottomBorder As Border
+Dim leftBorder As Border
+''
+If IsMissing(rowCnt) Then
+    Let rowCnt = 1
+End If
+If IsMissing(colCnt) Then
+    Let colCnt = 1
+End If
+''
+Dim rngBottomRight As Range
+If Me.IsMerged(rng) Then
+    Set rngBottomRight = Me.GetMerged(rng)
+Else
+    Set rngBottomRight = rng.Offset(rowCnt - 1, colCnt - 1)
+End If
+'Console.dump C_Range.GetRangeDetail(rngBottomRight)
+''
+Set topBorder = rng.Borders(xlEdgeTop)
+Set rightBorder = rngBottomRight.Borders(xlEdgeRight)
+Set bottomBorder = rngBottomRight.Borders(xlEdgeBottom)
+Set leftBorder = rng.Borders(xlEdgeLeft)
+''
+Dim ary() As Variant
+Call C_Array.add(ary, C_Commons.RGBToHexStr(topBorder.Color))
+Call C_Array.add(ary, C_Commons.RGBToHexStr(rightBorder.Color))
+Call C_Array.add(ary, C_Commons.RGBToHexStr(bottomBorder.Color))
+Call C_Array.add(ary, C_Commons.RGBToHexStr(leftBorder.Color))
+''
+Let GetBorderColorStatement = Join(ary, " ")
+''
+End Function
+
+Public Function GetBorderWeightStatement(rng As Range, Optional ByVal rowCnt As Variant, Optional ByVal colCnt As Variant) As String
+'''' **************************************************
+''
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+''
+Dim topBorder As Border
+Dim rightBorder As Border
+Dim bottomBorder As Border
+Dim leftBorder As Border
+''
+If IsMissing(rowCnt) Then
+    Let rowCnt = 1
+End If
+If IsMissing(colCnt) Then
+    Let colCnt = 1
+End If
+''
+Dim rngBottomRight As Range
+If Me.IsMerged(rng) Then
+    Set rngBottomRight = Me.GetMerged(rng)
+Else
+    Set rngBottomRight = rng.Offset(rowCnt - 1, colCnt - 1)
+End If
+'Console.dump C_Range.GetRangeDetail(rngBottomRight)
+''
+Set topBorder = rng.Borders(xlEdgeTop)
+Set rightBorder = rngBottomRight.Borders(xlEdgeRight)
+Set bottomBorder = rngBottomRight.Borders(xlEdgeBottom)
+Set leftBorder = rng.Borders(xlEdgeLeft)
+''
+Dim ary() As Variant
+Call C_Array.add(ary, Me.GetBorderWeight(topBorder.Weight))
+Call C_Array.add(ary, Me.GetBorderWeight(rightBorder.Weight))
+Call C_Array.add(ary, Me.GetBorderWeight(bottomBorder.Weight))
+Call C_Array.add(ary, Me.GetBorderWeight(leftBorder.Weight))
+''
+Let GetBorderWeightStatement = Join(ary, " ")
+''
+End Function
+
+Public Function GetBorderLineStyleStatement(rng As Range, Optional ByVal rowCnt As Variant, Optional ByVal colCnt As Variant) As String
+'''' **************************************************
+''
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+''
+Dim topBorder As Border
+Dim rightBorder As Border
+Dim bottomBorder As Border
+Dim leftBorder As Border
+''
+If IsMissing(rowCnt) Then
+    Let rowCnt = 1
+End If
+If IsMissing(colCnt) Then
+    Let colCnt = 1
+End If
+''
+Dim rngBottomRight As Range
+If Me.IsMerged(rng) Then
+    Set rngBottomRight = Me.GetMerged(rng)
+Else
+    Set rngBottomRight = rng.Offset(rowCnt - 1, colCnt - 1)
+End If
+'Console.dump C_Range.GetRangeDetail(rngBottomRight)
+''
+Set topBorder = rng.Borders(xlEdgeTop)
+Set rightBorder = rngBottomRight.Borders(xlEdgeRight)
+Set bottomBorder = rngBottomRight.Borders(xlEdgeBottom)
+Set leftBorder = rng.Borders(xlEdgeLeft)
+''
+Dim ary() As Variant
+Call C_Array.add(ary, Me.GetBorderLineStyle(topBorder.LineStyle))
+Call C_Array.add(ary, Me.GetBorderLineStyle(rightBorder.LineStyle))
+Call C_Array.add(ary, Me.GetBorderLineStyle(bottomBorder.LineStyle))
+Call C_Array.add(ary, Me.GetBorderLineStyle(leftBorder.LineStyle))
+''
+Let GetBorderLineStyleStatement = Join(ary, " ")
+''
+End Function
+
+Public Function IsMerged( _
+    ByRef rng As Range _
+) As Boolean
+'''' /**************************************************
+''''  *@function IsMerged
+''''  *@param {Range} rng
+''''  */
+''
+Let IsMerged = rng.MergeCells
+End Function
+
+Public Function GetMerged( _
+    ByRef rng As Range _
+) As Range
+'''' /**************************************************
+''''  *@function IsMerged
+''''  *@param {Range} rng
+''''  */
+''
+Dim rngRtn As Range
+If Me.IsMerged(rng) Then
+    Set rngRtn = rng.MergeArea
+Else
+    Set rngRtn = rng
+End If
+Set GetMerged = rngRtn
+End Function
+
+Public Function GetRangeBlock(rng As Range, Optional ByVal colEndPos As Variant) As Variant
+'''' /**************************************************
+''''  *@function IsMerged
+''''  *@param {Range} rng
+''''  */
+''
+Dim C_Array As C_Array
+Set C_Array = New C_Array
+Dim aryRtn() As Variant
+''
+If IsMissing(colEndPos) Then
+    Let colEndPos = 50 ''FIXME
+End If
+Dim rngRow As Range
+Set rngRow = rng.parent.Range(rng, rng.Offset(0, colEndPos - rng.column))
+Dim r As Long
+Dim c As Long
+''Console.dump Me.GetRangeDetail(rngRow)
+Dim rowCnt As Long
+Let rowCnt = 1
+Dim colCnt As Long
+Let colCnt = 1
+If Me.IsTopLeftBordered(rng) Then
+    ''
+    If Me.IsMerged(rng) Then
+        ''
+        Let rowCnt = rng.MergeArea.Rows.Count
+        Let colCnt = rng.MergeArea.Columns.Count
+    Else
+        ''
+        For c = 2 To rngRow.Columns.Count
+            If VBA.IsEmpty(rngRow.Cells(1, c).value) Then
+                ''
+            Else
+                For r = 2 To 10 ''FIXME
+                    If Me.IsBottomRightBordered(rngRow.Cells(r, c)) Then
+                        ''
+                        Let colCnt = c
+                        Let rowCnt = r
+                        Exit For
+                    Else
+                        ''
+                    End If
+                Next r
+                Exit For
+            End If
+            Let colCnt = colCnt + 1
+        Next c
+    End If
+Else
+    If Me.IsMerged(rng) Then
+        ''
+        Let rowCnt = rng.MergeArea.Rows.Count
+        Let colCnt = rng.MergeArea.Columns.Count
+    Else
+        For c = 2 To rngRow.Columns.Count
+            If VBA.IsEmpty(rngRow.Cells(1, c).value) Then
+                ''
+            Else
+                Exit For
+            End If
+            Let colCnt = colCnt + 1
+        Next c
+    End If
+End If
+Call C_Array.add(aryRtn, rowCnt)
+Call C_Array.add(aryRtn, colCnt)
+Let GetRangeBlock = aryRtn
+''
+End Function
+
+Public Function find( _
                 ByRef rng As Range, _
                 ByVal keyword As String) As Variant
 '''' /**************************************************
@@ -767,9 +1291,9 @@ Dim aryRtn() As Variant
 Dim firstCellAddr As String
 ''
 Dim rngFound As Range
-Set rngFound = rng.Find(keyword)
+Set rngFound = rng.find(keyword)
 If rngFound Is Nothing Then
-    Find = aryRtn
+    find = aryRtn
     Exit Function
 Else
     '' Continue
@@ -788,7 +1312,7 @@ Do
     Set rngFound = rng.FindNext(rngFound)
 Loop While firstCellAddr <> rngFound.Address
 ''
-Find = aryRtn
+find = aryRtn
 ''
 End Function
 
@@ -808,7 +1332,7 @@ Public Function FindInSheet( _
 ''
 Dim rng As Range
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 If IsMissing(rangeparam) Then
     Set rng = Workbooks(bookName).Worksheets(sheetName).UsedRange
@@ -816,9 +1340,31 @@ Else
     Set rng = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
 End If
 ''
-FindInSheet = Me.Find(rng, keyword)
+FindInSheet = Me.find(rng, keyword)
 ''
 End Function
+
+Public Sub ReplaceAll( _
+            ByRef rng As Range, _
+            ByRef dict As Dictionary _
+        )
+'''' /**************************************************
+''''  *@function ReplaceAll with Perfect matching
+''''  *@param {Range} rng
+''''  *@param {String} what
+''''  *@param {String} replacement
+''''  */
+''
+Dim keys As Variant
+Dim ky As Variant
+Dim templVar As String
+For Each ky In dict.keys
+    Let templVar = "{{" & ky & "}}"
+    Call rng.Replace(what:=templVar, replacement:=dict.item(ky))
+Next ky
+
+End Sub
+
 
 Public Sub ClearCurrentRegionByName( _
                 ByVal paramname As String, _
@@ -839,7 +1385,7 @@ Public Sub ClearCurrentRegionByName( _
 ''''  */
 ''
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 Dim sht As Worksheet
 Set sht = Workbooks(bookName).Worksheets(sheetName)
@@ -874,7 +1420,7 @@ Dim C_Array As C_Array
 Set C_Array = New C_Array
 Dim rng As Range
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 If IsMissing(rangeparam) Then
     Set rng = Workbooks(bookName).Worksheets(sheetName).UsedRange
@@ -883,7 +1429,7 @@ Else
 End If
 ''
 Dim ary As Variant
-ary = Me.Find(rng, keyword)
+ary = Me.find(rng, keyword)
 ''
 If C_Array.TypeArrayPattern(ary) = "ArrayNotInit" Then
     '' continue
@@ -904,8 +1450,8 @@ Public Function GetCurrentRegionByKeyword( _
                     ByVal sheetName As Variant, _
                     Optional ByVal rowOffset As Long = 0, _
                     Optional ByVal colOffset As Long = 0, _
-                    Optional ByVal bookName As Variant, _
-                    Optional ByVal rangeparam As Variant) As Range
+                    Optional ByVal rangeparam As Variant, _
+                    Optional ByVal bookName As Variant) As Range
 ''' /**************************************************
 '''  *@function getCurrentRegionByKeyword
 '''  *@param {String} keyword
@@ -925,7 +1471,7 @@ Dim rng As Range
 Dim rngTarget As Range
 ''
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 ''
 ''
@@ -961,7 +1507,8 @@ End Function
 
 Public Function GetCurrentRegionByName( _
                     ByVal rangeparam As String, _
-                    ByVal sheetName As String) As Range
+                    ByVal sheetName As String, _
+                    Optional ByVal bookName As Variant) As Range
 ''' /********************************************************
 '''  *@function getCurrentRegionByName
 '''  *<br/>対象シートの対象範囲名をターゲットにして、
@@ -970,8 +1517,11 @@ Public Function GetCurrentRegionByName( _
 '''  *@param {String} sheetname
 '''  *@return {Range}
 '''  */
-'
-    Set GetCurrentRegionByName = Worksheets(sheetName).Range(rangeparam).CurrentRegion
+'FIXME
+If VBA.IsMissing(bookName) Then
+    Let bookName = ThisWorkbook.Name
+End If
+Set GetCurrentRegionByName = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam).CurrentRegion
 End Function
 
 Public Function GetRangeAreasByKeyword(ByVal strSheetName As Variant _
@@ -996,7 +1546,7 @@ Dim rngFindResult As Range
 Dim rngFindFirst  As Range
 Dim rngUsed As Range
 Set rngUsed = ThisWorkbook.Worksheets(strSheetName).UsedRange
-Set rngFindResult = rngUsed.Find(What:=strKeyString, Lookat:=xlWhole)
+Set rngFindResult = rngUsed.find(what:=strKeyString, Lookat:=xlWhole)
 Set rngFindFirst = rngFindResult
 Dim strTemp As String
 Dim rng As Range
@@ -1040,7 +1590,7 @@ Dim C_Array As C_Array
 Set C_Array = New C_Array
 Dim rng As Range
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 If IsMissing(rangeparam) Then
     Set rng = Workbooks(bookName).Worksheets(sheetName).UsedRange
@@ -1049,7 +1599,7 @@ Else
 End If
 ''
 Dim ary As Variant
-ary = Me.Find(rng, keyword)
+ary = Me.find(rng, keyword)
 
 If C_Array.TypeArrayPattern(ary) = "ArrayNotInit" Then
     GetValueByKeyword = ""
@@ -1089,7 +1639,7 @@ Dim C_Array As C_Array
 Set C_Array = New C_Array
 ''
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 ''
 Dim rngTarget As Range
@@ -1097,7 +1647,7 @@ Dim ary As Variant
 ''
 On Error GoTo EXCEPTION
     If IsMissing(sheetName) Then
-        sheetName = ActiveSheet.name
+        sheetName = ActiveSheet.Name
     End If
     If IsMissing(rangeparam) Then
         Set rngTarget = Workbooks(bookName).Worksheets(sheetName).UsedRange
@@ -1105,7 +1655,7 @@ On Error GoTo EXCEPTION
         Set rngTarget = Workbooks(bookName).Worksheets(sheetName).Range(rangeparam)
     End If
     
-    ary = Me.Find(rngTarget, keyword)
+    ary = Me.find(rngTarget, keyword)
     Dim arytype As String
     Let arytype = C_Array.TypeArrayPattern(ary)
     
@@ -1162,7 +1712,7 @@ Public Sub PutArray( _
 Dim C_Array As C_Array
 Set C_Array = New C_Array
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 Dim rng As Range
 Dim rngCurrent As Range
@@ -1175,7 +1725,7 @@ ElseIf UCase(style) = "H" Then
     Set rng = rngCurrent.Resize(1, UBound(ary) - LBound(ary) + 1)
     rng.value = C_Array.ArrayToArrayArray(ary)
 End If
-rng.WrapText = False
+rng.wrapText = False
 '
 Set C_Array = Nothing
 '
@@ -1198,7 +1748,7 @@ Public Sub PutArrayArray( _
 '''  */
 '
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 Dim rng As Range
 Dim rngCurrent As Range
@@ -1216,7 +1766,7 @@ cubMax = UBound(aryary, 2) 'aryary's second dimension  ''FIXME
 '
 Set rng = rngCurrent.Resize(rubMax - rlbMax + 1, cubMax - clbMax + 1)
 rng.value = aryary
-rng.WrapText = False
+rng.wrapText = False
 '
 End Sub
 
@@ -1240,7 +1790,7 @@ Public Sub PutJagArray( _
 Dim C_Array As C_Array
 Set C_Array = New C_Array
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 ''
 Dim rng As Range
@@ -1262,7 +1812,7 @@ Next r
 '
 Set rng = rngCurrent.Resize(UBound(jagary) - LBound(jagary) + 1, cubMax - LBound(jagary(LBound(jagary))) + 1)
 rng.value = C_Array.JagArrayToArrayArray(jagary)
-rng.WrapText = False
+rng.wrapText = False
 '
 Set C_Array = Nothing
 '
@@ -1298,7 +1848,7 @@ Public Function GetRefertoString(ByRef rng As Range) As String
 ''
 Dim shtName As String
 Dim addr As String
-Let shtName = rng.Parent.name
+Let shtName = rng.parent.Name
 Let addr = rng.AddressLocal
 Console.log shtName
 Console.log addr
@@ -1324,7 +1874,7 @@ If IsMissing(sheetName) Then
         Let aryTemp = Split(addr, "!")
         Let sheetName = C_String.Chomp(aryTemp(LBound(aryTemp)), 1)
     Else
-        Let sheetName = ThisWorkbook.ActiveSheet.name
+        Let sheetName = ThisWorkbook.ActiveSheet.Name
     End If
 End If
 Dim sht As Worksheet
@@ -1357,7 +1907,7 @@ Public Function ForEach(ByRef rng As Range _
     Dim itm As Variant
     Dim sht As Worksheet
     For Each itm In rng
-        Set sht = Worksheets(rng.Parent.name)
+        Set sht = Worksheets(rng.parent.Name)
         sht.Cells(itm.Row, itm.column) = CallByName(instance, methodname, VbMethod, itm, pAry)
     Next itm
     Set sht = Nothing
@@ -1387,7 +1937,7 @@ Public Function ForEachAreas(ByRef rng As Variant _
     Dim sht As Worksheet
     For Each rngArea In rng.Areas
         For Each itm In rngArea
-            Set sht = Worksheets(rng.Parent.name)
+            Set sht = Worksheets(rng.parent.Name)
             sht.Cells(itm.Row, itm.column) = CallByName(instance, methodname, VbMethod, itm, pAry)
         Next itm
     Next rngArea
@@ -1427,7 +1977,7 @@ Set objSB = Nothing
 End Sub
 
 Public Function ToCsv(ByRef rng As Range _
-               , Optional delimiter As Variant = ",")
+               , Optional delimiter As Variant = ",") As String
 ''' /********************************************************
 '''  *@function ToCsv
 '''  *<pre>
@@ -1451,13 +2001,13 @@ For Each rngRow In rng.Rows
             If (aryTemp(i) = "") Or IsEmpty(aryTemp(i)) Then
                 ary(i) = ""
             Else
-                ary(i) = C_Commons.ToString(aryTemp(i))
+                ary(i) = C_Commons.toString(aryTemp(i))
             End If
         Next i
         str = str & Join(ary, delimiter) & vbCrLf
 Next rngRow
 '
-ToCsv = Left(str, Len(str) - 2)
+ToCsv = VBA.left(str, Len(str) - 2)
 '
 End Function
 
@@ -1508,11 +2058,11 @@ Dim r As Long
 For r = lngRowStart To rng.Rows.Count
         Set dict = C_Array.ArrayToDictionary(Me.GetRowArray(rng, r), aryHeader)
         Set objTemplate.dict = dict
-        strTemp = strTemp & objTemplate.Merge() & vbCrLf
+        strTemp = strTemp & objTemplate.merge() & vbCrLf
         Set dict = New Dictionary
 Next r
 '
-strTemp = Left(strTemp, Len(strTemp) - 2)
+strTemp = VBA.left(strTemp, Len(strTemp) - 2)
 '
 'XMLの生成
 Dim strHeader As String
@@ -1524,10 +2074,10 @@ Else
         strHeader = "${body}"
 End If
 '
-Call dict.Add("body", strTemp)
+Call dict.add("body", strTemp)
 objTemplate.template = strHeader
 Set objTemplate.dict = dict
-ToXml = objTemplate.Merge()
+ToXml = objTemplate.merge()
 '
 Set C_Array = Nothing
 Set C_Template = Nothing
@@ -1584,11 +2134,11 @@ Dim r As Long
 For r = lngRowStart To rng.Rows.Count
         Set dict = C_Array.ArrayToDictionary(Me.GetRowArray(rng, r), aryHeader)
         Set objTemplate.dict = dict
-        strTemp = strTemp & objTemplate.Merge() & vbCrLf
+        strTemp = strTemp & objTemplate.merge() & vbCrLf
         Set dict = New Dictionary
 Next r
 '
-strTemp = Left(strTemp, Len(strTemp) - 2)
+strTemp = VBA.left(strTemp, Len(strTemp) - 2)
 '
 'XMLの生成
 Dim strHeader As String
@@ -1600,10 +2150,10 @@ Else
         strHeader = "${body}"
 End If
 '
-Call dict.Add("body", strTemp)
+Call dict.add("body", strTemp)
 objTemplate.template = strHeader
 Set objTemplate.dict = dict
-ToXml2 = objTemplate.Merge()
+ToXml2 = objTemplate.merge()
 '
 Set C_Array = Nothing
 Set C_Template = Nothing
@@ -1633,7 +2183,7 @@ Dim i As Long
 '
 Select Case Me.TypeRangePattern(rng)
         Case CONS_RANGE_TYPE(RANGE_TYPE.cell)
-            If C_String.IsJsonObject(rng.value) Then
+            If C_String.IsJsonString(rng.value) Then
                 Set vntRtn = C_Commons.ParseToJson(rng.value)
             Else
                 Let vntRtn = C_Commons.ParseToJson(rng.value)
@@ -1657,7 +2207,7 @@ Select Case Me.TypeRangePattern(rng)
         Case CONS_RANGE_TYPE(RANGE_TYPE.CELLS_AREA)
             ary = Me.RangeToArrayForAreas(rng)
             For i = LBound(ary) To UBound(ary)
-                If C_String.IsJsonObject(ary(i)) Then
+                If C_String.IsJsonString(ary(i)) Then
                     Set ary(i) = C_Commons.ParseToJson(ary(i))
                 Else
                     Let ary(i) = C_Commons.ParseToJson(ary(i))
@@ -1685,7 +2235,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 '''' *********************************************************
 Dim CONS_MODULE_NAME As String
 CONS_MODULE_NAME = "C_Range.unitTest"

@@ -65,7 +65,7 @@ End Property
 '''//--------------------------------------------------------
 '''// Instance Method
 '''//
-Public Function SetTemplateByName(ByVal namestr As String, Optional sheetName As Variant, Optional bookName As Variant) As Variant
+Public Function SetTemplateByName(ByVal nameStr As String, Optional sheetName As Variant, Optional bookName As Variant) As Variant
 ''' /********************************************************
 '''  *@function setTemplate
 '''  *<br/>Å@Set template with a Range Address or Name
@@ -74,12 +74,12 @@ Public Function SetTemplateByName(ByVal namestr As String, Optional sheetName As
 '''  * @return {Variant} source of template
 '''  */
 If IsMissing(bookName) Then
-    bookName = ThisWorkbook.name
+    bookName = ThisWorkbook.Name
 End If
 If IsMissing(sheetName) Then
-    Me.template_ = ThisWorkbook.Names(namestr).RefersToRange.value
+    Me.template_ = ThisWorkbook.Names(nameStr).RefersToRange.value
 Else
-    Me.template_ = Workbooks(bookName).Names(namestr).RefersToRange.value
+    Me.template_ = Workbooks(bookName).Names(nameStr).RefersToRange.value
 End If
 ''
 SetTemplateByName = Me.template_
@@ -120,7 +120,7 @@ Dim C_FileIO As C_FileIO
 Set C_FileIO = New C_FileIO
 ''
 If IsMissing(templFolder) Then
-    Let templFolder = ThisWorkbook.Path
+    Let templFolder = ThisWorkbook.path
 End If
 Dim templPath As String
 Let templPath = C_File.BuildPath(templFolder, templFile)
@@ -131,7 +131,7 @@ SetTemplateByFile = Me.template_
 ''
 End Function
 
-Public Function Merge(Optional ByVal escaped As Boolean = False) As Variant
+Public Function merge(Optional ByVal escaped As Boolean = False) As Variant
 '''' /********************************************************
 ''''  *@function merge
 ''''  *<br/>Å@merge key and value in dictionary into template
@@ -148,18 +148,18 @@ On Error GoTo EXCEPTION
     clsTemplator_.TemplateString = template_
     ''
     For i = 0 To dict_.Count - 1
-        If clsTemplator_.VariableExists(dict_.Keys(i)) Then
+        If clsTemplator_.VariableExists(dict_.keys(i)) Then
             If escaped Then
-                clsTemplator_.SetVariableEsc dict_.Keys(i), dict_.Items(i)
+                clsTemplator_.SetVariableEsc dict_.keys(i), dict_.Items(i)
             Else
-                clsTemplator_.SetVariable dict_.Keys(i), dict_.Items(i)
+                clsTemplator_.SetVariable dict_.keys(i), dict_.Items(i)
             End If
         End If
     Next i
     ''
     strRet = clsTemplator_.GenerateOutputToString()
     ''
-    Merge = strRet
+    merge = strRet
     Exit Function
     ''
 EXCEPTION: 'Label
@@ -186,18 +186,18 @@ On Error GoTo EXCEPTION
     clsTemplator_.TemplateString = template_
     ''
     For i = 0 To dict_.Count - 1
-        If clsTemplator_.BlockExists(dict_.Keys(i)) Then
-            If IsArray(dict_(dict_.Keys(i))) Then
-                For j = LBound(dict_(dict_.Keys(i))) To UBound(dict_(dict_.Keys(i)))
-                    If clsTemplator_.VariableExists(dict_(dict_.Keys(i)).Keys(j)) Then
-                        clsTemplator_.SetVariable dict_(dict_.Keys(i)).Keys(j), dict_(dict_.Keys(i)).Items(i)
+        If clsTemplator_.BlockExists(dict_.keys(i)) Then
+            If IsArray(dict_(dict_.keys(i))) Then
+                For j = LBound(dict_(dict_.keys(i))) To UBound(dict_(dict_.keys(i)))
+                    If clsTemplator_.VariableExists(dict_(dict_.keys(i)).keys(j)) Then
+                        clsTemplator_.SetVariable dict_(dict_.keys(i)).keys(j), dict_(dict_.keys(i)).Items(i)
                     End If
                 Next j
             End If
-            clsTemplator_.AddBlock dict_.Keys(i)
+            clsTemplator_.AddBlock dict_.keys(i)
         End If
-        If clsTemplator_.VariableExists(dict_.Keys(i)) Then
-            clsTemplator_.SetVariable dict_.Keys(i), dict_.Items(i)
+        If clsTemplator_.VariableExists(dict_.keys(i)) Then
+            clsTemplator_.SetVariable dict_.keys(i), dict_.Items(i)
         End If
     Next i
     ''
@@ -235,9 +235,9 @@ On Error GoTo EXCEPTION
     Dim dictTemp As Dictionary
     Dim ky As Variant
     For i = 0 To dict_.Count - 1
-        If clsTemplator_.BlockExists(dict_.Keys(i)) Then
-            If IsArray(dict_(dict_.Keys(i))) Then
-                Let ary = dict_(dict_.Keys(i))
+        If clsTemplator_.BlockExists(dict_.keys(i)) Then
+            If IsArray(dict_(dict_.keys(i))) Then
+                Let ary = dict_(dict_.keys(i))
                 For j = LBound(ary) To UBound(ary)
                     Set dictTemp = ary(j)
                     For Each ky In dictTemp
@@ -246,12 +246,12 @@ On Error GoTo EXCEPTION
                             clsTemplator_.SetVariable ky, dictTemp.item(ky)
                         End If
                     Next ky
-                    clsTemplator_.AddBlock dict_.Keys(i)
+                    clsTemplator_.AddBlock dict_.keys(i)
                 Next j
             End If
         End If
-        If clsTemplator_.VariableExists(dict_.Keys(i)) Then
-            clsTemplator_.SetVariable dict_.Keys(i), dict_.Items(i)
+        If clsTemplator_.VariableExists(dict_.keys(i)) Then
+            clsTemplator_.SetVariable dict_.keys(i), dict_.Items(i)
         End If
     Next i
     ''
@@ -290,7 +290,7 @@ End Sub
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
     Dim dict As Dictionary
     Set dict = New Dictionary
     Dim strHead As String

@@ -42,7 +42,7 @@ Dim C_File As C_File
 Set C_File = New C_File
 Dim ary As Variant
 If IsMissing(strPath) Then
-    strPath = ThisWorkbook.Path
+    strPath = ThisWorkbook.path
 End If
 GetXlsxes = C_File.GetFilesByWildcard(strPath, strExt)
 ''
@@ -68,7 +68,7 @@ On Error GoTo EXCEPTION
     End If
     ' check already open the same book
     For Each bk In Workbooks
-        If bk.name = tempFilename Then
+        If bk.Name = tempFilename Then
             Call Err.Raise(12001, CONS_MODULE_NAME, CONS_MODULE_NAME & vbCr & "The same file already has been opened ", Err.HelpFile, Err.HelpContext)
         End If
     Next bk
@@ -137,7 +137,7 @@ Public Sub CreateBook(ByRef wb As Workbook)
 ''' * <br/>
 ''' * @param {Workbook}
 ''' */
-Set wb = Workbooks.Add
+Set wb = Workbooks.add
 ''
 End Sub
 
@@ -148,7 +148,7 @@ Public Sub CreateBookByTemplate(ByRef wb As Workbook, ByVal templatePath As Stri
 ''' * <br/>
 ''' * @param {Variant}filePath
 ''' */
-Set wb = Workbooks.Add(templatePath)
+Set wb = Workbooks.add(templatePath)
 ''
 End Sub
 
@@ -191,7 +191,7 @@ Public Sub CloseAllWithoutThisWorkbook()
 ''
 Dim wb As Workbook
 For Each wb In Workbooks
-    If Not wb.name = ThisWorkbook.name Then
+    If Not wb.Name = ThisWorkbook.Name Then
         Me.SaveNotAndClose wb
     End If
 Next wb
@@ -221,11 +221,11 @@ Public Sub CreateAndSaveAs(ByRef wb As Workbook, ByVal savePath As String, Optio
 ''' * @param {Variant}filePath
 ''' */
 If IsMissing(templatePath) Then
-    Set wb = Workbooks.Add
-    wb.SaveAs FileName:=savePath
+    Set wb = Workbooks.add
+    wb.SaveAs fileName:=savePath
 Else
-    Set wb = Workbooks.Add(templatePath)
-    wb.SaveAs FileName:=savePath
+    Set wb = Workbooks.add(templatePath)
+    wb.SaveAs fileName:=savePath
 End If
 ''
 End Sub
@@ -242,7 +242,7 @@ If IsMissing(bookpath) Then
     bookpath = ThisWorkbook.FullName
 End If
 Dim objFSO As Object
-Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set objFSO = createObject("Scripting.FileSystemObject")
 GetBookName = objFSO.GetFileName(bookpath)
 ''
 Set objFSO = Nothing
@@ -272,7 +272,7 @@ Set wb = Workbooks(GetBookName(bookpath))
 For Each sht In wb.Worksheets
     If sht.Visible Then
     ReDim Preserve ary(i)
-    ary(i) = sht.name
+    ary(i) = sht.Name
     End If
     i = i + 1
 Next sht
@@ -322,13 +322,13 @@ strBookName = GetBookName(bookpath)
 Set bk = Workbooks(strBookName)
 '
 For Each sht In bk.Worksheets
-    If C_Sheet.IsSheetEmpty(strBookName, sht.name) Then
+    If C_Sheet.IsSheetEmpty(strBookName, sht.Name) Then
         ''空のシートは取り込み対象としない
     Else
         If C_Array.Contains(aryTemp, sht.Tab.ColorIndex) Then
-            If (Left(sht.name, 2) <> CONS_PREFIX) Then
+            If (left(sht.Name, 2) <> CONS_PREFIX) Then
                 ReDim Preserve ary(i)
-                ary(i) = sht.name
+                ary(i) = sht.Name
                 i = i + 1
             End If
         End If
@@ -371,7 +371,7 @@ Set bk = Workbooks(GetBookName(bookpath))
 For Each sht In bk.Worksheets
     If C_Array.Contains(aryTemp, sht.Tab.ColorIndex) Then
         ReDim Preserve ary(i)
-        ary(i) = sht.name
+        ary(i) = sht.Name
         i = i + 1
     End If
 Next sht
@@ -383,7 +383,7 @@ Set bk = Nothing
 End Function
 
 Public Function GetSheetsByPrefix(ByVal bookpath As String, Optional prefix As Variant = "__" _
-                    , Optional StartWith As Boolean = False) As Variant
+                    , Optional StartWith As Variant = False) As Variant
 '''/****************************************
 ''' * @function getSheetsByPrefix
 ''' * <br/>ブックをオープン後に、Workbooksコレクションの
@@ -409,13 +409,13 @@ On Error GoTo EXCEPTION
     '
     For i = LBound(ary) To UBound(ary)
         If StartWith Then
-            If (Left(ary(i), 2) = prefix) Then
+            If (left(ary(i), Len(prefix)) = prefix) Then
                 ReDim Preserve retAry(j)
                 retAry(j) = ary(i)
                 j = j + 1
             End If
         Else
-            If (Left(ary(i), 2) <> prefix) Then
+            If (left(ary(i), Len(prefix)) <> prefix) Then
                 ReDim Preserve retAry(j)
                 retAry(j) = ary(i)
                 j = j + 1
@@ -500,11 +500,11 @@ Dim i As Long
 Dim bk As Workbook
 Set bk = Workbooks(bookName)
 Dim dict As Object
-Set dict = CreateObject("Scripting.Dictionary")
+Set dict = createObject("Scripting.Dictionary")
 '
 On Error Resume Next
 For i = 1 To bk.BuiltinDocumentProperties.Count
-    Call dict.Add(bk.BuiltinDocumentProperties(i).name, bk.BuiltinDocumentProperties(i).value)
+    Call dict.add(bk.BuiltinDocumentProperties(i).Name, bk.BuiltinDocumentProperties(i).value)
 Next i
 '
 Set GetBookProperties = dict
@@ -531,7 +531,7 @@ Set bk = Workbooks(bookName)
 '
 On Error Resume Next
 For i = 1 To bk.BuiltinDocumentProperties.Count
-    Call dict.Add(bk.BuiltinDocumentProperties(i).name, bk.BuiltinDocumentProperties(i).value)
+    Call dict.add(bk.BuiltinDocumentProperties(i).Name, bk.BuiltinDocumentProperties(i).value)
 Next i
 '
 Set bk = Nothing
@@ -546,7 +546,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 ''
 '//--------------------------------------
 '//variables
@@ -558,19 +558,19 @@ On Error GoTo EXCEPTION
     '//--------------------------------------
     '// initialize
     '
-    Set dict = Me.GetBookProperties(ThisWorkbook.name)
+    Set dict = Me.GetBookProperties(ThisWorkbook.Name)
     '//--------------------------------------
     '// process
-    dict.Add "sakamoto", "misa"
-    dict.Add "kida", "keisuke"
+    dict.add "sakamoto", "misa"
+    dict.add "kida", "keisuke"
     
-    Console.dump dict
+    Console.Dump dict
     
-    Call Me.SetBookProperties(ThisWorkbook.name, dict)
+    Call Me.SetBookProperties(ThisWorkbook.Name, dict)
     
-    Set dict = Me.GetBookProperties(ThisWorkbook.name)
+    Set dict = Me.GetBookProperties(ThisWorkbook.Name)
     
-    Console.dump dict
+    Console.Dump dict
     
     GoSub FINALLY
     Exit Sub

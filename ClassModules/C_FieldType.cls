@@ -198,7 +198,7 @@ GetFormControlType = C_Dictionary.GetKeyByItem(dictFormControlType, value)
 ''
 End Function
 
-Public Function GetListOfValidationWithField(nmstr As String, _
+Public Function GetListOfValidationWithField(nmStr As String, _
                     Optional shtName As Variant, _
                     Optional wb As Variant) As Variant
 '''' *************************************************
@@ -215,7 +215,7 @@ Dim aryRtn() As Variant
 Dim dict As Dictionary
 Set dict = New Dictionary
 Dim rng As Range
-Set rng = C_Name.GetRange(nmstr, shtName, wb) ''FIXME
+Set rng = C_Name.GetRange(nmStr, shtName, wb) ''FIXME
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
 End If
@@ -261,7 +261,7 @@ End If
 ''
 End Function
 
-Public Function GetNameFieldProperty(ByVal nmstr As String, _
+Public Function GetNameFieldProperty(ByVal nmStr As String, _
                     Optional shtName As Variant, _
                     Optional wb As Variant) As Dictionary
 '''' *************************************************
@@ -291,7 +291,7 @@ Let CONS_SELECT = "select"
 Dim dict As Dictionary
 Set dict = New Dictionary
 Dim rng As Range
-Set rng = C_Name.GetRange(nmstr, shtName, wb)
+Set rng = C_Name.GetRange(nmStr, shtName, wb)
 If IsMissing(wb) Then
     Set wb = ThisWorkbook
 End If
@@ -299,7 +299,7 @@ Dim isGlobalName As Boolean
 If IsMissing(shtName) Then
     Let shtName = rng.Parent.name
 End If
-If C_String.IsAddress(nmstr) Then
+If C_String.IsAddress(nmStr) Then
     Let isGlobalName = False
 Else
     Let isGlobalName = True
@@ -354,9 +354,9 @@ If Not dictAdditional.Exists("type") Then
 End If
 ''
 Call dict.Add("sheetName", shtName)
-Call dict.Add("name", nmstr)
+Call dict.Add("name", nmStr)
 Call dict.Add("type", field_type)
-Call dict.Add("id", nmstr)
+Call dict.Add("id", nmStr)
 Call dict.Add("tag", html_tag)
 Call dict.Add("value", value)
 Call dict.Add("displayString", dictRngFieldProp.item("title"))
@@ -374,9 +374,9 @@ Call C_Dictionary.MergeDictionary(dict, dictAdditional)
 If field_type = CONS_SELECT Then
     Dim optsAry As Variant
     If isGlobalName Then
-        Let optsAry = Me.GetListOfValidationWithField(nmstr, shtName, wb)
+        Let optsAry = Me.GetListOfValidationWithField(nmStr, shtName, wb)
     Else
-        Let optsAry = Me.GetListOfValidationWithField(nmstr, shtName, wb)
+        Let optsAry = Me.GetListOfValidationWithField(nmStr, shtName, wb)
     End If
     Call dict.Add("options", optsAry)
 End If

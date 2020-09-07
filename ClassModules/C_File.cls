@@ -45,7 +45,7 @@ Private Sub Class_Initialize()
 '''  * @event Class_Initialize
 '''  */
     aryCONS = Array(CONS_DESKTOP, CONS_MYDOC)
-    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFSO = createObject("Scripting.FileSystemObject")
 End Sub
 
 Private Sub Class_Terminate()
@@ -72,7 +72,7 @@ Public Function GetSpecialFolder(Optional ByVal strFoldername As Variant = "Desk
     Dim CONS_MODULE_NAME As String
     CONS_MODULE_NAME = "C_File.getSpecialFolder"
     Dim objWShell As Object
-    Set objWShell = CreateObject("WScript.Shell")
+    Set objWShell = createObject("WScript.Shell")
     Dim strRet As String
     '
 On Error GoTo EXCEPTION
@@ -160,7 +160,7 @@ Public Sub ChangeDirectory(ByVal strFoldername As Variant)
     CONS_MODULE_NAME = "C_File.changeCDirectory"
     '
     Dim objWShell As Object
-    Set objWShell = CreateObject("WScript.Shell")
+    Set objWShell = createObject("WScript.Shell")
     '
 On Error GoTo EXCEPTION
     '//--------------------------------------
@@ -231,7 +231,7 @@ Public Function GetCurrentDirectory(Optional ByVal driveString As String = "") A
 GetCurrentDirectory = CurDir(driveString)
 End Function
 
-Public Function BuildPath(ByVal folderPath As String, ByVal FileName As String) As String
+Public Function BuildPath(ByVal folderPath As String, ByVal fileName As String) As String
 ''' /********************************************************
 '''  *@function buildPath
 '''  *<br/> [FileSystemObject]::BuildPath wrapper
@@ -240,7 +240,18 @@ Public Function BuildPath(ByVal folderPath As String, ByVal FileName As String) 
 '''  *@param {String} fileName
 '''  *@return {String} FilePath
 '''  */
-BuildPath = objFSO.BuildPath(folderPath, FileName)
+BuildPath = objFSO.BuildPath(folderPath, fileName)
+End Function
+
+Public Function GetAbsolutePathName(ByVal pathspec As String) As String
+''' /********************************************************
+'''  *@function GetAbsolutePathName
+'''  *<br/> [FileSystemObject]::GetAbsolutePathName wrapper
+'''  *<br/> Refer Scripting.FileSytemObject
+'''  *@param {String} pathspec
+'''  *@return {String} FilePath
+'''  */
+GetAbsolutePathName = objFSO.GetAbsolutePathName(pathspec)
 End Function
 
 Public Function GetTempName(Optional ByVal strFoldername As Variant) As String
@@ -303,7 +314,7 @@ Public Function GetParentFolder(ByVal strFilePath As String)
 On Error GoTo EXCEPTION
     '//--------------------------------------
     '// process and return
-    If Not Me.FileExists(strFilePath) Then
+    If Not Me.fileExists(strFilePath) Then
         GetParentFolder = GetParentFolderName(strFilePath)
     Else
         GetParentFolder = objFSO.GetFile(strFilePath).parentFolder
@@ -341,10 +352,10 @@ Public Function GetFileName(ByVal strFilePath As String)
 On Error GoTo EXCEPTION
     '//--------------------------------------
     '// process and return
-    If Not Me.FileExists(strFilePath) Then
+    If Not Me.fileExists(strFilePath) Then
         GetFileName = objFSO.GetFileName(strFilePath)
     Else
-        GetFileName = objFSO.GetFile(strFilePath).name
+        GetFileName = objFSO.GetFile(strFilePath).Name
     End If
     '
     '//release
@@ -404,13 +415,13 @@ On Error GoTo EXCEPTION
     Dim i As Long
     '//--------------------------------------
     '// process and return
-    Set cltFiles = objFSO.GetFolder(strFolderPath & "\").Files
+    Set cltFiles = objFSO.getFolder(strFolderPath & "\").Files
     '
     ReDim ary(cltFiles.Count - 1)
     '
     i = 0
     For Each clt In cltFiles
-        ary(i) = strFolderPath & "\" & clt.name
+        ary(i) = strFolderPath & "\" & clt.Name
         i = i + 1
     Next
     '
@@ -509,13 +520,13 @@ Public Function GetFilesByWildcard(ByVal strFolderPath As String, ByVal wildcard
     If strFolderPath = "" Then
         strFolderPath = GetCurrentDirectory()
     End If
-    Set cltFiles = objFSO.GetFolder(strFolderPath).Files
+    Set cltFiles = objFSO.getFolder(strFolderPath).Files
     '
     If cltFiles.Count <> 0 Then
         For Each f In cltFiles
-            If (objFSO.GetFileName(f.name) Like wildcard) Then
+            If (objFSO.GetFileName(f.Name) Like wildcard) Then
                 ReDim Preserve ary(i)
-                ary(i) = strFolderPath & "\" & f.name
+                ary(i) = strFolderPath & "\" & f.Name
                 i = i + 1
             End If
         Next f
@@ -524,7 +535,7 @@ Public Function GetFilesByWildcard(ByVal strFolderPath As String, ByVal wildcard
     '
 End Function
 
-Public Sub CopyFile(ByVal source As String, ByVal destination As String, Optional overwrite As Boolean = True)
+Public Sub CopyFile(ByVal source As String, ByVal destination As String, Optional overWrite As Boolean = True)
 ''' /********************************************************
 '''  *@function copyFile
 '''  *<br/> copy a source file to a destination file
@@ -545,7 +556,7 @@ Public Sub CopyFile(ByVal source As String, ByVal destination As String, Optiona
     CONS_MODULE_NAME = "C_File.copyFile"
     '
 On Error GoTo EXCEPTION
-    objFSO.CopyFile source, destination, overwrite
+    objFSO.CopyFile source, destination, overWrite
     '
     '//release
     GoSub FINALLY
@@ -565,7 +576,7 @@ EXCEPTION: 'Label
     '
 End Sub
 
-Public Sub CopyFolder(ByVal source As String, ByVal destination As String, Optional overwrite As Boolean = True)
+Public Sub CopyFolder(ByVal source As String, ByVal destination As String, Optional overWrite As Boolean = True)
 ''' /********************************************************
 '''  *<br/> copy a source file to a destination file
 '''  *<br/> [FileSystemObject]::copyFolder Wrapper
@@ -580,7 +591,7 @@ Public Sub CopyFolder(ByVal source As String, ByVal destination As String, Optio
     CONS_MODULE_NAME = "C_File.copyFolder"
     '
 On Error GoTo EXCEPTION
-    objFSO.CopyFolder source, destination, overwrite
+    objFSO.CopyFolder source, destination, overWrite
     '
     '//release
     GoSub FINALLY
@@ -688,7 +699,7 @@ Public Sub DeleteFile(ByVal filespec As String, Optional ByVal force As Boolean 
     CONS_MODULE_NAME = "C_File.deleteFile"
     '
 On Error GoTo EXCEPTION
-    If Me.FileExists(filespec) Then
+    If Me.fileExists(filespec) Then
         objFSO.DeleteFile filespec, force
     End If
     '
@@ -763,7 +774,7 @@ Public Sub CreateFile(ByVal filespec As String)
 On Error GoTo EXCEPTION
     Dim folderspec As String
     'Console.log (filespec)
-    If Not Me.FileExists(filespec) Then
+    If Not Me.fileExists(filespec) Then
         objFSO.CreateTextFile filespec
     End If
     '
@@ -918,7 +929,7 @@ EXCEPTION: 'Label
     '
 End Function
 
-Public Function FileExists(filespec As String) As Boolean
+Public Function fileExists(filespec As String) As Boolean
 ''' /********************************************************
 '''  *@function FileExists
 '''  *<br/> filespecに指定したファイルが存在するか否かを評価する
@@ -933,10 +944,10 @@ Public Function FileExists(filespec As String) As Boolean
     CONS_MODULE_NAME = "C_File.fileExists"
     '
 On Error GoTo EXCEPTION
-    If objFSO.FileExists(filespec) Then
-      FileExists = True
+    If objFSO.fileExists(filespec) Then
+      fileExists = True
     Else
-      FileExists = False
+      fileExists = False
     End If
     '
     '//release
@@ -1002,7 +1013,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 
     '//--------------------------------------
     '// const

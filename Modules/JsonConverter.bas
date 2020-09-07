@@ -363,7 +363,7 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
         ' Dictionary
         If VBA.TypeName(JsonValue) = "Dictionary" Then
             json_BufferAppend json_Buffer, "{", json_BufferPosition, json_BufferLength
-            For Each json_Key In JsonValue.Keys
+            For Each json_Key In JsonValue.keys
                 ' For Objects, undefined (Empty/Nothing) is not added to object
                 json_Converted = ConvertToJson(JsonValue(json_Key), Whitespace, json_CurrentIndentation + 1)
                 If json_Converted = "" Then
@@ -509,7 +509,7 @@ Private Function json_ParseArray(json_String As String, ByRef json_Index As Long
                 json_SkipSpaces json_String, json_Index
             End If
 
-            json_ParseArray.Add json_ParseValue(json_String, json_Index)
+            json_ParseArray.add json_ParseValue(json_String, json_Index)
         Loop
     End If
 End Function
@@ -587,7 +587,7 @@ Private Function json_ParseString(json_String As String, ByRef json_Index As Lon
                 ' Unicode character escape (e.g. \u00a9 = Copyright)
                 json_Index = json_Index + 1
                 json_Code = VBA.Mid$(json_String, json_Index, 4)
-                json_BufferAppend json_Buffer, VBA.ChrW(VBA.Val("&h" + json_Code)), json_BufferPosition, json_BufferLength
+                json_BufferAppend json_Buffer, VBA.ChrW(VBA.val("&h" + json_Code)), json_BufferPosition, json_BufferLength
                 json_Index = json_Index + 4
             End Select
         Case json_Quote
@@ -627,7 +627,7 @@ Private Function json_ParseNumber(json_String As String, ByRef json_Index As Lon
                 json_ParseNumber = json_Value
             Else
                 ' VBA.Val does not use regional settings, so guard for comma is not needed
-                json_ParseNumber = VBA.Val(json_Value)
+                json_ParseNumber = VBA.val(json_Value)
             End If
             Exit Function
         End If
@@ -765,7 +765,7 @@ Private Function json_StringIsLargeNumber(json_String As Variant) As Boolean
         json_StringIsLargeNumber = True
 
         For json_CharIndex = 1 To json_Length
-            json_CharCode = VBA.Asc(VBA.Mid$(json_String, json_CharIndex, 1))
+            json_CharCode = VBA.asc(VBA.Mid$(json_String, json_CharIndex, 1))
             Select Case json_CharCode
             ' Look for .|0-9|E|e
             Case 46, 48 To 57, 69, 101
@@ -856,7 +856,7 @@ End Sub
 
 Private Function json_BufferToString(ByRef json_Buffer As String, ByVal json_BufferPosition As Long) As String
     If json_BufferPosition > 0 Then
-        json_BufferToString = VBA.Left$(json_Buffer, json_BufferPosition)
+        json_BufferToString = VBA.left$(json_Buffer, json_BufferPosition)
     End If
 End Function
 
@@ -909,7 +909,7 @@ Public Function ParseUtc(utc_UtcDate As Date) As Date
     Exit Function
 
 utc_ErrorHandling:
-    Err.Raise 10011, "UtcConverter.ParseUtc", "UTC parsing error: " & Err.Number & " - " & Err.Description
+    Err.Raise 10011, "UtcConverter.ParseUtc", "UTC parsing error: " & Err.Number & " - " & Err.description
 End Function
 
 ''
@@ -938,7 +938,7 @@ Public Function ConvertToUtc(utc_LocalDate As Date) As Date
     Exit Function
 
 utc_ErrorHandling:
-    Err.Raise 10012, "UtcConverter.ConvertToUtc", "UTC conversion error: " & Err.Number & " - " & Err.Description
+    Err.Raise 10012, "UtcConverter.ConvertToUtc", "UTC conversion error: " & Err.Number & " - " & Err.description
 End Function
 
 ''
@@ -977,7 +977,7 @@ Public Function ParseIso(utc_IsoString As String) As Date
 
             If utc_OffsetIndex > 0 Then
                 utc_HasOffset = True
-                utc_TimeParts = VBA.Split(VBA.Left$(utc_Parts(1), utc_OffsetIndex - 1), ":")
+                utc_TimeParts = VBA.Split(VBA.left$(utc_Parts(1), utc_OffsetIndex - 1), ":")
                 utc_OffsetParts = VBA.Split(VBA.Right$(utc_Parts(1), Len(utc_Parts(1)) - utc_OffsetIndex), ":")
 
                 Select Case UBound(utc_OffsetParts)
@@ -987,7 +987,7 @@ Public Function ParseIso(utc_IsoString As String) As Date
                     utc_Offset = TimeSerial(VBA.CInt(utc_OffsetParts(0)), VBA.CInt(utc_OffsetParts(1)), 0)
                 Case 2
                     ' VBA.Val does not use regional settings, use for seconds to avoid decimal/comma issues
-                    utc_Offset = TimeSerial(VBA.CInt(utc_OffsetParts(0)), VBA.CInt(utc_OffsetParts(1)), Int(VBA.Val(utc_OffsetParts(2))))
+                    utc_Offset = TimeSerial(VBA.CInt(utc_OffsetParts(0)), VBA.CInt(utc_OffsetParts(1)), Int(VBA.val(utc_OffsetParts(2))))
                 End Select
 
                 If utc_NegativeOffset Then: utc_Offset = -utc_Offset
@@ -1003,7 +1003,7 @@ Public Function ParseIso(utc_IsoString As String) As Date
             ParseIso = ParseIso + VBA.TimeSerial(VBA.CInt(utc_TimeParts(0)), VBA.CInt(utc_TimeParts(1)), 0)
         Case 2
             ' VBA.Val does not use regional settings, use for seconds to avoid decimal/comma issues
-            ParseIso = ParseIso + VBA.TimeSerial(VBA.CInt(utc_TimeParts(0)), VBA.CInt(utc_TimeParts(1)), Int(VBA.Val(utc_TimeParts(2))))
+            ParseIso = ParseIso + VBA.TimeSerial(VBA.CInt(utc_TimeParts(0)), VBA.CInt(utc_TimeParts(1)), Int(VBA.val(utc_TimeParts(2))))
         End Select
 
         ParseIso = ParseUtc(ParseIso)
@@ -1016,7 +1016,7 @@ Public Function ParseIso(utc_IsoString As String) As Date
     Exit Function
 
 utc_ErrorHandling:
-    Err.Raise 10013, "UtcConverter.ParseIso", "ISO 8601 parsing error for " & utc_IsoString & ": " & Err.Number & " - " & Err.Description
+    Err.Raise 10013, "UtcConverter.ParseIso", "ISO 8601 parsing error for " & utc_IsoString & ": " & Err.Number & " - " & Err.description
 End Function
 
 ''
@@ -1035,7 +1035,7 @@ Public Function ConvertToIso(utc_LocalDate As Date) As String
     Exit Function
 
 utc_ErrorHandling:
-    Err.Raise 10014, "UtcConverter.ConvertToIso", "ISO 8601 conversion error: " & Err.Number & " - " & Err.Description
+    Err.Raise 10014, "UtcConverter.ConvertToIso", "ISO 8601 conversion error: " & Err.Number & " - " & Err.description
 End Function
 
 ' ============================================= '
@@ -1095,7 +1095,7 @@ Private Function utc_ExecuteInShell(utc_ShellCommand As String) As utc_ShellResu
         utc_Chunk = VBA.Space$(50)
         utc_Read = CLng(utc_fread(utc_Chunk, 1, Len(utc_Chunk) - 1, utc_File))
         If utc_Read > 0 Then
-            utc_Chunk = VBA.Left$(utc_Chunk, CLng(utc_Read))
+            utc_Chunk = VBA.left$(utc_Chunk, CLng(utc_Read))
             utc_ExecuteInShell.utc_Output = utc_ExecuteInShell.utc_Output & utc_Chunk
         End If
     Loop
@@ -1107,10 +1107,10 @@ End Function
 #Else
 
 Private Function utc_DateToSystemTime(utc_Value As Date) As utc_SYSTEMTIME
-    utc_DateToSystemTime.utc_wYear = VBA.Year(utc_Value)
-    utc_DateToSystemTime.utc_wMonth = VBA.Month(utc_Value)
-    utc_DateToSystemTime.utc_wDay = VBA.Day(utc_Value)
-    utc_DateToSystemTime.utc_wHour = VBA.Hour(utc_Value)
+    utc_DateToSystemTime.utc_wYear = VBA.year(utc_Value)
+    utc_DateToSystemTime.utc_wMonth = VBA.month(utc_Value)
+    utc_DateToSystemTime.utc_wDay = VBA.day(utc_Value)
+    utc_DateToSystemTime.utc_wHour = VBA.hour(utc_Value)
     utc_DateToSystemTime.utc_wMinute = VBA.Minute(utc_Value)
     utc_DateToSystemTime.utc_wSecond = VBA.Second(utc_Value)
     utc_DateToSystemTime.utc_wMilliseconds = 0

@@ -33,7 +33,7 @@ Dim CONS_ARRAY_TYPE As Variant
 Private Enum ARRAY_TYPE
     ARRAY_NORMAL = 0
     ARRAY_ARRAY = 1
-    JAGARRAY = 2
+    JagArray = 2
     ARRAY_EMPTY = 3
 End Enum
 
@@ -121,7 +121,7 @@ If Me.IsInit(ary) Then
         If UBound(ary) >= 0 Then
             If IsArray(ary(LBound(ary))) Then
                 ''JagArray(最初のrのaryにて判定）
-                str = CONS_ARRAY_TYPE(ARRAY_TYPE.JAGARRAY) ''JagArray
+                str = CONS_ARRAY_TYPE(ARRAY_TYPE.JagArray) ''JagArray
             Else
                 ''Array
                 str = CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_NORMAL) ''Array
@@ -317,7 +317,7 @@ GetElementLast = ary(UBound(ary))
 ''
 End Function
 
-Public Sub Add(ByRef ary As Variant, value As Variant)
+Public Sub add(ByRef ary As Variant, value As Variant)
 '''' /********************************************************
 ''''  *@function add
 ''''  *</br> 配列をReDimして、渡された要素を追加する。
@@ -351,7 +351,7 @@ End If
 ''
 End Sub
 
-Public Sub AddArray(ByRef aryTo As Variant, ary As Variant)
+Public Sub addArray(ByRef aryTo As Variant, ary As Variant)
 '''' /********************************************************
 ''''  *@function add
 ''''  *</br> 配列をReDimして、渡された要素を追加する。
@@ -362,7 +362,7 @@ Public Sub AddArray(ByRef aryTo As Variant, ary As Variant)
 ''''  */
 Dim i As Long
 For i = LBound(ary) To UBound(ary)
-    Me.Add aryTo, ary(i)
+    Me.add aryTo, ary(i)
 Next i
 End Sub
 
@@ -432,12 +432,12 @@ Public Sub AddParamArray(ByRef ary As Variant, ParamArray pAry() As Variant)
 ''''  */
 Dim i As Long
 For i = LBound(pAry) To UBound(pAry)
-    Me.Add ary, pAry(i)
+    Me.add ary, pAry(i)
 Next i
 ''
 End Sub
 
-Public Function Append(ByRef ary As Variant _
+Public Function append(ByRef ary As Variant _
                      , ByRef value As Variant) As Object
 '''' /********************************************************
 ''''  *@function Append
@@ -450,11 +450,11 @@ Public Function Append(ByRef ary As Variant _
 ''''  *@note 注意：New Objectして、そのObjectを操作するのに利用することを想定。
 ''''  */
 ''
-Call Me.Add(ary, value)
+Call Me.add(ary, value)
 If IsObject(value) Then
-        Set Append = ary(UBound(ary))
+        Set append = ary(UBound(ary))
 Else
-        Let Append = ary(UBound(ary))
+        Let append = ary(UBound(ary))
 End If
 ''
 End Function
@@ -469,7 +469,7 @@ Public Function AppendDictionary(ByRef ary As Variant) As Dictionary
 ''''  *
 ''''  */
 ''
-Set AppendDictionary = Me.Append(ary, New Dictionary)
+Set AppendDictionary = Me.append(ary, New Dictionary)
 ''
 End Function
 
@@ -594,19 +594,19 @@ Public Sub Push(ByRef ary As Variant, ParamArray pAry() As Variant)
 If IsArray(ary) Then
     Dim i As Long
     For i = LBound(pAry) To UBound(pAry)
-        Me.Add ary, pAry(i)
+        Me.add ary, pAry(i)
     Next i
 End If
 ''
 End Sub
 
-Public Function Shift(ByRef ary As Variant) As Variant
+Public Function shift(ByRef ary As Variant) As Variant
 '''' /********************************************************
 ''''  *@function Pop
 ''''  */
 ''
 If IsArray(ary) Then
-    Let Shift = ary(LBound(ary))
+    Let shift = ary(LBound(ary))
     Me.DeleteElementAt ary, LBound(ary)
 End If
 ''
@@ -636,7 +636,7 @@ Public Sub Concat(ByRef ary As Variant, anAry As Variant)
 ''''  */
 Dim i As Long
 For i = LBound(anAry) To UBound(anAry)
-        Call Me.Add(ary, anAry(i))
+        Call Me.add(ary, anAry(i))
 Next i
 ''
 End Sub
@@ -743,10 +743,10 @@ Public Function ToArrayList(ByRef ary As Variant) As Object
 ''''  */
 ''
 Dim list As Object
-Set list = CreateObject("System.Collections.ArrayList")
+Set list = createObject("System.Collections.ArrayList")
 Dim i As Integer
 For i = LBound(ary) To UBound(ary)
-    list.Add (ary(i))
+    list.add (ary(i))
 Next i
 Set ToArrayList = list
 ''
@@ -764,7 +764,7 @@ Dim clt As Collection
 Set clt = New Collection
 Dim i As Integer
 For i = LBound(ary) To UBound(ary)
-    clt.Add (ary(i))
+    clt.add (ary(i))
 Next i
 Set ToCollection = clt
 ''
@@ -798,7 +798,7 @@ Dim C_String As C_String
 Set C_String = New C_String
 ''
 On Error Resume Next
-Err.Clear
+Err.clear
 Dim rtn As Variant
 Let rtn = WorksheetFunction.Vlookup(ky, aryary, colNo, False)
 If Err.Number = 0 Then
@@ -849,7 +849,7 @@ Dim C_String As C_String
 Set C_String = New C_String
 ''
 On Error Resume Next
-Err.Clear
+Err.clear
 Dim rtn As Variant
 Let rtn = WorksheetFunction.Index(aryary, rowNo, colNo)
 If Err.Number = 0 Then
@@ -862,23 +862,23 @@ Let Index = C_String.DefaultString(rtn)
 ''
 End Function
 
-Public Function Match(ByVal ky As Variant, ByRef aryary As Variant)
+Public Function match(ByVal ky As Variant, ByRef aryary As Variant)
 '''' *************************************************
 ''
 Dim C_String As C_String
 Set C_String = New C_String
 ''
 On Error Resume Next
-Err.Clear
+Err.clear
 Dim rtn As Variant
-Let rtn = WorksheetFunction.Match(ky, aryary, 0)
+Let rtn = WorksheetFunction.match(ky, aryary, 0)
 If Err.Number = 0 Then
     ''
 Else
     Console.log "Could not find value: "
 End If
 ''
-Let Match = C_String.DefaultString(rtn)
+Let match = C_String.DefaultString(rtn)
 ''
 End Function
 
@@ -888,7 +888,7 @@ Public Function GetValueWithMatchIndex(ByVal ky As Variant, ByRef aryary As Vari
 Dim rowNo As Variant
 Dim aryColTarget As Variant
 Let aryColTarget = Me.GetColumnForArrayArray(aryary, colTarget)
-Let rowNo = Me.Match(ky, aryColTarget)
+Let rowNo = Me.match(ky, aryColTarget)
 If rowNo = "N/A" Then
     Let GetValueWithMatchIndex = rowNo
     Exit Function
@@ -940,8 +940,8 @@ Let sheetName = C_String.GetTemporaryStr
 Application.DisplayAlerts = False
 ''
 Dim sht As Worksheet
-Set sht = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count))
-Let sht.name = sheetName
+Set sht = ThisWorkbook.Worksheets.add(After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count))
+Let sht.Name = sheetName
 Dim rng As Range
 Set rng = sht.Range("A1")
 ''
@@ -1029,10 +1029,10 @@ Dim i As Long
 ''
 For i = LBound(ary) To UBound(ary)
     If Not dict.Exists(ary(i)) Then
-        Call dict.Add(ary(i), "")
+        Call dict.add(ary(i), "")
         End If
 Next
-RemoveDuplicated = dict.Keys
+RemoveDuplicated = dict.keys
 ''
 End Function
 
@@ -1049,6 +1049,7 @@ Dim aryNumber() As Long
 Dim j As Long
 j = 0
 For i = LBound(ary) To UBound(ary)
+        'Console.dump ary(i)
         If IsArray(ary(i)) Then
             If (ary(i)(LBound(ary(i))) = "") Or IsEmpty(ary(i)(LBound(ary(i)))) Then
                 ReDim Preserve aryNumber(j)
@@ -1066,7 +1067,7 @@ Next i
 ''
 If Me.Count(aryNumber) > 0 Then
     For j = UBound(aryNumber) To LBound(aryNumber) Step -1
-    Call DeleteElementAt(ary, aryNumber(j))
+    Call Me.DeleteElementAt(ary, aryNumber(j))
     Next j
 End If
 ''
@@ -1089,7 +1090,7 @@ Dim item As Variant
 Dim i As Long
 Dim cnt2 As Long
 ''
-Set listDel = CreateObject("System.Collections.ArrayList")
+Set listDel = createObject("System.Collections.ArrayList")
 ''
 Set list1 = ToArrayList(array1)
 Set list2 = ToArrayList(array2)
@@ -1099,7 +1100,7 @@ For i = 0 To cnt2
     item = list2(i)
     Console.log (item)
     If list1.Contains(item) Then
-        list1.Remove (item)
+        list1.remove (item)
         End If
 Next i
 Call listDel.AddRange(list1)
@@ -1132,8 +1133,8 @@ Dim cnt2 As Long
 Dim aryResultAdd As Variant 'Array
 Dim aryResultDel As Variant 'Array
 ''
-Set listAdd = CreateObject("System.Collections.ArrayList")
-Set listDel = CreateObject("System.Collections.ArrayList")
+Set listAdd = createObject("System.Collections.ArrayList")
+Set listDel = createObject("System.Collections.ArrayList")
 ''
 Set list1 = ToArrayList(array1)
 Set list2 = ToArrayList(array2)
@@ -1143,9 +1144,9 @@ For i = 0 To cnt2
     item = list2(i)
     'Console.log (item)
     If list1.Contains(item) Then
-        list1.Remove (item)
+        list1.remove (item)
     Else
-        listAdd.Add (item)
+        listAdd.add (item)
     End If
 Next i
 Call listDel.AddRange(list1)
@@ -1334,12 +1335,12 @@ If ub >= 0 Then
     ''
         For i = lb To ub
             If compareMode = vbBinaryCompare Then '
-                If Left(astrFilter(i), Len(strPrefix)) = strPrefix Then
+                If left(astrFilter(i), Len(strPrefix)) = strPrefix Then
                     astrTemp(cnt) = astrFilter(i)
                     cnt = cnt + 1
                 End If
             Else
-                If LCase(Left(astrFilter(i), Len(strPrefix))) = LCase(strPrefix) Then
+                If LCase(left(astrFilter(i), Len(strPrefix))) = LCase(strPrefix) Then
                     astrTemp(cnt) = astrFilter(i)
                     cnt = cnt + 1
                 End If
@@ -1751,6 +1752,9 @@ Public Function ArrayToDictionary(ByVal ary As Variant, aryHeader As Variant) As
 ''''  *  @return {Variant<Dictionary>} ArrayToDictionary 連想配列
 ''''  */
 ''
+Dim C_String As C_String
+Set C_String = New C_String
+''
 Dim dict As Variant
 Set dict = New Dictionary
 Dim i As Long
@@ -1764,24 +1768,73 @@ lbh = LBound(aryHeader)
 If (UBound(ary) - LBound(ary) + 1) > (ubh - lbh + 1) Then 'aryの方が個数が多い
     j = LBound(ary)
         For i = lbh To ubh
-            Call dict.Add(aryHeader(i), ary(j))
+            If C_String.IsJsonString(ary(i)) Then
+                Call dict.add(aryHeader(i), JsonConverter.ParseJson(ary(j)))
+            Else
+            Call dict.add(aryHeader(i), ary(j))
+            End If
             j = j + 1
         Next i
 Else  'aryHeaderの方が個数が多い もしくは同じ
     j = lbh
     For i = LBound(ary) To UBound(ary)
-        Call dict.Add(aryHeader(j), ary(i))
+        If C_String.IsJsonString(ary(i)) Then
+            Call dict.add(aryHeader(i), JsonConverter.ParseJson(ary(j)))
+        Else
+            Call dict.add(aryHeader(i), ary(j))
+        End If
+        'Call dict.add(aryHeader(j), ary(i))
         j = j + 1
     Next i
     If j > ubh Then
         ''
     Else
         For k = j To ubh
-            Call dict.Add(aryHeader(k), "")
+            Call dict.add(aryHeader(k), "")
         Next k
     End If
 End If
 Set ArrayToDictionary = dict
+''
+End Function
+
+Public Function JagArrayToDictionary(ByVal jagary As Variant, _
+        Optional colKeyNum As Variant, Optional aryHeader As Variant) As Variant
+''''  ********************************************************
+''''  * @function JagArrayToArrayDictionary
+''
+Dim dictRtn As Dictionary
+Set dictRtn = New Dictionary
+Dim cnt As Long
+Dim r As Long
+Dim rowStart As Long
+Dim colKey As String
+If IsMissing(colKeyNum) Then
+    Let colKeyNum = 1
+End If
+''
+If IsMissing(aryHeader) Then
+    aryHeader = jagary(LBound(jagary))
+    rowStart = LBound(jagary) + 1
+Else
+    rowStart = LBound(jagary)
+End If
+Dim i As Long
+For i = LBound(aryHeader) To UBound(aryHeader)
+    If VBA.IsEmpty(aryHeader(i)) Then
+        aryHeader(i) = "col" & i
+    End If
+Next i
+
+If Me.IsDuplicated(aryHeader) Then
+        Err.Raise 5, "JagArrayToArrayDictionary", "プロシージャの呼び出し、または引数が不正です。引数の配列に重複があります。"
+End If
+cnt = -1
+For r = rowStart To UBound(jagary)
+    Let colKey = jagary(r)(colKeyNum)
+    Call dictRtn.add(colKey, Me.ArrayToDictionary(jagary(r), aryHeader))
+Next r
+Set JagArrayToDictionary = dictRtn
 ''
 End Function
 
@@ -1806,6 +1859,13 @@ If IsMissing(aryHeader) Then
 Else
     rowStart = LBound(jagary)
 End If
+Dim i As Long
+For i = LBound(aryHeader) To UBound(aryHeader)
+    If VBA.IsEmpty(aryHeader(i)) Then
+        aryHeader(i) = "col" & i
+    End If
+Next i
+
 If Me.IsDuplicated(aryHeader) Then
         Err.Raise 5, "JagArrayToArrayDictionary", "プロシージャの呼び出し、または引数が不正です。引数の配列に重複があります。"
 End If
@@ -1817,6 +1877,29 @@ For r = rowStart To UBound(jagary)
 Next r
 JagArrayToArrayDictionary = aryRtn
 ''
+End Function
+
+
+Public Function ArrayArrayToDictionary(ByVal aryary As Variant _
+                    , Optional colKeyNum As Variant, Optional aryHeader As Variant) As Dictionary
+'''' ********************************************************
+''''  *@function ArrayArrayToDictionary
+''
+Dim jagary As Variant
+jagary = Me.ArrayArrayToJagArray(aryary)
+''
+Dim colKey As String
+If IsMissing(colKeyNum) Then
+    Let colKeyNum = 1
+End If
+If IsMissing(aryHeader) Then
+    aryHeader = jagary(LBound(jagary))
+    Call Me.DeleteElementAt(jagary, LBound(jagary))
+End If
+If LBound(jagary) = 0 Then
+    Let jagary = Me.ChangeIndexOfBegin(jagary)
+End If
+Set ArrayArrayToDictionary = Me.JagArrayToDictionary(jagary, colKeyNum, aryHeader)
 End Function
 
 Public Function ArrayArrayToArrayDictionary(ByVal aryary As Variant _
@@ -1836,6 +1919,9 @@ jagary = Me.ArrayArrayToJagArray(aryary)
 If IsMissing(aryHeader) Then
     aryHeader = jagary(LBound(jagary))
     Call Me.DeleteElementAt(jagary, LBound(jagary))
+End If
+If LBound(jagary) = 0 Then
+    Let jagary = Me.ChangeIndexOfBegin(jagary)
 End If
 ArrayArrayToArrayDictionary = Me.JagArrayToArrayDictionary(jagary, aryHeader)
 End Function
@@ -1908,9 +1994,9 @@ If Me.IsArrayEx(jagary) < 0 Then
         GoTo FINALLY  '長さゼロ
 End If
 If Me.CountRowForJagArray(jagary) = 1 Then
-    ReDim aryary(1 To 1, LBound(jagary(1)) To UBound(jagary(1)))
-    For c = LBound(jagary(1)) To UBound(jagary(1))
-        Let aryary(1, c) = jagary(1)(c)
+    ReDim aryary(1 To 1, LBound(jagary(LBound(jagary))) To UBound(jagary(LBound(jagary))))
+    For c = LBound(jagary(LBound(jagary))) To UBound(jagary(LBound(jagary)))
+        Let aryary(1, c) = jagary(LBound(jagary))(c)
     Next c
     GoTo FINALLY  'only one line
 End If
@@ -2242,6 +2328,21 @@ aryary = Me.JagArrayToArrayArray(jagary)
 ''
 End Function
 
+Public Function DeleteColumnForArrayArray( _
+    ByRef aryary As Variant, _
+    ByVal colNum As Long)
+'''' ********************************************************
+''
+Dim aryaryTransposed() As Variant
+Let aryaryTransposed = Me.Transpose(aryary)
+Dim jagary As Variant
+Let jagary = Me.ArrayArrayToJagArray(aryaryTransposed)
+Call Me.DeleteElementAt(jagary, colNum)
+''
+Let aryary = Me.Transpose(Me.JagArrayToArrayArray(jagary))
+''
+End Function
+
 Public Function InsertRowForArrayArray(ByRef aryary As Variant _
                         , ByVal rowNum As Long, anAry As Variant)
 '''' /********************************************************
@@ -2523,6 +2624,80 @@ Next r
 ''
 End Sub
 
+Public Function ToJson(value)
+''' /********************************************************
+'''  * @function ToJson
+'''  * @param {Variant} value
+'''  * @return {Variant} ToJson
+'''  */
+    Dim CONS_MODULE_NAME As String
+    CONS_MODULE_NAME = "C_Array.ToJson"
+    Dim clt As Collection
+    Set clt = New Collection
+    Dim elm As Variant
+    Dim i As Long
+    Dim str As String
+    Dim C_Commons As C_Commons
+    Set C_Commons = New C_Commons
+    Dim C_String As C_String
+    Set C_String = New C_String
+    Dim arytype As String
+    Dim jagary As Variant
+'
+'On Error GoTo EXCEPTION
+On Error Resume Next
+    Let arytype = Me.TypeArrayPattern(value)
+    '配列と判定されたvalueを処理
+    If arytype = "ArrayNotInit" Then
+        ToJson = "[]"
+    ElseIf arytype = "ArrayEmpty" Then
+        ToJson = "[]"
+    ElseIf arytype = "Array" Then
+        For Each elm In value
+            If C_String.IsJsonString(elm) Then
+                clt.add elm
+            Else
+                clt.add C_Commons.toString(elm)
+            End If
+        Next
+        For i = 1 To clt.Count
+            str = str & clt.item(i) & ","
+        Next i
+        ToJson = "[" & left(str, Len(str) - 1) & "]"
+    ElseIf arytype = "JagArray" Then
+        str = C_Commons.ShowJagArray(value)
+        ToJson = str
+    ElseIf arytype = "ArrayArray" Then
+        Let jagary = Me.ArrayArrayToJagArray(value)
+        str = C_Commons.ShowJagArray(jagary)
+        ToJson = str
+    Else
+        ToJson = C_Commons.toString(value.Name)
+    End If
+    
+    '
+    'ToStringでエラー
+    If Err.Number <> 0 Then
+        If IsObject(value) Then
+            ToJson = C_Commons.toString(value.Name)
+        End If
+        Err.clear
+    End If
+    GoSub FINALLY
+    Exit Function
+    '
+FINALLY:
+    ' Object開放
+    If Err.Number <> 0 Then
+        Console.info TypeName(value)
+        Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
+    End If
+    Err.clear
+    Set clt = Nothing
+    Return
+    '
+End Function
+
 Public Function ToCsvRow(ByRef ary As Variant, Optional delimiter As Variant = vbTab) As String
 ''' /********************************************************
 '''  *@function ToCsvRow
@@ -2543,6 +2718,29 @@ Next i
 ToCsvRow = Join(aryTemp, delimiter)
 ''
 End Function
+
+Public Function ToLine(ByRef ary As Variant, Optional ByVal padString As Variant) As String
+'''' ********************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+''
+If VBA.IsMissing(padString) Then
+    Let padString = C_String.Rept(" ", 4)
+End If
+''
+Dim i As Long
+Dim line As String
+Dim s As String
+For i = LBound(ary) To UBound(ary)
+    Let s = VBA.Trim(ary(i))
+    Let line = line + C_String.DefaultString(s, padString)
+Next i
+''
+Let ToLine = line
+''
+End Function
+
 
 Public Function ToCsv(ByRef aryAllType As Variant, Optional delimiter As Variant = vbTab) As String
 ''' /********************************************************
@@ -2571,7 +2769,7 @@ Select Case strTemp
             Exit Function
         Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_NORMAL)
             aryTemp = Array(aryAllType)
-        Case CONS_ARRAY_TYPE(ARRAY_TYPE.JAGARRAY)
+        Case CONS_ARRAY_TYPE(ARRAY_TYPE.JagArray)
             aryTemp = aryAllType
         Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_ARRAY)
             aryTemp = Me.ArrayArrayToJagArray(aryAllType)
@@ -2613,7 +2811,7 @@ Select Case strAryType
         Exit Function
     Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_NORMAL)
         aryTemp = Array(aryAllType)
-    Case CONS_ARRAY_TYPE(ARRAY_TYPE.JAGARRAY)
+    Case CONS_ARRAY_TYPE(ARRAY_TYPE.JagArray)
         aryTemp = aryAllType
     Case CONS_ARRAY_TYPE(ARRAY_TYPE.ARRAY_ARRAY)
         aryTemp = Me.ArrayArrayToJagArray(aryAllType)
@@ -2645,8 +2843,8 @@ For r = LBound(aryTemp) To UBound(aryTemp)
 Next r
 Let thead = "<thead class='thead-dark'><tr>" & Join(aryHeaderBuff, "") & "</tr></thead>"
 Let tbody = "<tbody class='thead-dark'>" & Join(aryBuff, vbCrLf) & "</tbody>"
-Call dict.Add("thead", thead)
-Call dict.Add("tbody", tbody)
+Call dict.add("thead", thead)
+Call dict.add("tbody", tbody)
 ToHtmlTable = C_String.RenderTemplate(templ, dict)
 ''
 End Function
@@ -2679,7 +2877,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
     Dim CONS_MODULE_NAME As String
     Let CONS_MODULE_NAME = "C_Array.unittest"
 On Error GoTo EXCEPTION

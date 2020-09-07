@@ -94,7 +94,7 @@ End Sub
 '-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 '  Common Class Method for ToString
 '-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Public Function ToString(ByRef value)
+Public Function toString(ByRef value)
 ''' /********************************************************
 '''  *@function ToString
 '''  *<br/> 引数で渡された値を、JSON形式にする。
@@ -104,7 +104,7 @@ Public Function ToString(ByRef value)
 '''  * @return {Variant} ToString
 '''  */
     Dim rtn
-    Err.Clear
+    Err.clear
     '
 On Error Resume Next
     If VarType(value) = vbString Then
@@ -135,11 +135,11 @@ On Error Resume Next
     '
     If Err.Number <> 0 Then
         'unkown
-        Err.Clear
+        Err.clear
         rtn = ShowUnknown(value)
     End If
     '
-    ToString = rtn
+    toString = rtn
     Exit Function
 End Function
 
@@ -180,12 +180,12 @@ On Error Resume Next
         ShowArray = "<" & arytype & "> []"
     ElseIf arytype = "Array" Then
         For Each i In value
-            clt.Add ToString(i)
+            clt.add toString(i)
         Next
         For i = 1 To clt.Count
             str = str & clt.item(i) & ","
         Next i
-        ShowArray = "<" & arytype & "> [" & Left(str, Len(str) - 1) & "]"
+        ShowArray = "<" & arytype & "> [" & left(str, Len(str) - 1) & "]"
     ElseIf arytype = "JagArray" Then
         str = ShowJagArray(value)
         ShowArray = "<" & arytype & "> " & str
@@ -193,16 +193,16 @@ On Error Resume Next
         str = ShowArrayArray(value)
         ShowArray = "<" & arytype & "> " & str
     Else
-        ShowArray = "<" & arytype & "> " & ToString(value.name)
+        ShowArray = "<" & arytype & "> " & toString(value.Name)
     End If
     
     '
     'ToStringでエラー
     If Err.Number <> 0 Then
         If IsObject(value) Then
-            ShowArray = ToString(value.name)
+            ShowArray = toString(value.Name)
         End If
-        Err.Clear
+        Err.clear
     End If
     GoSub FINALLY
     Exit Function
@@ -213,7 +213,7 @@ FINALLY:
         Console.info TypeName(value)
         Console.info ("Err.Description = " & vbCr & CONS_MODULE_NAME & vbCr & Err.description)
     End If
-    Err.Clear
+    Err.clear
     Set clt = Nothing
     Return
     '
@@ -234,7 +234,7 @@ Public Function ShowObject(value)
 '''  * @return {Variant} ShowObject
 '''  */
     Dim rtn
-    Err.Clear
+    Err.clear
     '
 On Error Resume Next
 '    Console.info TypeName(value)
@@ -273,12 +273,14 @@ On Error Resume Next
             rtn = ShowShapes(value)
         Case "Shape"
             rtn = ShowShape(value)
+        Case "cJobject"
+            rtn = ShowCJObject(value)
         Case Else
-            If Left(TypeName(value), 2) = "C_" Then
+            If left(TypeName(value), 2) = "C_" Then
                 rtn = ShowClass(value)
-            ElseIf Left(TypeName(value), 2) = "O_" Then
+            ElseIf left(TypeName(value), 2) = "O_" Then
                 rtn = ShowClass(value)
-            ElseIf Left(TypeName(value), 3) = "VO_" Then
+            ElseIf left(TypeName(value), 3) = "VO_" Then
                 rtn = ShowClass(value)
             Else
                 If Right(TypeName(value), 10) = "Properties" Then
@@ -290,17 +292,17 @@ On Error Resume Next
     End Select
     '
     If Err.Number <> 0 Then
-        Err.Clear
+        Err.clear
         '''valueをForEachで回せるObjectとして処理
         rtn = ShowArray(value)
     End If
     If Err.Number <> 0 Then
-        Err.Clear
+        Err.clear
         '''value.ItemsをForEachで回せるObjectとして処理
         rtn = ShowArray(value.Items)
     End If
     If Err.Number <> 0 Then
-        Err.Clear
+        Err.clear
         rtn = "<" & TypeName(value) & ">"
     End If
     ShowObject = rtn
@@ -313,12 +315,12 @@ Public Function ShowOther(value)
 '''  * @return {Variant} ShowObject
 '''  */
     Dim rtn
-    Err.Clear
+    Err.clear
 On Error Resume Next
     '数値,日付,ブール値と判定されたvalueを処理
     rtn = CStr(value)
     If Err.Number <> 0 Then
-        Err.Clear
+        Err.clear
         rtn = ShowUnknown(value)
     End If
     ShowOther = rtn
@@ -346,14 +348,14 @@ Public Function ShowDictionary(value)
     Dim clt
     Set clt = New Collection
     '
-    For Each i In value.Keys
-        clt.Add ToString(i) & ":" & ToString(value(i))
+    For Each i In value.keys
+        clt.add toString(i) & ":" & toString(value(i))
     Next
     For i = 1 To clt.Count
         str = str & clt.item(i) & ","
     Next i
     '
-    ShowDictionary = "{" & Left(str, Len(str) - 1) & "}"
+    ShowDictionary = "{" & left(str, Len(str) - 1) & "}"
     '
     Set clt = Nothing
 End Function
@@ -368,7 +370,7 @@ Public Function ShowNames(value)
     CONS_MODULE_NAME = "C_Commons.ShowNames"
     '
 On Error GoTo EXCEPTION
-    Dim nm As name
+    Dim nm As Name
     Dim ary() As Variant
     Dim i As Long
     i = -1
@@ -378,15 +380,15 @@ On Error GoTo EXCEPTION
     For Each nm In value
         i = i + 1
         ReDim Preserve ary(i)
-        Set ary(i) = CreateObject("Scripting.Dictionary")
-        Call ary(i).Add("Name", nm.name)
-        Call ary(i).Add("RefersTo", nm.RefersTo)
+        Set ary(i) = createObject("Scripting.Dictionary")
+        Call ary(i).add("Name", nm.Name)
+        Call ary(i).add("RefersTo", nm.RefersTo)
         If Not C_String.ContainWord(nm.RefersTo, "#REF!") Then
-            Call ary(i).Add("Value", nm.RefersToRange)
+            Call ary(i).add("Value", nm.RefersToRange)
         End If
-        Call ary(i).Add("SheetName", C_String.Chop(C_String.SubStringBefore(nm.RefersTo, "!", 2), 1))
+        Call ary(i).add("SheetName", C_String.Chop(C_String.SubStringBefore(nm.RefersTo, "!", 2), 1))
     Next nm
-    ShowNames = Me.ToString(ary)
+    ShowNames = Me.toString(ary)
     GoSub FINALLY
     Exit Function
     '
@@ -416,14 +418,14 @@ On Error GoTo EXCEPTION
     Dim C_String As C_String
     Set C_String = New C_String
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
-    Call dict.Add("Name", value.name)
-    Call dict.Add("RefersTo", value.RefersTo)
+    Set dict = createObject("Scripting.Dictionary")
+    Call dict.add("Name", value.Name)
+    Call dict.add("RefersTo", value.RefersTo)
     If Not C_String.ContainWord(value.RefersTo, "#REF!") Then
-        Call dict.Add("Value", value.RefersToRange)
+        Call dict.add("Value", value.RefersToRange)
     End If
-    Call dict.Add("SheetName", C_String.Chop(C_String.SubStringBefore(value.RefersTo, "!", 2), 1))
-    ShowName = Me.ToString(dict)
+    Call dict.add("SheetName", C_String.Chop(C_String.SubStringBefore(value.RefersTo, "!", 2), 1))
+    ShowName = Me.toString(dict)
     GoSub FINALLY
     Exit Function
     '
@@ -458,17 +460,17 @@ On Error GoTo EXCEPTION
     Dim i
     If value.Count > 0 Then
         For Each itm In value
-            str = str & ToString(itm.name) & ":" & ToString(itm.Range.Address) & ","
+            str = str & toString(itm.Name) & ":" & toString(itm.Range.Address) & ","
         Next
         If Err.Number <> 0 Then
-            Err.Clear
+            Err.clear
             ShowListObjects = ShowUnknown(value)
         End If
     Else
         str = ","
     End If
     '
-    ShowListObjects = "[" & Left(str, Len(str) - 1) & "]"
+    ShowListObjects = "[" & left(str, Len(str) - 1) & "]"
     GoSub FINALLY
     Exit Function
     '
@@ -502,17 +504,17 @@ On Error GoTo EXCEPTION
     Dim i
     If value.Count > 0 Then
         For Each itm In value
-            str = str & ToString(itm) & ","
+            str = str & toString(itm) & ","
         Next
         If Err.Number <> 0 Then
-            Err.Clear
+            Err.clear
             ShowListRows = ShowUnknown(value)
         End If
     Else
         str = ","
     End If
     '
-    ShowListRows = "[" & Left(str, Len(str) - 1) & "]"
+    ShowListRows = "[" & left(str, Len(str) - 1) & "]"
     GoSub FINALLY
     Exit Function
     '
@@ -541,14 +543,14 @@ Public Function ShowProperties(value)
     Dim i
 On Error Resume Next ''FIXME□□itemでValueを取得する際にErrorとなる場合がある
     For Each itm In value
-        str = str & ToString(itm.name) & ":" & ToString(itm.value) & ","
+        str = str & toString(itm.Name) & ":" & toString(itm.value) & ","
     Next
     '
     If Err.Number <> 0 Then
-        Err.Clear
+        Err.clear
 '        ShowProperties = ShowUnknown(value)
     End If
-    ShowProperties = "[" & Left(str, Len(str) - 1) & "]"
+    ShowProperties = "[" & left(str, Len(str) - 1) & "]"
 End Function
 
 Public Function ShowCollection(value)
@@ -564,7 +566,7 @@ Dim ary() As Variant
 ReDim ary(1 To value.Count)
 Dim idx As Long
 For idx = 1 To value.Count
-    ary(idx) = C_Commons.ToString(value(idx))
+    ary(idx) = C_Commons.toString(value(idx))
 Next idx
 ShowCollection = "<Collection> " & VBA.Join(ary)
 ''
@@ -583,7 +585,7 @@ Dim ary() As Variant
 ReDim ary(0 To value.Count - 1)
 Dim idx As Long
 For idx = 0 To value.Count - 1
-    ary(idx) = C_Commons.ToString(value.item(idx))
+    ary(idx) = C_Commons.toString(value.item(idx))
 Next idx
 ShowArrayList = "<ArrayList> " & VBA.Join(ary, ", ")
 ''
@@ -602,12 +604,12 @@ Public Function ShowWorkbooks(value)
     For Each bk In value
         i = i + 1
         ReDim Preserve ary(i)
-        Set ary(i) = CreateObject("Scripting.Dictionary")
-        Call ary(i).Add("CodeName", bk.codeName)
-        Call ary(i).Add("Name", bk.name)
-        Call ary(i).Add("Path", bk.Path)
+        Set ary(i) = createObject("Scripting.Dictionary")
+        Call ary(i).add("CodeName", bk.codeName)
+        Call ary(i).add("Name", bk.Name)
+        Call ary(i).add("Path", bk.path)
     Next bk
-    ShowWorkbooks = Me.ToString(ary)
+    ShowWorkbooks = Me.toString(ary)
 End Function
 
 Public Function ShowWorkbook(value)
@@ -617,12 +619,12 @@ Public Function ShowWorkbook(value)
 '''  * @return {Variant} ShowObject
 '''  */
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
-    Call dict.Add("CodeName", value.codeName)
-    Call dict.Add("Name", value.name)
-    Call dict.Add("Path", value.Path)
-    Call dict.Add("BuiltinDocumentProperties", value.BuiltinDocumentProperties)
-    ShowWorkbook = Me.ToString(dict)
+    Set dict = createObject("Scripting.Dictionary")
+    Call dict.add("CodeName", value.codeName)
+    Call dict.add("Name", value.Name)
+    Call dict.add("Path", value.path)
+    Call dict.add("BuiltinDocumentProperties", value.BuiltinDocumentProperties)
+    ShowWorkbook = Me.toString(dict)
     Set dict = Nothing
 End Function
 
@@ -639,11 +641,11 @@ Public Function ShowWorksheets(value)
     For Each sht In value
         i = i + 1
         ReDim Preserve ary(i)
-        Set ary(i) = CreateObject("Scripting.Dictionary")
-        Call ary(i).Add("Name", sht.name)
-        Call ary(i).Add("Index", sht.Index)
+        Set ary(i) = createObject("Scripting.Dictionary")
+        Call ary(i).add("Name", sht.Name)
+        Call ary(i).add("Index", sht.Index)
     Next sht
-    ShowWorksheets = "<Worksheets> " & VBA.Right(Me.ToString(ary), Len(Me.ToString(ary)) - 8)
+    ShowWorksheets = "<Worksheets> " & VBA.Right(Me.toString(ary), Len(Me.toString(ary)) - 8)
 End Function
 
 Public Function ShowWorksheet(value)
@@ -653,13 +655,13 @@ Public Function ShowWorksheet(value)
 '''  * @return {Variant} ShowObject
 '''  */
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
-    Call dict.Add("Name", value.name)
-    Call dict.Add("Index", value.Index)
-    Call dict.Add("UsedRange", value.UsedRange.Address)
-    Call dict.Add("Parent", value.Parent.name)
-    Call dict.Add("CustomProperties", value.CustomProperties)
-    ShowWorksheet = Me.ToString(dict)
+    Set dict = createObject("Scripting.Dictionary")
+    Call dict.add("Name", value.Name)
+    Call dict.add("Index", value.Index)
+    Call dict.add("UsedRange", value.UsedRange.Address)
+    Call dict.add("Parent", value.parent.Name)
+    Call dict.add("CustomProperties", value.CustomProperties)
+    ShowWorksheet = Me.toString(dict)
     Set dict = Nothing
 End Function
 
@@ -676,16 +678,16 @@ Public Function ShowShapes(value)
     For Each shp In value
         i = i + 1
         ReDim Preserve ary(i)
-        Set ary(i) = CreateObject("Scripting.Dictionary")
-        Call ary(i).Add("Name", shp.name)
-        Call ary(i).Add("SheetName", shp.Parent.name)
-        Call ary(i).Add("Text", shp.TextFrame.Characters.Text)
+        Set ary(i) = createObject("Scripting.Dictionary")
+        Call ary(i).add("Name", shp.Name)
+        Call ary(i).add("SheetName", shp.parent.Name)
+        Call ary(i).add("Text", shp.TextFrame.Characters.text)
 '        Call ary(i).add("Type", shp.Type)
 '        Call ary(i).add("TopLeftCell", shp.TopLeftCell.Address)
 '        Call ary(i).add("BottomRightCell", shp.BottomRightCell.Address)
 '        Call ary(i).add("FilBackColor", shp.Fill.BackColor.RGB)
     Next shp
-    ShowShapes = Me.ToString(ary)
+    ShowShapes = Me.toString(ary)
 End Function
 
 Public Function ShowShape(value)
@@ -695,21 +697,21 @@ Public Function ShowShape(value)
 '''  * @return {Variant} ShowShape
 '''  */
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
-    Call dict.Add("Name", value.name)
-    Call dict.Add("SheetName", value.Parent.name)
-    Call dict.Add("Text", value.TextFrame.Characters.Text)
-    Call dict.Add("Type", value.Type)
-    Call dict.Add("Id", value.id)
-    Call dict.Add("TopLeftCell", value.topLeftCell.Address)
-    Call dict.Add("BottomRightCell", value.bottomRightCell.Address)
-    Call dict.Add("FillForeColor", Me.RGBToHexStr(value.Fill.ForeColor.RGB))
-    Call dict.Add("FillBackColor", Me.RGBToHexStr(value.Fill.BackColor.RGB))
-    Call dict.Add("Top", value.Top)
-    Call dict.Add("Left", value.Left)
-    Call dict.Add("Height", value.Height)
-    Call dict.Add("Width", value.Width)
-    ShowShape = Me.ToString(dict)
+    Set dict = createObject("Scripting.Dictionary")
+    Call dict.add("Name", value.Name)
+    Call dict.add("SheetName", value.parent.Name)
+    Call dict.add("Text", value.TextFrame.Characters.text)
+    Call dict.add("Type", value.Type)
+    Call dict.add("Id", value.id)
+    Call dict.add("TopLeftCell", value.topLeftCell.Address)
+    Call dict.add("BottomRightCell", value.bottomRightCell.Address)
+    Call dict.add("FillForeColor", Me.RGBToHexStr(value.Fill.ForeColor.RGB))
+    Call dict.add("FillBackColor", Me.RGBToHexStr(value.Fill.BackColor.RGB))
+    Call dict.add("Top", value.top)
+    Call dict.add("Left", value.left)
+    Call dict.add("Height", value.Height)
+    Call dict.add("Width", value.Width)
+    ShowShape = Me.toString(dict)
 End Function
 
 Public Function ShowClass(value)
@@ -745,7 +747,7 @@ On Error GoTo EXCEPTION
         k = 0
         For Each rng In value.Areas
             ReDim Preserve ary3(k)
-            ary3(k) = Me.ToString(rng)
+            ary3(k) = Me.toString(rng)
             k = k + 1
         Next rng
         ShowRange = "<Range> [" & Join(ary3, ",") & "]"
@@ -759,7 +761,7 @@ On Error GoTo EXCEPTION
     '
     ''a Cell
     If rowCnt = 1 And colCnt = 1 Then
-        ShowRange = "<Range> " & C_Commons.ToString(value.value)
+        ShowRange = "<Range> " & C_Commons.toString(value.value)
         Exit Function
     End If
     '
@@ -851,6 +853,7 @@ Public Function ShowJagArray(jagary) As Variant
     Dim ubjagFirst As Long
     Dim clt As Collection
     Set clt = New Collection
+    Dim elm As Variant
     '
     Dim str As String
     Dim strTemp As String
@@ -869,9 +872,14 @@ On Error GoTo EXCEPTION
                 Err.Raise 5
             End If
             For c = LBound(jagary(r)) To UBound(jagary(r))
-                str = str & ToString(jagary(r)(c)) & ","
+                Let elm = jagary(r)(c)
+                If C_String.IsJsonString(elm) Then
+                    str = str & elm & ","
+                Else
+                    str = str & Me.toString(elm) & ","
+                End If
             Next c
-            clt.Add "[" & Left(str, Len(str) - 1) & "]"
+            clt.add "[" & left(str, Len(str) - 1) & "]"
             str = ""
         Next r
         ''
@@ -881,7 +889,7 @@ On Error GoTo EXCEPTION
         Next item
         ''
         'Console.log strTemp
-        ShowJagArray = "[" & Left(strTemp, Len(strTemp) - 1) & "]"
+        ShowJagArray = "[" & left(strTemp, Len(strTemp) - 1) & "]"
     Else
     '配列が空
         ShowJagArray = "[]"
@@ -920,7 +928,7 @@ On Error GoTo EXCEPTION
     For r = LBound(aryary, 1) To UBound(aryary, 1)
         For c = LBound(aryary, 2) To UBound(aryary, 2)
             'Console.log (aryary(r, c))
-            strRtn = strRtn & ToString(aryary(r, c)) & ","
+            strRtn = strRtn & toString(aryary(r, c)) & ","
         Next c
         strRtn = C_String.Chop(strRtn, 1) & ";"
     Next r
@@ -940,6 +948,20 @@ EXCEPTION:   ''Label
     Console.log ("Err.Number = " & Err.Number)
     Console.log ("Err.Description = " & Err.description)
     Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
+End Function
+
+Public Function ShowCJObject(value)
+''' /********************************************************
+'''  * @function ShowCJObject
+'''  * @param {Variant} value
+'''  * @return {Variant} ShowShape
+'''  */
+Dim json_str As String
+Dim json_obj As Variant
+Let json_str = value.stringify(True)
+''Console.log json_str
+Let ShowCJObject = "<cJobject> " & vbCrLf & JsonConverter.ConvertToJson(JsonConverter.ParseJson(json_str))
+''
 End Function
 
 '-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -971,9 +993,9 @@ Public Function ParseToString(ByVal str As String) As Variant
 ''' */
 Dim rtn As Variant
 '
-If (Left(Trim(str), 1) = "[") Then
+If (left(Trim(str), 1) = "[") Then
         ParseToString = ParseToArray(str)
-ElseIf (Left(Trim(str), 1) = "{") Then
+ElseIf (left(Trim(str), 1) = "{") Then
         Set ParseToString = ParseToDictionary(str)
 Else
         ParseToString = str
@@ -1028,7 +1050,7 @@ Public Function ParseToDictionary(ByVal str As String) As Variant
     Dim CONS_MODULE_NAME As String
     CONS_MODULE_NAME = "C_Commons.parseToDictionary"
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
+    Set dict = createObject("Scripting.Dictionary")
     Dim strTemp As String
     Dim flag As Boolean
     Dim ary  As Variant
@@ -1060,9 +1082,9 @@ On Error GoTo EXCEPTION
             valueTemp = C_String.Strip(valueTemp, """")
             key = Trim(C_String.TrimSpace(keyTemp))
             value = Trim(valueTemp)
-            dict.Add Trim(key), Trim(value)
+            dict.add Trim(key), Trim(value)
         Else
-            dict.Add Trim(ary(i)), ""
+            dict.add Trim(ary(i)), ""
         End If
     Next i
     '
@@ -1101,10 +1123,10 @@ End Function
 '-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Public Function ToJson(ByRef vnt As Variant) As String
 ''' FIXME
-ToJson = Me.ToString(vnt)
+ToJson = Me.toString(vnt)
 End Function
 
-Public Function Parse(ByVal jsonString As Variant) As Object
+Public Function parse(ByVal jsonString As Variant) As Object
 '''/********************************************************
 ''' * @function parse
 ''' * @param {String} str jsonString
@@ -1113,14 +1135,14 @@ Public Function Parse(ByVal jsonString As Variant) As Object
 Dim objSC As Object
 Dim objJson As Object
 '
-Set objSC = CreateObject("ScriptControl")
+Set objSC = createObject("ScriptControl")
 objSC.Language = "JScript"
 '
 objSC.AddCode "function toObject(str){return eval('(' + str + ')' ); } "
 '
 Set objJson = objSC.CodeObject.ToObject(jsonString)
 '
-Set Parse = objJson
+Set parse = objJson
 '
 Set objSC = Nothing
 Set objJson = Nothing
@@ -1128,7 +1150,7 @@ Set objJson = Nothing
 End Function
 
 Private Function EvalScript(ByVal expr As String, ByVal lang As String) As String
-    Dim doc As Object: Set doc = CreateObject("HtmlFile")
+    Dim doc As Object: Set doc = createObject("HtmlFile")
     doc.parentWindow.execScript "document.write(" & expr & ")", lang
     If Not doc.body Is Nothing Then EvalScript = doc.body.innerHTML
 End Function
@@ -1225,7 +1247,7 @@ Select Case True
     Case Application.IsLogical(rng): TypeDataInCell = "Boolean"
     Case Application.IsErr(rng): TypeDataInCell = "Error"
     Case VBA.IsDate(rng): TypeDataInCell = "Date"
-    Case VBA.InStr(1, rng.Text, ":") <> 0: TypeDataInCell = "Time"
+    Case VBA.InStr(1, rng.text, ":") <> 0: TypeDataInCell = "Time"
     Case VBA.IsNumeric(rng): TypeDataInCell = "Number"
 End Select
 '
@@ -1238,7 +1260,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
     Dim str1 As String
     Dim str2 As String
     Dim str3 As String
@@ -1251,38 +1273,38 @@ Public Sub unittest()
     ary1 = Me.ParseToArray(str1)
     ary2 = Me.ParseToArray(str2, " ")
 '    ary3 = Me.parseToArray(str3, vbLf)
-    Console.dump ary1
-    Console.dump ary2
-    Console.dump ary3
+    Console.Dump ary1
+    Console.Dump ary2
+    Console.Dump ary3
     '
     Dim strr1 As String
     Dim obj1 As Variant
     strr1 = "{saka : mits , 　aki : miss , sak2 : ao }"
     Set obj1 = Me.ParseToDictionary(strr1)
-    Console.dump obj1
+    Console.Dump obj1
     '
     Dim strr2 As String
     Dim obj2 As Variant
     strr2 = "{""sak1"" : mit ,     　""sass ai"" : miss , ""sak2"" : ao ""}"
     Set obj2 = Me.ParseToDictionary(strr2)
-    Console.dump obj2
+    Console.Dump obj2
     '
     Dim strr3 As String
     Dim obj3 As Variant
     Dim dict As Object
-    Set dict = CreateObject("Scripting.Dictionary")
-    dict.Add "sak", "mit"
-    strr3 = C_Commons.ToString(dict)
+    Set dict = createObject("Scripting.Dictionary")
+    dict.add "sak", "mit"
+    strr3 = C_Commons.toString(dict)
     '
     Set obj3 = Me.ParseToDictionary(strr3) ''両方に"があるものは対応可能
-    Console.dump obj3
+    Console.Dump obj3
     '
-    Console.dump Workbooks
-    Console.dump ThisWorkbook.Worksheets
-    Console.dump ThisWorkbook.Names
-    Console.dump ActiveSheet.ListObjects
+    Console.Dump Workbooks
+    Console.Dump ThisWorkbook.Worksheets
+    Console.Dump ThisWorkbook.Names
+    Console.Dump ActiveSheet.ListObjects
     '
-    Console.dump Me.ParseToString("saksak")
+    Console.Dump Me.ParseToString("saksak")
     '
 ''''RGBToHexStr,HexStrToRGB
 'Dim lng As Long

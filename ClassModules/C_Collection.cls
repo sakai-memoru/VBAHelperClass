@@ -120,7 +120,7 @@ VarTypeEx = strRtn
 ''
 End Function
 
-Public Function ToString(ByRef clts As Variant) As String
+Public Function toString(ByRef clts As Variant) As String
 '''' /********************************************************
 ''''  *@function ToString
 ''''  *<pre> 可視できる文字列に変換する
@@ -159,7 +159,7 @@ Select Case strName
             strRtn = "<Unknown>" & C_Commons.ShowCollection(clts)
 End Select
 ''
-ToString = strRtn
+toString = strRtn
 ''
 End Function
 
@@ -178,14 +178,14 @@ Dim dammy As Variant
 Dim blnRtn As Boolean
 ''
 On Error Resume Next
-    Err.Clear
+    Err.clear
     ''
     dammy = clts(key)
     ''
     If Err.Number = 0 Then
         blnRtn = True
     Else
-        Err.Clear
+        Err.clear
         dammy = IsObject(clts.item(key)) '''item(key)が取得できないと実行エラー発生
             If Err.Number = 0 Then
                 blnRtn = True
@@ -212,14 +212,14 @@ Public Sub PutValue(ByRef clts As Collection, ByVal value As Variant, ByVal key 
 '''  */
 '
 If Me.Exists(clts, key) Then
-        Call clts.Remove(key)
-        Call clts.Add(value, key)
+        Call clts.remove(key)
+        Call clts.add(value, key)
 Else
-        Call clts.Add(value, key)
+        Call clts.add(value, key)
 End If
 End Sub
 
-Public Function ExistsNameOfObject(ByRef clts As Variant, ByVal name As String) As Boolean
+Public Function ExistsNameOfObject(ByRef clts As Variant, ByVal Name As String, Optional ByVal ignorecase As Variant = False) As Boolean
 '''' /********************************************************
 ''''  *@function ExistsName
 ''''  *<br/> Objectのコレクションに、指定の名前が存在するかを判定する。
@@ -229,11 +229,13 @@ Public Function ExistsNameOfObject(ByRef clts As Variant, ByVal name As String) 
 ''''  *
 ''''  */
 ''
+Dim C_String As C_String
+Set C_String = New C_String
 Dim itm As Object
 Dim blnRtn As Boolean
 blnRtn = False
 For Each itm In clts
-        If itm.name = name Then
+    If C_String.EqualIgnore(itm.Name, Name, ignorecase) Then
             blnRtn = True
             Exit For
         End If
@@ -256,8 +258,8 @@ Dim cltRtns As Collection
 Set cltRtns = New Collection
 Dim cl As Variant
 For Each cl In clts
-        If LCase(cl.name) Like "*" & LCase(str) & "*" Then
-            cltRtns.Add cl
+        If LCase(cl.Name) Like "*" & LCase(str) & "*" Then
+            cltRtns.add cl
         End If
 Next cl
 ''
@@ -280,8 +282,8 @@ Dim cltRtns As Collection
 Set cltRtns = New Collection
 Dim cl As Object
 For Each cl In clts
-        If cl.name Like prefix & "*" Then
-            cltRtns.Add cl
+        If cl.Name Like prefix & "*" Then
+            cltRtns.add cl
         End If
 Next cl
 Set FilterNameMatchPrefixOfObject = cltRtns
@@ -419,7 +421,7 @@ If cnt > 0 Then
         ReDim aryRtn(cnt - 1)
         i = 0
         For Each cl In clts
-            aryRtn(i) = cl.name
+            aryRtn(i) = cl.Name
             i = i + 1
         Next cl
     ToArrayNameOfObject = aryRtn
@@ -450,9 +452,9 @@ Set dict = New Dictionary
 Dim i As Long
 For i = LBound(aryHeader) To UBound(aryHeader)
         If Me.Exists(clts, aryHeader(i)) Then
-            Call dict.Add(aryHeader(i), clts(aryHeader(i)))
+            Call dict.add(aryHeader(i), clts(aryHeader(i)))
         Else
-            Call dict.Add(aryHeader(i), "")
+            Call dict.add(aryHeader(i), "")
         End If
 Next i
 Set ToDictionary = dict
@@ -473,7 +475,7 @@ If Not IsArray(ary) Then Err.Raise 13
 Set ArrayToCollection = New Collection
 Dim vnt As Variant
 For Each vnt In ary
-        ArrayToCollection.Add vnt
+        ArrayToCollection.add vnt
 Next vnt
 ''
 End Function
@@ -493,7 +495,7 @@ Set ArrayListToCollection = New Collection
 Dim vnt As Variant
 Dim i As Integer
 For i = 0 To aryList.Count - 1
-    ArrayListToCollection.Add aryList.item(i)
+    ArrayListToCollection.add aryList.item(i)
 Next i
 ''
 End Function
@@ -507,7 +509,7 @@ Public Sub Push(ByRef clts As Collection, ByVal value As Variant)
 ''''  *  @param {Variant} value ByRef
 ''''  */
 ''
-clts.Add value
+clts.add value
 ''
 End Sub
 
@@ -527,7 +529,7 @@ If IsObject(clts.item(i)) Then
 Else
         Let Pop = clts.item(i)
 End If
-clts.Remove i
+clts.remove i
 ''
 End Function
 
@@ -541,14 +543,14 @@ Public Sub Unshift(ByVal clts As Collection, ByVal value As Variant, Optional By
 ''''  */
 ''
 If clts.Count < 1 Then
-        clts.Add value
+        clts.add value
 Else
-    clts.Add value, , pos
+    clts.add value, , pos
 End If
 ''
 End Sub
 
-Public Function Shift(ByVal clts As Collection) As Variant
+Public Function shift(ByVal clts As Collection) As Variant
 '''' /********************************************************
 ''''  *@function Unshift
 ''''  *<pre> 値をUnshift
@@ -560,11 +562,11 @@ Public Function Shift(ByVal clts As Collection) As Variant
 Dim i As Long
 i = 1
 If IsObject(clts.item(i)) Then
-    Set Shift = clts.item(i)
+    Set shift = clts.item(i)
 Else
-    Let Shift = clts.item(i)
+    Let shift = clts.item(i)
 End If
-clts.Remove i
+clts.remove i
 ''
 End Function
 
@@ -584,12 +586,12 @@ Dim c As Long
 If VBA.IsMissing(dict) Then
     Set dict = New Dictionary
     For c = LBound(aryHeader) To UBound(aryHeader)
-        dict.Add aryHeader(c), aryHeader(c)
+        dict.add aryHeader(c), aryHeader(c)
     Next c
 End If
 ''
 For c = LBound(aryHeader) To UBound(aryHeader)
-    cltOut.Add clt.item(aryHeader(c)), dict.item(aryHeader(c))
+    cltOut.add clt.item(aryHeader(c)), dict.item(aryHeader(c))
 Next c
 ''
 Set Rearrange = cltOut
@@ -604,7 +606,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 '//--------------------------------------
 '//variables
 Dim CONS_MODULE_NAME As String

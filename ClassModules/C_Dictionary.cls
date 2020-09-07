@@ -88,7 +88,7 @@ If dict.Exists(ky) Then
         Let dict(ky) = itm
     End If
 Else
-    Call dict.Add(ky, itm)
+    Call dict.add(ky, itm)
 End If
 End Sub
 
@@ -133,7 +133,7 @@ For Each keyVal In dictdst
                 dictsrc.item(keyVal) = dictdst.item(keyVal)
             End If
         Else
-            dictsrc.Add keyVal, dictdst.item(keyVal)
+            dictsrc.add keyVal, dictdst.item(keyVal)
         End If
 Next keyVal
 ''
@@ -287,11 +287,11 @@ Dim i As Long
 If IsMissing(Include) Then
     Include = True
 End If
-ary = dict.Keys
+ary = dict.keys
 aryKeyTemp = VBA.Filter(ary, likestr, Include)
 '
 For i = LBound(aryKeyTemp) To UBound(aryKeyTemp)
-    dictRet.Add aryKeyTemp(i), dict(aryKeyTemp(i))
+    dictRet.add aryKeyTemp(i), dict(aryKeyTemp(i))
 Next i
 Set Filter = dictRet
 '
@@ -364,7 +364,7 @@ Public Function FilterMatchItem(ByRef dict As Dictionary, ByVal str As String) A
     Dim cnt As Long
     cnt = -1
     '
-    aryKey = dict.Keys
+    aryKey = dict.keys
     aryItem = dict.Items
     '
     For i = LBound(aryItem) To UBound(aryItem)
@@ -377,7 +377,7 @@ Public Function FilterMatchItem(ByRef dict As Dictionary, ByVal str As String) A
     '
     If cnt >= 0 Then
         For i = LBound(aryKeyTemp) To UBound(aryKeyTemp)
-            dictRet.Add aryKeyTemp(i), dict(aryKeyTemp(i))
+            dictRet.add aryKeyTemp(i), dict(aryKeyTemp(i))
         Next i
         Set FilterMatchItem = dictRet
     Else
@@ -400,12 +400,12 @@ Dim ary As Variant
 Dim aryKeyTemp As Variant
 Dim i As Long
 '
-ary = dict.Keys
+ary = dict.keys
 aryKeyTemp = VBA.Filter(ary, prefix)
 '
 For i = LBound(aryKeyTemp) To UBound(aryKeyTemp)
     If aryKeyTemp(i) Like (prefix & "*") Then
-        dictRet.Add aryKeyTemp(i), dict(aryKeyTemp(i))
+        dictRet.add aryKeyTemp(i), dict(aryKeyTemp(i))
     End If
 Next i
 '
@@ -429,11 +429,11 @@ Set dictRet = New Dictionary
 Dim ary As Variant
 Dim i As Long
 '
-ary = dict.Keys
+ary = dict.keys
 '
 For i = LBound(ary) To UBound(ary)
     If C_String.Test(ary(i), regStr) Then
-        dictRet.Add ary(i), dict(ary(i))
+        dictRet.add ary(i), dict(ary(i))
     End If
 Next i
 '
@@ -481,7 +481,7 @@ Public Function ToArray(ByRef dict As Dictionary, Optional ByRef aryHeader As Va
 '''  */
     Dim aryRtn() As Variant
     If IsMissing(aryHeader) Then
-        Let aryHeader = dict.Keys
+        Let aryHeader = dict.keys
     End If
     ReDim aryRtn(LBound(aryHeader) To UBound(aryHeader))
     '
@@ -515,14 +515,14 @@ Public Function ToArrayArray(ByRef dict As Dictionary _
     Set C_Array = New C_Array
     Dim aryaryRtn As Variant
     If IsMissing(aryHeader) Then
-        Let aryHeader = dict.Keys
+        Let aryHeader = dict.keys
     End If
     Dim aryTemp As Variant
     aryTemp = Me.ToArray(dict, aryHeader)
     If arytype = "V" Then
-        aryaryRtn = C_Array.ArrayToArrayArray(aryTemp)
-    Else
         aryaryRtn = C_Array.ArrayToArrayArrayVertical(aryTemp)
+    Else
+        aryaryRtn = C_Array.ArrayToArrayArray(aryTemp)
     End If
     ToArrayArray = aryaryRtn
     Set C_Array = Nothing
@@ -544,9 +544,9 @@ Public Function Extract(ByRef dict As Dictionary, ByRef aryHeader As Variant) As
     Dim i As Long
     For i = LBound(aryHeader) To UBound(aryHeader)
         If dict.Exists(aryHeader(i)) Then
-            Call dictRtn.Add(aryHeader(i), dict(aryHeader(i)))
+            Call dictRtn.add(aryHeader(i), dict(aryHeader(i)))
         Else
-            Call dictRtn.Add(aryHeader(i), "")
+            Call dictRtn.add(aryHeader(i), "")
         End If
     Next i
     Set Extract = dictRtn
@@ -561,7 +561,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 
     '//--------------------------------------
     '//ïœêîêÈåæ

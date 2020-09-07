@@ -43,7 +43,7 @@ Private Sub Class_Initialize()
 '''  *<br/>Initialize ä÷êî
 '''  *<br/>Classê∂ê¨éûÇ…ÅAé¿çsÇ≥ÇÍÇÈÅB
 '''  */
-Set objStream = CreateObject("ADODB.Stream")
+Set objStream = createObject("ADODB.Stream")
 objStream.Type = CONS_STREAM_TYPE_TEXT
 objStream.Charset = "UTF-8"
 End Sub
@@ -109,11 +109,11 @@ Let adSaveCreateOverWrite = 2
 Dim byt As Variant
 ''
 Dim objStreamBom As Object
-Set objStreamBom = CreateObject("ADODB.Stream")
+Set objStreamBom = createObject("ADODB.Stream")
 Let objStreamBom.Type = adTypeText
 Let objStreamBom.Charset = "UTF-8"
 Dim objStreamNoBom As Object
-Set objStreamNoBom = CreateObject("ADODB.Stream")
+Set objStreamNoBom = createObject("ADODB.Stream")
 Let objStreamNoBom.Type = adTypeBinary
 ''
 On Error GoTo EXCEPTION
@@ -126,7 +126,7 @@ On Error GoTo EXCEPTION
     Call objStreamBom.Close
     ''
     Call objStreamNoBom.Open
-    Call objStreamNoBom.Write(byt)
+    Call objStreamNoBom.write(byt)
     Call objStreamNoBom.SaveToFile(filePath, adSaveCreateOverWrite)
     Call objStreamNoBom.Close
     'ï‘ãp
@@ -154,7 +154,7 @@ Dim str As String
 On Error GoTo EXCEPTION
     Call objStream.Open
     Call objStream.LoadFromFile(strFilePath)
-    Let str = objStream.readText()
+    Let str = objStream.ReadText()
     Call objStream.Close
     Let ReadTextAllAsUTF8 = str
     Exit Function
@@ -180,7 +180,7 @@ Dim aryRtn As Variant
 On Error GoTo EXCEPTION
     Call objStream.Open
     Call objStream.LoadFromFile(strFilePath)
-    Let str = objStream.readText()
+    Let str = objStream.ReadText()
     Call objStream.Close
     ''
     Let aryRtn = Split(str, vbCrLf)
@@ -190,6 +190,24 @@ On Error GoTo EXCEPTION
 EXCEPTION:
     Call Err.Raise(Err.Number, Err.source, CONS_MODULE_NAME & vbCr & Err.description, Err.HelpFile, Err.HelpContext)
     ''
+End Function
+
+Public Function ReadJsonFile(ByVal file_path As String) As Variant
+'''' *************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+''
+Dim vntRtn As Variant
+''
+Dim json_str As String
+Let json_str = C_String.TrimSpace(Me.ReadTextAllAsUTF8(file_path))
+If C_String.IsJsonString(json_str) Then
+    Set vntRtn = JsonConverter.ParseJson(json_str)
+    Set ReadJsonFile = vntRtn
+Else
+    vntRtn = New Collection
+End If
 End Function
 
 Sub SaveAsTSV(Optional ByVal aryary As Variant, Optional ByVal file_path As Variant)
@@ -209,7 +227,7 @@ Dim outputFolder As String
 Dim delimiter As String
 ''
 If IsMissing(file_path) Then
-    Let outputFolder = ThisWorkbook.Path
+    Let outputFolder = ThisWorkbook.path
     Let outputFile = C_File.GetBaseName(ThisWorkbook.FullName) & dtmStr & ".tsv"
     Let outputPath = C_File.BuildPath(outputFolder, outputFile)
 Else
@@ -251,7 +269,7 @@ Dim C_Array As C_Array
 Set C_Array = New C_Array
 ''
 If IsMissing(folder_path) Then
-    Let folder_path = ThisWorkbook.Path & "\"
+    Let folder_path = ThisWorkbook.path & "\"
 Else
     If Not C_String.EndsWith(folder_path, "\") Then
         Let folder_path = folder_path & "\"
@@ -296,8 +314,8 @@ If ext = "csv" Then
     Else
         Let templCnStatement = templCnStatementCsvNoHead
     End If
-    Call dict.Add("folder_path", folder_path)
-    Call dict.Add("file_name", file_name)
+    Call dict.add("folder_path", folder_path)
+    Call dict.add("file_name", file_name)
 ElseIf ext = "tsv" Then
     If useHeader Then
         Let templCnStatement = templCnStatementTsvHead
@@ -309,16 +327,16 @@ ElseIf ext = "tsv" Then
     Let iniPath = C_File.BuildPath(folder_path, iniName)
     Call C_File.CopyFile(filePath, tempPath)
     ''
-    Call dict.Add("folder_path", folder_path)
-    Call dict.Add("file_name", tempFile)
+    Call dict.add("folder_path", folder_path)
+    Call dict.add("file_name", tempFile)
 ElseIf ext = "txt" Then
     If useHeader Then
         Let templCnStatement = templCnStatementTsvHead
     Else
         Let templCnStatement = templCnStatementTsvNoHead
     End If
-    Call dict.Add("folder_path", folder_path)
-    Call dict.Add("file_name", file_name)
+    Call dict.add("folder_path", folder_path)
+    Call dict.add("file_name", file_name)
     Let iniPath = C_File.BuildPath(folder_path, iniName)
 End If
 Dim flgNoScheme As String
@@ -335,11 +353,11 @@ Dim sqlStatement As String
 Let sqlStatement = C_String.RenderTemplate(templSqlStatement, dict)
 ''
 Dim cn As Object
-Set cn = CreateObject("ADODB.Connection")
+Set cn = createObject("ADODB.Connection")
 Dim rs As Object
-Set rs = CreateObject("ADODB.Recordset")
+Set rs = createObject("ADODB.Recordset")
 Call cn.Open(cnStatement)
-Set rs = cn.Execute(sqlStatement)
+Set rs = cn.execute(sqlStatement)
 ''
 Dim rsAryary() As Variant
 Let rsAryary = WorksheetFunction.Transpose(rs.GetRows)
@@ -359,7 +377,7 @@ End If
 ''
 Call rs.Close
 Set cn = Nothing
-If C_File.FileExists(tempPath) Then
+If C_File.fileExists(tempPath) Then
     Call C_File.DeleteFile(tempPath)
 End If
 ''

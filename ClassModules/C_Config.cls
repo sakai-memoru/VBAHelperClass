@@ -89,7 +89,7 @@ Else
   pos = GetPrivateProfileString(sction, ky, "", strRtn, strSize, iniFilePath)
   If pos Then
     posOfCharInIni = pos
-    strIni = Left$(strRtn, pos)
+    strIni = left$(strRtn, pos)
   End If
 End If
 ''

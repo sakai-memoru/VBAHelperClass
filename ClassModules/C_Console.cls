@@ -89,7 +89,7 @@ Public Sub error(vnt As Variant)
     Debug.Print "<err> " & vnt
 End Sub
 
-Public Sub dump(ByRef vnt As Variant)
+Public Sub Dump(ByRef vnt As Variant)
 ''' /********************************************************
 '''  * @function dump
 '''  *</br>Console.dump
@@ -99,7 +99,25 @@ Public Sub dump(ByRef vnt As Variant)
     Dim CONS_MODULE_NAME As String
     CONS_MODULE_NAME = "C_Console.dump"
 On Error GoTo EXCEPTION
-    Debug.Print C_Commons.ToString(vnt)
+    #If DEBUG_MODE = 1 Then
+    Debug.Print C_Commons.toString(vnt)
+    #End If
+    Exit Sub
+EXCEPTION:
+    Err.Raise 21001, CONS_MODULE_NAME & vbCr & Err.description, "????????"
+End Sub
+
+Public Sub Dir(ByRef vnt As Variant)
+''' /********************************************************
+'''  * @function dump
+'''  *</br>Console.dump
+'''  *
+'''  *@param {variant} vnt
+'''  */
+    Dim CONS_MODULE_NAME As String
+    CONS_MODULE_NAME = "C_Console.dir"
+On Error GoTo EXCEPTION
+    Debug.Print C_Commons.toString(vnt)
     Exit Sub
 EXCEPTION:
     Err.Raise 21001, CONS_MODULE_NAME & vbCr & Err.description, "????????"
@@ -112,7 +130,7 @@ End Sub
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
 ' /************************************
 '  * debug
 '  */
@@ -129,10 +147,10 @@ Public Sub unittest()
     Dim ary
     ary = Array("sak", "miss", "sakot", "mit")
     Dim dict2
-    Set dict2 = CreateObject("Scripting.Dictionary")
-    dict2.Add "sak", "mits"
-    dict2.Add "sakot", "miss"
-    dict2.Add "ao", "saki"
+    Set dict2 = createObject("Scripting.Dictionary")
+    dict2.add "sak", "mits"
+    dict2.add "sakot", "miss"
+    dict2.add "ao", "saki"
     Dim dict  As Object
 '    Set dict = Dictionary(Array("sak", "mit", "sakot", "miss", "ayo", "saki"))
 '    Set dict = Dictionary(Array("sak", "mit", "sakot", "miss", "ayo", "saki", "aka", "gira"))

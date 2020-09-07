@@ -66,13 +66,15 @@ Dim strExtention As String
 Dim strFilePath As String
 Dim strFolderPath As String
 Dim strExportPath As String
+Dim strWbName As String
+Let strWbName = ThisWorkbook.Name
 '
 Dim strDtmformat As String
 strDtmformat = format(Now(), "yymmddhhnnss")
 Dim currentPath As String
 currentPath = C_File.GetCurrentDirectory
 '
-strExportPath = C_File.BuildPath(currentPath, CONS_export_path) & "_" & strDtmformat
+strExportPath = C_File.BuildPath(currentPath, CONS_export_path) & "_" & C_File.GetBaseName(strWbName) & "_" & strDtmformat
 C_File.CreateFolder (strExportPath)
 C_File.CreateFolder (C_File.BuildPath(strExportPath, CONS_StdModuleFolder))
 C_File.CreateFolder (C_File.BuildPath(strExportPath, CONS_ClassModuleFolder))
@@ -90,20 +92,20 @@ For Each objVbComponent In ThisWorkbook.VBProject.VBComponents
                 strFolderPath = C_File.BuildPath(strExportPath, CONS_ClassModuleFolder)
         End Select
         
-        strFilePath = C_File.BuildPath(strFolderPath, objVbComponent.name & strExtention)
+        strFilePath = C_File.BuildPath(strFolderPath, objVbComponent.Name & strExtention)
         Console.info (strFilePath)
         Call objVbComponent.Export(strFilePath)
     End If
 Next
 '
 Dim wbName As String
-Let wbName = ThisWorkbook.name
+Let wbName = ThisWorkbook.Name
 Dim wbUpdateDate As Date
 Let wbUpdateDate = C_Book.GetBookProperties(wbName).item("Last save time")
 Dim dict As Dictionary
 Set dict = New Dictionary
-Call dict.Add("workbook", wbName)
-Call dict.Add("updated", wbUpdateDate)
+Call dict.add("workbook", wbName)
+Call dict.add("updated", wbUpdateDate)
 Dim json_str As String
 Let json_str = JsonConverter.ConvertToJson(dict, Whitespace:=4)
 Dim json_path As String
@@ -123,7 +125,7 @@ End Sub
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Sub unittest()
+Public Sub UnitTest()
     Export
 End Sub
 

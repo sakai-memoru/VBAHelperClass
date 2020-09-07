@@ -41,11 +41,11 @@ On Error Resume Next
     blnRtn = False
     Set clts = ActiveWorkbook.Worksheets(sheetName).ListObjects
     If Err.Number <> 0 Then
-        Err.Clear
+        Err.clear
         GoTo FINALLY
     End If
     For Each lstObj In clts
-        If lstObj.name = tblName Then
+        If lstObj.Name = tblName Then
             blnRtn = True
         End If
     Next lstObj
@@ -63,9 +63,9 @@ Public Sub CreateNewTable(ByRef rng As Range, ByVal tblName As String)
 ''
 Dim tbl As ListObject
 Dim sht As Worksheet
-Set sht = ThisWorkbook.Worksheets(rng.Parent.name)
-Set tbl = sht.ListObjects.Add(xlSrcRange, rng, XlListObjectHasHeaders:=xlYes)
-tbl.name = tblName
+Set sht = ThisWorkbook.Worksheets(rng.parent.Name)
+Set tbl = sht.ListObjects.add(xlSrcRange, rng, XlListObjectHasHeaders:=xlYes)
+tbl.Name = tblName
 If tbl.InsertRowRange Is Nothing Then
     ResetTable tbl
 End If
@@ -245,7 +245,7 @@ Dim rngInsert As Range
 ''
 Application.AutoCorrect.AutoExpandListRange = True
 If tblObj.InsertRowRange Is Nothing Then
-    Set rngInsert = tblObj.ListRows.Add.Range.Resize(UBound(rowAryary))
+    Set rngInsert = tblObj.ListRows.add.Range.Resize(UBound(rowAryary))
 Else
     Set rngInsert = tblObj.InsertRowRange
 End If
@@ -293,7 +293,7 @@ Public Sub InsertRow(ByRef tblObj As ListObject, _
 ''''  *
 ''''  */
 ''
-tblObj.ListRows(rowIdx).Range.Insert
+tblObj.ListRows(rowIdx).Range.insert
 tblObj.ListRows(rowIdx).Range.value = rowAryary
 ''
 End Sub
@@ -356,7 +356,7 @@ Dim blnAutoExpandBuf As Boolean
 Let blnAutoExpandBuf = Application.AutoCorrect.AutoExpandListRange
 ''
 Application.AutoCorrect.AutoExpandListRange = True
-tblObj.ListColumns.Add.Range.value = colAryary
+tblObj.ListColumns.add.Range.value = colAryary
 Application.AutoCorrect.AutoExpandListRange = blnAutoExpandBuf
 ''
 End Sub
@@ -419,7 +419,7 @@ Let ary(0) = colName
 C_Array.Concat ary, colAry
 Dim colAryary() As Variant
 Let colAryary = C_Array.ArrayToArrayArrayVertical(ary)
-tblObj.ListColumns(colIdx).Range.Insert
+tblObj.ListColumns(colIdx).Range.insert
 tblObj.ListColumns(colIdx).Range.value = colAryary
 ''
 End Sub
@@ -451,8 +451,8 @@ Dim rngSortColumn2 As Range
 If IsMissing(sortIdx2) Then
     Set rngSortColumn1 = tblObj.ListColumns(sortIdx1).DataBodyRange
     With tblObj.Sort
-        .SortFields.Clear
-        .SortFields.Add key:=rngSortColumn1, SortOn:=xlSortOnValues, order:=order
+        .SortFields.clear
+        .SortFields.add key:=rngSortColumn1, SortOn:=xlSortOnValues, order:=order
         .Header = xlYes
         .Apply
     End With
@@ -460,9 +460,9 @@ Else
     Set rngSortColumn1 = tblObj.ListColumns(sortIdx1).DataBodyRange
     Set rngSortColumn2 = tblObj.ListColumns(sortIdx2).DataBodyRange
     With tblObj.Sort
-        .SortFields.Clear
-        .SortFields.Add key:=rngSortColumn1, SortOn:=xlSortOnValues, order:=order
-        .SortFields.Add key:=rngSortColumn2, SortOn:=xlSortOnValues, order:=order
+        .SortFields.clear
+        .SortFields.add key:=rngSortColumn1, SortOn:=xlSortOnValues, order:=order
+        .SortFields.add key:=rngSortColumn2, SortOn:=xlSortOnValues, order:=order
         .Header = xlYes
         .Apply
     End With

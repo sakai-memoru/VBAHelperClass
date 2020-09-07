@@ -33,10 +33,10 @@ Public Function getEnvironment() As Dictionary
     Dim dict As Dictionary
     Set dict = New Dictionary
     
-    dict.add "OS_VERSION", getOSVersion()
-    dict.add "EXCEL_VERSION", getExcelVersion()
-    dict.add "LOGIN_USER", getLoginUserName()
-    dict.add "COMPUTER_NAME", getConputerName()
+    dict.Add "OS_VERSION", getOSVersion()
+    dict.Add "EXCEL_VERSION", getExcelVersion()
+    dict.Add "LOGIN_USER", getLoginUserName()
+    dict.Add "COMPUTER_NAME", getConputerName()
     
     Set getEnvironment = dict
     Set dict = Nothing
@@ -158,7 +158,7 @@ Public Function getBookName() As Variant
 End Function
 
 Public Function getBookFolder() As Variant
-    getBookFolder = ThisWorkbook.path
+    getBookFolder = ThisWorkbook.Path
 End Function
 
 '/////////////////////////////////////////////////////////////
@@ -178,7 +178,7 @@ Set C_Env = New C_Environment
 '''getEnvironment
 Dim dict As Dictionary
 Set dict = C_Env.getEnvironment()
-Console.Dump dict
+Console.dump dict
 
 '''getEnvironmentStrings
 Dim str As String

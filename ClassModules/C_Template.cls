@@ -25,6 +25,25 @@ Option Explicit
 '''  *
 '''  */
 '
+Public Function GetFieldTemplateKey(ByVal val As String) As String
+'''' ********************************************************
+''
+Dim C_String As C_String
+Set C_String = New C_String
+Dim strRtn As String
+''
+If C_String.StartsWith(val, "{{") And C_String.EndsWith(val, "}}") Then
+    Let strRtn = C_String.Chop(val, 2)
+    Let strRtn = C_String.Chomp(strRtn, 2)
+Else
+    Let strRtn = ""
+End If
+''
+Let GetFieldTemplateKey = strRtn
+''
+End Function
+
+
 Public Function CreateXmlTemplate(recname As Variant, aryHeader As Variant) As String
 ''' /********************************************************
 '''  *@function createXmlTemplate
@@ -69,7 +88,7 @@ End Function
 '-------------------------------------------------------------
 ' debug entry
 '-------------------------------------------------------------
-Public Function unittest()
+Public Function UnitTest()
     Dim aryHeader As Variant
 
 ''createXmlTemplate
